@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Tracker — RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        :root {
+            --bg-primary: #030303;
+            --bg-secondary: #0a0a0a;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --accent: #6366f1;
+            --success: #10b981;
+            --warn: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent: #6366f1;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.25rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-applied { background: rgba(99, 102, 241, 0.1); color: #818cf8; }
+        .status-interview { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
+        .status-offer { background: rgba(16, 185, 129, 0.1); color: #34d399; }
+        .status-rejected { background: rgba(239, 68, 68, 0.1); color: #fca5a5; }
+
+        [data-theme="light"] .status-applied { background: rgba(99, 102, 241, 0.15); color: #4f46e5; }
+        [data-theme="light"] .status-interview { background: rgba(59, 130, 246, 0.15); color: #2563eb; }
+        [data-theme="light"] .status-offer { background: rgba(16, 185, 129, 0.15); color: #059669; }
+        [data-theme="light"] .status-rejected { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
+
+        .kanban-column {
+            min-height: 500px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+        }
+
+        .application-card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: grab;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .application-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent), transparent);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -2.25rem;
+            top: 0.25rem;
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid var(--bg-primary);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .stat-number {
+            font-size: 1.875rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .kanban-container {
+                flex-wrap: wrap;
+            }
+
+            .kanban-column {
+                flex: 0 0 calc(50% - 0.5rem);
+            }
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .application-card {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        [data-theme="light"] .form-input,
+        [data-theme="light"] .form-select,
+        [data-theme="light"] .form-textarea {
+            background: #f1f5f9;
+            color: #0f172a;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .form-input:focus,
+        [data-theme="light"] .form-select:focus,
+        [data-theme="light"] .form-textarea:focus {
+            background: rgba(99, 102, 241, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 to-slate-950">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="text-2xl font-bold gradient-text">🏠</a>
+                <h1 class="text-xl font-bold" data-pt="Rastreador de Candidaturas" data-en="Application Tracker"></h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-white/10 transition-all">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                </button>
+                <button onclick="toggleLanguage()" class="px-3 py-1 text-sm font-semibold rounded-lg hover:bg-white/10 transition-all">
+                    <span data-pt="PT" data-en="EN"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="card">
+                <div class="stat-number" id="statTotal">0</div>
+                <div class="stat-label" data-pt="Total de Candidaturas" data-en="Total Applications"></div>
+            </div>
+            <div class="card">
+                <div class="stat-number" id="statApplied">0</div>
+                <div class="stat-label" data-pt="Candidatado" data-en="Applied"></div>
+            </div>
+            <div class="card">
+                <div class="stat-number" id="statInterview">0</div>
+                <div class="stat-label" data-pt="Entrevistas" data-en="Interviews"></div>
+            </div>
+            <div class="card">
+                <div class="stat-number" id="statOffer">0</div>
+                <div class="stat-label" data-pt="Ofertas" data-en="Offers"></div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex flex-col sm:flex-row gap-3 mb-8">
+            <button onclick="openModal()" class="btn-primary flex items-center gap-2 justify-center">
+                <span>+</span>
+                <span data-pt="Nova Candidatura" data-en="New Application"></span>
+            </button>
+            <button onclick="exportData()" class="btn-secondary flex items-center gap-2 justify-center">
+                <span>📥</span>
+                <span data-pt="Exportar" data-en="Export"></span>
+            </button>
+            <div class="flex-1">
+                <input type="text" id="searchInput" placeholder="Search..." class="form-input w-full" onkeyup="filterApplications()">
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+            <button onclick="switchView('kanban')" id="tabKanban" class="px-4 py-2 rounded-lg font-semibold bg-accent text-white whitespace-nowrap" data-pt="Kanban" data-en="Kanban"></button>
+            <button onclick="switchView('timeline')" id="tabTimeline" class="px-4 py-2 rounded-lg font-semibold hover:bg-white/10 whitespace-nowrap" data-pt="Timeline" data-en="Timeline"></button>
+            <button onclick="switchView('list')" id="tabList" class="px-4 py-2 rounded-lg font-semibold hover:bg-white/10 whitespace-nowrap" data-pt="Lista" data-en="List"></button>
+        </div>
+
+        <!-- Kanban View -->
+        <div id="kanbanView" class="kanban-container flex gap-4 overflow-x-auto pb-4">
+            <div class="flex-1 min-w-80">
+                <h3 class="font-semibold mb-4" data-pt="Candidatado" data-en="Applied"></h3>
+                <div class="kanban-column" id="colApplied"></div>
+            </div>
+            <div class="flex-1 min-w-80">
+                <h3 class="font-semibold mb-4" data-pt="Entrevista" data-en="Interview"></h3>
+                <div class="kanban-column" id="colInterview"></div>
+            </div>
+            <div class="flex-1 min-w-80">
+                <h3 class="font-semibold mb-4" data-pt="Oferta" data-en="Offer"></h3>
+                <div class="kanban-column" id="colOffer"></div>
+            </div>
+            <div class="flex-1 min-w-80">
+                <h3 class="font-semibold mb-4" data-pt="Rejeitado" data-en="Rejected"></h3>
+                <div class="kanban-column" id="colRejected"></div>
+            </div>
+        </div>
+
+        <!-- Timeline View -->
+        <div id="timelineView" class="hidden">
+            <div class="card max-w-2xl mx-auto">
+                <div id="timelineContent" class="timeline"></div>
+            </div>
+        </div>
+
+        <!-- List View -->
+        <div id="listView" class="hidden">
+            <div class="space-y-3" id="listContent"></div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="applicationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-xl font-bold" data-pt="Nova Candidatura" data-en="New Application"></h2>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white">✕</button>
+            </div>
+
+            <form onsubmit="addApplication(event)">
+                <div class="form-group">
+                    <label class="form-label" data-pt="Empresa" data-en="Company"></label>
+                    <input type="text" id="inputCompany" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-pt="Posição" data-en="Position"></label>
+                    <input type="text" id="inputPosition" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-pt="Status" data-en="Status"></label>
+                    <select id="inputStatus" class="form-select" required>
+                        <option value="applied" data-pt="Candidatado" data-en="Applied"></option>
+                        <option value="interview" data-pt="Entrevista" data-en="Interview"></option>
+                        <option value="offer" data-pt="Oferta" data-en="Offer"></option>
+                        <option value="rejected" data-pt="Rejeitado" data-en="Rejected"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-pt="Data" data-en="Date"></label>
+                    <input type="date" id="inputDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-pt="Notas" data-en="Notes"></label>
+                    <textarea id="inputNotes" class="form-textarea" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-pt="Tags (separadas por vírgula)" data-en="Tags (comma-separated)"></label>
+                    <input type="text" id="inputTags" class="form-input">
+                </div>
+
+                <div class="flex gap-3 justify-end">
+                    <button type="button" onclick="closeModal()" class="btn-secondary" data-pt="Cancelar" data-en="Cancel"></button>
+                    <button type="submit" class="btn-primary" data-pt="Adicionar" data-en="Add"></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data structure
+        let applications = JSON.parse(localStorage.getItem('applications')) || [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderKanban();
+            updateStats();
+            applyTheme();
+            applyLanguage();
+        });
+
+        function openModal() {
+            document.getElementById('applicationModal').classList.add('active');
+            document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        function closeModal() {
+            document.getElementById('applicationModal').classList.remove('active');
+            document.getElementById('inputCompany').value = '';
+            document.getElementById('inputPosition').value = '';
+            document.getElementById('inputStatus').value = 'applied';
+            document.getElementById('inputNotes').value = '';
+            document.getElementById('inputTags').value = '';
+        }
+
+        function addApplication(e) {
+            e.preventDefault();
+            
+            const app = {
+                id: Date.now(),
+                company: document.getElementById('inputCompany').value,
+                position: document.getElementById('inputPosition').value,
+                status: document.getElementById('inputStatus').value,
+                date: document.getElementById('inputDate').value,
+                notes: document.getElementById('inputNotes').value,
+                tags: document.getElementById('inputTags').value.split(',').map(t => t.trim()).filter(t => t),
+                createdAt: new Date().toISOString()
+            };
+
+            applications.push(app);
+            saveApplications();
+            renderKanban();
+            updateStats();
+            closeModal();
+        }
+
+        function saveApplications() {
+            localStorage.setItem('applications', JSON.stringify(applications));
+        }
+
+        function updateStats() {
+            const total = applications.length;
+            const applied = applications.filter(a => a.status === 'applied').length;
+            const interview = applications.filter(a => a.status === 'interview').length;
+            const offer = applications.filter(a => a.status === 'offer').length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statApplied').textContent = applied;
+            document.getElementById('statInterview').textContent = interview;
+            document.getElementById('statOffer').textContent = offer;
+        }
+
+        function renderKanban() {
+            const statuses = ['applied', 'interview', 'offer', 'rejected'];
+            
+            statuses.forEach(status => {
+                const col = document.getElementById(`col${status.charAt(0).toUpperCase() + status.slice(1)}`);
+                const filtered = applications.filter(a => a.status === status);
+                
+                col.innerHTML = filtered.map(app => `
+                    <div class="application-card" onclick="editApplication(${app.id})">
+                        <div class="font-semibold text-sm">${app.company}</div>
+                        <div class="text-xs text-gray-400 mt-1">${app.position}</div>
+                        <div class="text-xs text-gray-500 mt-2">${new Date(app.date).toLocaleDateString()}</div>
+                        <div class="flex flex-wrap gap-1 mt-2">
+                            ${app.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function renderTimeline() {
+            const sorted = [...applications].sort((a, b) => new Date(b.date) - new Date(a.date));
+            const content = document.getElementById('timelineContent');
+            
+            content.innerHTML = sorted.map(app => `
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div>
+                        <div class="font-semibold">${app.company} — ${app.position}</div>
+                        <div class="text-sm text-gray-400 mt-1">${new Date(app.date).toLocaleDateString()}</div>
+                        <span class="status-badge status-${app.status}">${app.status.toUpperCase()}</span>
+                        ${app.notes ? `<p class="text-sm text-gray-300 mt-2">${app.notes}</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderList() {
+            const content = document.getElementById('listContent');
+            
+            content.innerHTML = applications.map(app => `
+                <div class="card cursor-pointer hover:border-accent/50 transition-all" onclick="editApplication(${app.id})">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="font-semibold">${app.company}</div>
+                            <div class="text-sm text-gray-400">${app.position}</div>
+                            <div class="text-xs text-gray-500 mt-1">${new Date(app.date).toLocaleDateString()}</div>
+                        </div>
+                        <span class="status-badge status-${app.status}">${app.status.toUpperCase()}</span>
+                    </div>
+                    ${app.notes ? `<p class="text-sm text-gray-300 mt-3 border-t border-white/5 pt-3">${app.notes}</p>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function switchView(view) {
+            document.getElementById('kanbanView').classList.toggle('hidden', view !== 'kanban');
+            document.getElementById('timelineView').classList.toggle('hidden', view !== 'timeline');
+            document.getElementById('listView').classList.toggle('hidden', view !== 'list');
+
+            document.getElementById('tabKanban').classList.toggle('bg-accent', view === 'kanban').classList.toggle('text-white', view === 'kanban').classList.toggle('hover:bg-white/10', view !== 'kanban');
+            document.getElementById('tabTimeline').classList.toggle('bg-accent', view === 'timeline').classList.toggle('text-white', view === 'timeline').classList.toggle('hover:bg-white/10', view !== 'timeline');
+            document.getElementById('tabList').classList.toggle('bg-accent', view === 'list').classList.toggle('text-white', view === 'list').classList.toggle('hover:bg-white/10', view !== 'list');
+
+            if (view === 'timeline') renderTimeline();
+            if (view === 'list') renderList();
+        }
+
+        function editApplication(id) {
+            const app = applications.find(a => a.id === id);
+            if (!app) return;
+
+            document.getElementById('inputCompany').value = app.company;
+            document.getElementById('inputPosition').value = app.position;
+            document.getElementById('inputStatus').value = app.status;
+            document.getElementById('inputDate').value = app.date;
+            document.getElementById('inputNotes').value = app.notes;
+            document.getElementById('inputTags').value = app.tags.join(', ');
+
+            openModal();
+        }
+
+        function filterApplications() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = applications.filter(a => 
+                a.company.toLowerCase().includes(search) ||
+                a.position.toLowerCase().includes(search)
+            );
+
+            const col = (status, items) => {
+                const colDiv = document.getElementById(`col${status.charAt(0).toUpperCase() + status.slice(1)}`);
+                const filtered = items.filter(a => a.status === status);
+                colDiv.innerHTML = filtered.map(app => `
+                    <div class="application-card">
+                        <div class="font-semibold text-sm">${app.company}</div>
+                        <div class="text-xs text-gray-400 mt-1">${app.position}</div>
+                    </div>
+                `).join('');
+            };
+
+            ['applied', 'interview', 'offer', 'rejected'].forEach(status => col(status, filtered));
+        }
+
+        function exportData() {
+            const csv = 'Company,Position,Status,Date,Notes\n' + 
+                applications.map(a => 
+                    `"${a.company}","${a.position}","${a.status}","${a.date}","${a.notes}"`
+                ).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'applications.csv';
+            a.click();
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
+
+        function toggleLanguage() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-lang');
+            const next = current === 'en' ? 'pt' : 'en';
+            html.setAttribute('data-lang', next);
+            localStorage.setItem('lang', next);
+            applyLanguage();
+        }
+
+        function applyTheme() {
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+        }
+
+        function applyLanguage() {
+            const saved = localStorage.getItem('lang') || 'en';
+            document.documentElement.setAttribute('data-lang', saved);
+            
+            document.querySelectorAll('[data-pt][data-en]').forEach(el => {
+                el.textContent = el.getAttribute(`data-${saved === 'pt' ? 'pt' : 'en'}`);
+            });
+        }
+    </script>
+</body>
+</html>

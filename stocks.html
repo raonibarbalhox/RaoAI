@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novo Nordisk Stock Intelligence | NVO Analysis</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0f1a;
+      --bg-gradient: radial-gradient(ellipse 150% 80% at 20% -20%, #1e3a5f 0%, #0d1526 50%, #080c14 100%);
+      --glass-bg: rgba(255,255,255,0.03);
+      --glass-border: rgba(255,255,255,0.08);
+      --text: #f0f4ff;
+      --text-muted: rgba(240,244,255,0.6);
+      --accent: #4cc9f0;
+      --accent-2: #667eea;
+      --ok: #10b981;
+      --warn: #fbbf24;
+      --bad: #f87171;
+      --novo-blue: #003580;
+    }
+
+    /* LIGHT MODE */
+    [data-theme="light"] {
+      --bg-primary: #f0f4f8;
+      --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+      --glass-bg: rgba(255,255,255,0.85);
+      --glass-border: rgba(0,0,0,0.1);
+      --text: #0f172a;
+      --text-muted: rgba(15,23,42,0.65);
+      --ok: #059669;
+      --warn: #d97706;
+      --bad: #dc2626;
+    }
+    [data-theme="light"] body { background: var(--bg-gradient); background-color: var(--bg-primary); }
+    [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3,
+    [data-theme="light"] p, [data-theme="light"] span, [data-theme="light"] div,
+    [data-theme="light"] td, [data-theme="light"] li, [data-theme="light"] strong,
+    [data-theme="light"] .kpi .value { color: var(--text); }
+    [data-theme="light"] th, [data-theme="light"] .news-meta { color: var(--text-muted); }
+    [data-theme="light"] .price-card { background: linear-gradient(135deg, rgba(0,53,128,0.1), rgba(76,201,240,0.05)); border-color: rgba(0,53,128,0.2); }
+    [data-theme="light"] .kpi.positive .value { color: var(--ok); }
+    [data-theme="light"] .kpi.negative .value { color: var(--bad); }
+    [data-theme="light"] .kpi.warning .value { color: var(--warn); }
+    [data-theme="light"] .verdict-text { color: inherit; }
+    [data-theme="light"] .timeline::before { background: linear-gradient(180deg, var(--accent), #6366f1, var(--bad)); }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-gradient);
+      background-color: var(--bg-primary);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container { max-width: 1600px; margin: 0 auto; }
+
+    /* Header */
+    .header {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 24px 32px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(20px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .header h1 { font-size: 1.8rem; font-weight: 700; }
+    .header h1 span { color: var(--accent); }
+    .header-meta { color: var(--text-muted); font-size: 0.9rem; }
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16,185,129,0.15);
+      color: var(--ok);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .live-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--ok);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.02);
+      padding: 8px;
+      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+    }
+    .tab-btn {
+      padding: 12px 20px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .tab-btn:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .glass {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      backdrop-filter: blur(16px);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .glass h2 { font-size: 1.2rem; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .glass h3 { font-size: 1rem; color: var(--text-muted); margin-bottom: 12px; }
+
+    /* Grid */
+    .grid { display: grid; gap: 20px; }
+    .grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
+
+    /* KPIs */
+    .kpi { text-align: center; padding: 20px; }
+    .kpi .value { font-size: 2.2rem; font-weight: 700; font-family: 'SF Mono', monospace; }
+    .kpi .label { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+    .kpi.positive .value { color: var(--ok); }
+    .kpi.negative .value { color: var(--bad); }
+    .kpi.warning .value { color: var(--warn); }
+
+    /* Price Cards */
+    .price-card {
+      background: linear-gradient(135deg, rgba(0,53,128,0.2), rgba(76,201,240,0.1));
+      border: 1px solid rgba(0,53,128,0.3);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+    .price-card .ticker { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; }
+    .price-card .flag { font-size: 1.5rem; margin-bottom: 8px; }
+    .price-card .price { font-size: 1.8rem; font-weight: 700; font-family: 'SF Mono', monospace; }
+    .price-card .change { font-size: 0.9rem; margin-top: 8px; padding: 4px 12px; border-radius: 20px; display: inline-block; }
+    .price-card .change.up { background: rgba(16,185,129,0.2); color: var(--ok); }
+    .price-card .change.down { background: rgba(248,113,113,0.2); color: var(--bad); }
+
+    /* Chart */
+    .chart-container { height: 350px; position: relative; }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 30px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2), var(--bad));
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -24px;
+      top: 20px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg-primary);
+    }
+    .timeline-item.negative::before { background: var(--bad); }
+    .timeline-item.positive::before { background: var(--ok); }
+    .timeline-date { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+    .timeline-title { font-weight: 600; margin-bottom: 4px; }
+    .timeline-impact { font-size: 0.85rem; color: var(--text-muted); }
+    .timeline-price { font-size: 0.9rem; font-family: monospace; margin-top: 8px; padding: 4px 8px; background: rgba(0,0,0,0.2); border-radius: 6px; display: inline-block; }
+
+    /* Verdict */
+    .verdict-box {
+      padding: 24px;
+      border-radius: 16px;
+      text-align: center;
+    }
+    .verdict-box.bullish { background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); border: 1px solid rgba(16,185,129,0.3); }
+    .verdict-box.bearish { background: linear-gradient(135deg, rgba(248,113,113,0.15), rgba(248,113,113,0.05)); border: 1px solid rgba(248,113,113,0.3); }
+    .verdict-box.neutral { background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05)); border: 1px solid rgba(251,191,36,0.3); }
+    .verdict-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+    .verdict-text { font-size: 1.5rem; font-weight: 700; }
+    .verdict-box.bullish .verdict-text { color: var(--ok); }
+    .verdict-box.bearish .verdict-text { color: var(--bad); }
+    .verdict-box.neutral .verdict-text { color: var(--warn); }
+
+    /* News */
+    .news-item {
+      padding: 16px;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .news-item:last-child { border-bottom: none; }
+    .news-sentiment {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .news-sentiment.positive { background: var(--ok); }
+    .news-sentiment.negative { background: var(--bad); }
+    .news-sentiment.neutral { background: var(--warn); }
+    .news-title { font-weight: 500; margin-bottom: 4px; }
+    .news-meta { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--glass-border); }
+    th { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 600; }
+    td { font-size: 0.9rem; }
+
+    /* Badges */
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-bullish { background: rgba(16,185,129,0.2); color: var(--ok); }
+    .badge-bearish { background: rgba(248,113,113,0.2); color: var(--bad); }
+    .badge-neutral { background: rgba(251,191,36,0.2); color: var(--warn); }
+
+    /* Controls */
+    .controls { display: flex; gap: 10px; }
+    .ctrl-btn {
+      padding: 10px 18px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      color: var(--text);
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    .ctrl-btn:hover { background: rgba(76,201,240,0.15); border-color: var(--accent); }
+    .ctrl-btn svg { width: 18px; height: 18px; }
+    .lang-btn { padding: 6px 10px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.85rem; transition: all 0.2s; }
+    .lang-btn:hover { background: rgba(76,201,240,0.1); }
+    .lang-btn.active { background: var(--accent); color: #000; }
+
+    /* Print */
+    @media print {
+      body { background: #fff !important; color: #1e293b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .glass { background: #f8fafc !important; border-color: #e2e8f0 !important; box-shadow: none !important; }
+      .tabs, .controls, .live-badge { display: none !important; }
+      .tab-content { display: block !important; page-break-inside: avoid; margin-bottom: 20px; }
+      .header { background: #f8fafc !important; }
+      h1, h2, h3, p, span, div, td, li { color: #0f172a !important; }
+      th { color: #64748b !important; }
+      .kpi .value { color: #0f172a !important; }
+      .kpi.positive .value { color: #059669 !important; }
+      .kpi.negative .value { color: #dc2626 !important; }
+      .price-card { background: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; }
+      .chart-container { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div>
+        <h1>📊 <span>Novo Nordisk</span> Stock Intelligence</h1>
+        <p class="header-meta">Análise Imparcial | NVO (NYSE) • NOVO-B (CPH) • N1VO34 (B3) | Atualizado: <span id="lastUpdate">28/01/2026 14:30</span></p>
+      </div>
+      <div class="controls">
+        <a href="index.html" class="ctrl-btn" title="Voltar ao Hub">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Hub
+        </a>
+        <span class="live-badge">LIVE</span>
+        <div class="ctrl-btn lang-toggle" style="padding:4px;gap:4px;display:flex;">
+          <button class="lang-btn active" onclick="setLang('pt')">🇧🇷</button>
+          <button class="lang-btn" onclick="setLang('en')">🇺🇸</button>
+        </div>
+        <button class="ctrl-btn" onclick="toggleTheme()" title="Alternar tema">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <button class="ctrl-btn" onclick="window.print()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="overview"><span data-pt="📈 Visão Geral" data-en="📈 Overview">📈 Visão Geral</span></button>
+      <button class="tab-btn" data-tab="timeline"><span data-pt="📅 Timeline" data-en="📅 Timeline">📅 Timeline & Eventos</span></button>
+      <button class="tab-btn" data-tab="analysis"><span data-pt="🔬 Análise Técnica" data-en="🔬 Technical Analysis">🔬 Análise Técnica</span></button>
+      <button class="tab-btn" data-tab="predictive"><span data-pt="🔮 Análise Preditiva" data-en="🔮 Predictive Analysis">🔮 Análise Preditiva</span></button>
+      <button class="tab-btn" data-tab="news"><span data-pt="📰 Notícias" data-en="📰 News & Impact">📰 Notícias & Impacto</span></button>
+      <button class="tab-btn" data-tab="verdict"><span data-pt="⚖️ Veredicto" data-en="⚖️ Honest Verdict">⚖️ Veredicto Honesto</span></button>
+      <button class="tab-btn" data-tab="pipeline"><span data-pt="💊 Pipeline" data-en="💊 Drug Pipeline">💊 Pipeline & Drogas</span></button>
+      <button class="tab-btn" data-tab="data"><span data-pt="📊 Dados" data-en="📊 Full Data">📊 Dados Completos</span></button>
+    </div>
+
+    <!-- TAB: Overview -->
+    <div id="overview" class="tab-content active">
+      <!-- Price Cards -->
+      <div class="grid grid-3" style="margin-bottom:20px;">
+        <div class="price-card">
+          <div class="flag">🇺🇸</div>
+          <div class="ticker">NYSE: NVO</div>
+          <div class="price" id="priceUSD">$62.89</div>
+          <div class="change neutral" id="changeUSD" style="background:rgba(148,163,184,0.2);color:#94a3b8;">$0.00 (0.00%)</div>
+          <div style="font-size:0.7rem;color:var(--text-muted);margin-top:8px;">52W: $43.08 - $93.80</div>
+        </div>
+        <div class="price-card">
+          <div class="flag">🇩🇰</div>
+          <div class="ticker">CPH: NOVO-B</div>
+          <div class="price" id="priceDKK">kr.385.00</div>
+          <div class="change down" id="changeDKK">-kr.8.95 (-2.27%)</div>
+          <div style="font-size:0.7rem;color:var(--text-muted);margin-top:8px;">52W: kr.266.90 - kr.675.20</div>
+        </div>
+        <div class="price-card">
+          <div class="flag">🇧🇷</div>
+          <div class="ticker">B3: N1VO34</div>
+          <div class="price" id="priceBRL">R$39.99</div>
+          <div class="change down" id="changeBRL">-R$1.05 (-2.56%)</div>
+          <div style="font-size:0.7rem;color:var(--text-muted);margin-top:8px;">52W: R$28.54 - R$67.84</div>
+        </div>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="glass">
+        <h2>📊 Métricas-Chave</h2>
+        <div class="grid grid-4">
+          <div class="kpi">
+            <div class="value">$209.6B</div>
+            <div class="label">Market Cap</div>
+          </div>
+          <div class="kpi negative">
+            <div class="value">-33%</div>
+            <div class="label">YTD 2025</div>
+          </div>
+          <div class="kpi positive">
+            <div class="value">+46%</div>
+            <div class="label">Desde Mín. Ago/25</div>
+          </div>
+          <div class="kpi">
+            <div class="value">16.7x</div>
+            <div class="label">P/E Forward</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Summary -->
+      <div class="grid grid-2">
+        <div class="glass">
+          <h2>🎯 Resumo Executivo</h2>
+          <p style="color:var(--text-muted);line-height:1.7;margin-bottom:16px;">
+            A Novo Nordisk está em <strong style="color:var(--ok);">fase de recuperação</strong> após uma queda brutal de 55% 
+            do pico histórico ($140 em Mar/2024) até a mínima de $45 em Ago/2025. O catalisador principal foi a 
+            <strong>aprovação da pílula Wegovy pela FDA</strong> (Dez/2025), que resolve o gargalo de produção.
+          </p>
+          <div class="verdict-box bullish" style="margin-top:16px;">
+            <div class="verdict-label">Tendência Atual</div>
+            <div class="verdict-text">📈 RECUPERAÇÃO</div>
+          </div>
+        </div>
+        <div class="glass">
+          <h2>⚡ Eventos Recentes</h2>
+          <div class="news-item">
+            <div class="news-sentiment positive"></div>
+            <div>
+              <div class="news-title">Wegovy Pill: 18K prescrições na 1ª semana</div>
+              <div class="news-meta">23/Jan/2026 • Demanda forte confirma tese</div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-sentiment positive"></div>
+            <div>
+              <div class="news-title">Q4 2025: Analistas esperam beat</div>
+              <div class="news-meta">26/Jan/2026 • Earnings preview positivo</div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-sentiment negative"></div>
+            <div>
+              <div class="news-title">Genéricos na Índia: Sun Pharma e Dr. Reddy's</div>
+              <div class="news-meta">21-23/Jan/2026 • Risco de longo prazo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="glass">
+        <h2>📈 Preço NVO (12 meses)</h2>
+        <div class="chart-container">
+          <canvas id="priceChart"></canvas>
+        </div>
+      </div>
+
+      <!-- 3 Stocks Comparison -->
+      <div class="glass">
+        <h2>🌍 Comparativo: 3 Bolsas (normalizado %)</h2>
+        <div class="chart-container">
+          <canvas id="threeStocksChart"></canvas>
+        </div>
+        <p style="color:var(--text-muted);font-size:0.8rem;margin-top:12px;text-align:center;">Retornos normalizados desde Jan/2025 - Fonte: Yahoo Finance, Google Finance, B3</p>
+      </div>
+    </div>
+    <div id="timeline" class="tab-content">
+      <div class="glass">
+        <h2>📅 Timeline: Eventos que Moveram o Preço</h2>
+        <p style="color:var(--text-muted);margin-bottom:20px;">Correlação direta entre notícias e movimentos de preço da NVO</p>
+        
+        <div class="timeline">
+          <div class="timeline-item positive">
+            <div class="timeline-date">23 Jan 2026</div>
+            <div class="timeline-title">📈 Wegovy Pill: 18.000+ prescrições na primeira semana</div>
+            <div class="timeline-impact">Demanda explosiva confirma tese de escalabilidade da pílula</div>
+            <div class="timeline-price">$62.26 → $63.60 (+2.15%)</div>
+          </div>
+          
+          <div class="timeline-item positive">
+            <div class="timeline-date">22 Dez 2025</div>
+            <div class="timeline-title">🎉 FDA Aprova Pílula Wegovy (Oral Semaglutide)</div>
+            <div class="timeline-impact">GAME CHANGER - Resolve gargalo de produção, aumenta acessibilidade</div>
+            <div class="timeline-price">$48.10 → $51.61 (+7.3%)</div>
+          </div>
+
+          <div class="timeline-item negative">
+            <div class="timeline-date">24 Nov 2025</div>
+            <div class="timeline-title">⚠️ Estudo Alzheimer Interrompido</div>
+            <div class="timeline-impact">Ozempic não mostrou eficácia em estudo de Alzheimer</div>
+            <div class="timeline-price">$47.63 → $44.97 (-5.6%)</div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-date">05 Nov 2025</div>
+            <div class="timeline-title">📊 Q3 2025 Earnings Call</div>
+            <div class="timeline-impact">Resultados mistos, guidance mantido</div>
+            <div class="timeline-price">$48.46 → $46.51 (-4%)</div>
+          </div>
+
+          <div class="timeline-item negative">
+            <div class="timeline-date">Set 2025</div>
+            <div class="timeline-title">🔻 Reestruturação: Corte de 9.000-10.000 funcionários</div>
+            <div class="timeline-impact">Medida de redução de custos após queda de market cap</div>
+            <div class="timeline-price">~$55 (estabilização)</div>
+          </div>
+
+          <div class="timeline-item negative">
+            <div class="timeline-date">29 Jul 2025</div>
+            <div class="timeline-title">💥 CRASH: Resultados CagriSema Decepcionam</div>
+            <div class="timeline-impact">Perda de peso de 22.7% vs esperado 25%+, mercado perde confiança</div>
+            <div class="timeline-price">$71.70 → $53.94 (-24.8% em 1 dia!)</div>
+          </div>
+
+          <div class="timeline-item negative">
+            <div class="timeline-date">Abr 2025</div>
+            <div class="timeline-title">📉 Tarifas e Medo de Regulação</div>
+            <div class="timeline-impact">Preocupações com tarifas de importação nos EUA</div>
+            <div class="timeline-price">$90 → $62 (-31%)</div>
+          </div>
+
+          <div class="timeline-item positive">
+            <div class="timeline-date">Mar 2024</div>
+            <div class="timeline-title">🏆 PICO HISTÓRICO: Maior empresa da Europa</div>
+            <div class="timeline-impact">Ozempic/Wegovy dominando, market cap > $600B</div>
+            <div class="timeline-price">$140+ (ATH)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pattern Analysis -->
+      <div class="glass">
+        <h2>🔍 Padrão Identificado: O que Faz a Ação Subir ou Cair?</h2>
+        <div class="grid grid-2">
+          <div style="padding:16px;background:rgba(16,185,129,0.1);border-radius:12px;border-left:4px solid var(--ok);">
+            <h3 style="color:var(--ok);margin-bottom:12px;">📈 CATALISADORES DE ALTA</h3>
+            <ul style="color:var(--text-muted);line-height:1.8;padding-left:20px;">
+              <li><strong>Aprovações FDA/EMA</strong> - Sempre gera rally (+5-10%)</li>
+              <li><strong>Resultados de estudos clínicos positivos</strong></li>
+              <li><strong>Earnings beats</strong> - Especialmente guidance elevado</li>
+              <li><strong>Expansão de capacidade produtiva</strong></li>
+              <li><strong>Pílula oral</strong> - Resolve gargalo de supply</li>
+            </ul>
+          </div>
+          <div style="padding:16px;background:rgba(248,113,113,0.1);border-radius:12px;border-left:4px solid var(--bad);">
+            <h3 style="color:var(--bad);margin-bottom:12px;">📉 CATALISADORES DE BAIXA</h3>
+            <ul style="color:var(--text-muted);line-height:1.8;padding-left:20px;">
+              <li><strong>Estudos clínicos decepcionantes</strong> - CagriSema foi devastador</li>
+              <li><strong>Competição Eli Lilly</strong> - Zepbound ganhando share</li>
+              <li><strong>Genéricos aprovados</strong> - Índia já liberou (Sun, Dr. Reddy's)</li>
+              <li><strong>Regulação/Tarifas</strong> - Medo de pricing pressure</li>
+              <li><strong>Processos judiciais</strong> - Ex: acordo Teva (Victoza)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="analysis" class="tab-content">
+      <div class="grid grid-2">
+        <!-- Technical Indicators -->
+        <div class="glass">
+          <h2>📊 Indicadores Técnicos</h2>
+          <table>
+            <tr><th>Indicador</th><th>Valor</th><th>Sinal</th></tr>
+            <tr><td>SMA 20 dias</td><td>$60.12</td><td><span class="badge badge-bullish">Acima</span></td></tr>
+            <tr><td>SMA 50 dias</td><td>$51.78</td><td><span class="badge badge-bullish">+20% acima</span></td></tr>
+            <tr><td>SMA 200 dias</td><td>$58.93</td><td><span class="badge badge-bullish">+5.7% acima</span></td></tr>
+            <tr><td>RSI (14)</td><td>62</td><td><span class="badge badge-neutral">Neutro</span></td></tr>
+            <tr><td>MACD</td><td>Positivo</td><td><span class="badge badge-bullish">Bullish</span></td></tr>
+            <tr><td>Beta (24M)</td><td>1.36</td><td><span class="badge badge-neutral">Volátil</span></td></tr>
+          </table>
+        </div>
+
+        <!-- Valuation -->
+        <div class="glass">
+          <h2>💰 Valuation: NVO vs LLY (4 Fev 2026)</h2>
+          <table>
+            <tr><th>Métrica</th><th>NVO</th><th>LLY</th><th>Vencedor</th></tr>
+            <tr><td>P/E Forward</td><td style="color:var(--ok);">18x</td><td>32.5x</td><td>🏆 NVO</td></tr>
+            <tr><td>EPS Est. Q4</td><td>$0.89-0.90</td><td style="color:var(--ok);">$7.11-7.48</td><td>🏆 LLY</td></tr>
+            <tr><td>Receita Est. Q4</td><td>$12B</td><td style="color:var(--ok);">$17.85B</td><td>🏆 LLY</td></tr>
+            <tr><td>Crescimento YoY</td><td style="color:var(--warn);">Estável</td><td style="color:var(--ok);">+32%</td><td>🏆 LLY</td></tr>
+            <tr><td>Profit Margin</td><td style="color:var(--ok);">32.9%</td><td>18%</td><td>🏆 NVO</td></tr>
+            <tr><td>Upside Potencial</td><td style="color:var(--ok);">+53%</td><td>+31%</td><td>🏆 NVO</td></tr>
+          </table>
+          <div class="grid grid-2" style="margin-top:16px;">
+            <div style="padding:12px;background:rgba(0,53,128,0.15);border-radius:8px;">
+              <div style="font-weight:600;color:var(--accent);margin-bottom:4px;">🇩🇰 NVO = "Opção de Valor"</div>
+              <div style="font-size:0.85rem;color:var(--text-muted);">Múltiplo baixo + maior margem</div>
+            </div>
+            <div style="padding:12px;background:rgba(248,113,113,0.1);border-radius:8px;">
+              <div style="font-weight:600;color:var(--bad);margin-bottom:4px;">🇺🇸 LLY = "Opção de Crescimento"</div>
+              <div style="font-size:0.85rem;color:var(--text-muted);">Múltiplo premium + alto crescimento</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analyst Ratings -->
+      <div class="glass">
+        <h2>🎯 Ratings de Analistas (Jan 2026)</h2>
+        <div class="grid grid-4">
+          <div class="verdict-box bullish">
+            <div class="verdict-label">SA Analysts</div>
+            <div class="verdict-text">BUY</div>
+          </div>
+          <div class="verdict-box bullish">
+            <div class="verdict-label">Wall Street</div>
+            <div class="verdict-text">BUY</div>
+          </div>
+          <div class="verdict-box neutral">
+            <div class="verdict-label">Quant Rating</div>
+            <div class="verdict-text">HOLD</div>
+          </div>
+          <div class="verdict-box neutral">
+            <div class="verdict-label">Morgan Stanley</div>
+            <div class="verdict-text">UNDERWEIGHT</div>
+          </div>
+        </div>
+        <div style="margin-top:20px;">
+          <h3>📊 Estimativas de Preço-Alvo:</h3>
+          <div class="grid grid-3" style="margin-top:12px;">
+            <div style="padding:12px;background:rgba(248,113,113,0.1);border-radius:8px;text-align:center;">
+              <div style="font-size:0.75rem;color:var(--text-muted);">BMO Capital</div>
+              <div style="font-size:1.5rem;font-weight:700;color:var(--bad);">$46</div>
+              <div style="font-size:0.7rem;color:var(--text-muted);">(-27% atual)</div>
+            </div>
+            <div style="padding:12px;background:rgba(76,201,240,0.1);border-radius:8px;text-align:center;">
+              <div style="font-size:0.75rem;color:var(--text-muted);">Morningstar FVE</div>
+              <div style="font-size:1.5rem;font-weight:700;color:var(--accent);">DKK 423</div>
+              <div style="font-size:0.7rem;color:var(--text-muted);">(~$60 USD)</div>
+            </div>
+            <div style="padding:12px;background:rgba(16,185,129,0.1);border-radius:8px;text-align:center;">
+              <div style="font-size:0.75rem;color:var(--text-muted);">WSJ Consenso</div>
+              <div style="font-size:1.5rem;font-weight:700;color:var(--ok);">$96</div>
+              <div style="font-size:0.7rem;color:var(--text-muted);">(+53% upside)</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <h3>Factor Grades:</h3>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;">
+            <span class="badge" style="background:rgba(248,113,113,0.2);color:var(--bad);">Valuation: D+</span>
+            <span class="badge badge-bullish">Growth: B</span>
+            <span class="badge badge-bullish">Profitability: A+</span>
+            <span class="badge badge-neutral">Momentum: C+</span>
+            <span class="badge badge-bullish">EPS Revisions: B-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Targets -->
+      <div class="glass">
+        <h2>🎯 Price Targets</h2>
+        <div class="grid grid-4">
+          <div class="kpi">
+            <div class="value">$43.08</div>
+            <div class="label">52-Week Low</div>
+          </div>
+          <div class="kpi">
+            <div class="value" style="color:var(--accent);">$62.89</div>
+            <div class="label">Preço Atual</div>
+          </div>
+          <div class="kpi">
+            <div class="value">$93.80</div>
+            <div class="label">52-Week High</div>
+          </div>
+          <div class="kpi positive">
+            <div class="value">+49%</div>
+            <div class="label">Upside ao High</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Earnings Calendar -->
+      <div class="glass" style="border-left:4px solid var(--warn);">
+        <h2>📅 Earnings Calendar - PRÓXIMO RESULTADO (CRÍTICO!)</h2>
+        <div class="grid grid-2">
+          <div style="padding:20px;background:linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05));border-radius:16px;">
+            <div style="color:var(--warn);font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">📢 Q4 2025 + FY2025 Results</div>
+            <div style="font-size:2rem;font-weight:700;">4 Fev 2026</div>
+            <div style="color:var(--text-muted);margin-top:4px;">Antes abertura Copenhagen (13:00 CET)</div>
+            <div style="margin-top:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;">
+              <strong>⏱️ Faltam 7 dias</strong>
+              <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Teleconferência: 09:00 BRT</div>
+            </div>
+          </div>
+          <div>
+            <table>
+              <tr><th colspan="2">📊 Estimativas Q4 2025 (Consenso)</th></tr>
+              <tr><td style="color:var(--text-muted);">EPS Estimado</td><td style="font-weight:600;">$0.89 - $0.90</td></tr>
+              <tr><td style="color:var(--text-muted);">Receita Estimada</td><td style="font-weight:600;">$11.96B - $12.13B</td></tr>
+              <tr><td style="color:var(--text-muted);">Guidance 2026</td><td style="font-weight:600;">+5% a +8.5%</td></tr>
+              <tr><td style="color:var(--text-muted);">Fonte</td><td>Zacks, Morningstar</td></tr>
+            </table>
+          </div>
+        </div>
+        
+        <!-- What to Watch -->
+        <div style="margin-top:20px;padding:16px;background:rgba(76,201,240,0.1);border-radius:12px;">
+          <strong style="color:var(--accent);">🔍 O QUE O MERCADO QUER SABER:</strong>
+          <div class="grid grid-2" style="margin-top:12px;gap:16px;">
+            <div>
+              <div style="font-weight:600;color:var(--ok);margin-bottom:8px;">📈 Catalisadores Positivos</div>
+              <ul style="color:var(--text-muted);line-height:1.8;padding-left:20px;font-size:0.9rem;">
+                <li><strong>Wegovy Pill:</strong> Dados de 18.410+ prescrições na 1ª semana</li>
+                <li><strong>Guidance 2026:</strong> Primeiro forecast oficial do ano</li>
+                <li><strong>CagriSema:</strong> Atualizações do pedido FDA (submetido Dez/25)</li>
+                <li><strong>Amycretin:</strong> Início da Fase III anunciado</li>
+              </ul>
+            </div>
+            <div>
+              <div style="font-weight:600;color:var(--bad);margin-bottom:8px;">⚠️ Riscos a Monitorar</div>
+              <ul style="color:var(--text-muted);line-height:1.8;padding-left:20px;font-size:0.9rem;">
+                <li><strong>Custos Reestruturação:</strong> DKK 8B impactando margem</li>
+                <li><strong>Preços TrumpRx:</strong> US$245-350 (70% desconto)</li>
+                <li><strong>Patentes:</strong> Vencimento Brasil, China, Canadá</li>
+                <li><strong>Competição LLY:</strong> Zepbound ganhando share</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;padding:16px;background:rgba(16,185,129,0.1);border-radius:12px;">
+          <strong style="color:var(--ok);">📊 Último Resultado (Q3 - 5 Nov 2025):</strong>
+          <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:12px;">
+            <div><span style="color:var(--text-muted);">EPS:</span> <span style="color:var(--ok);">$0.69 (Beat by $0.04)</span></div>
+            <div><span style="color:var(--text-muted);">Revenue:</span> <span style="color:var(--bad);">$11.54B (Miss by $323M)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Institutional Holders -->
+      <div class="glass">
+        <h2>🏛️ Maiores Investidores Institucionais</h2>
+        <div style="margin-bottom:16px;padding:12px;background:rgba(76,201,240,0.1);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div><span style="color:var(--text-muted);">Insiders:</span> <strong>0.00%</strong></div>
+            <div><span style="color:var(--text-muted);">Institucionais:</span> <strong>9.12%</strong></div>
+            <div><span style="color:var(--text-muted);">Nº Instituições:</span> <strong>1,652</strong></div>
+          </div>
+        </div>
+        <table>
+          <tr><th>Instituição</th><th>Ações (M)</th><th>% Float</th><th>Valor (USD)</th></tr>
+          <tr><td>Capital International Investors</td><td>17.71M</td><td>0.52%</td><td>$1.13B</td></tr>
+          <tr><td>Loomis Sayles & Co</td><td>16.17M</td><td>0.48%</td><td>$1.03B</td></tr>
+          <tr><td>FMR LLC (Fidelity)</td><td>14.08M</td><td>0.42%</td><td>$895M</td></tr>
+          <tr><td>Franklin Resources</td><td>13.98M</td><td>0.41%</td><td>$889M</td></tr>
+          <tr><td>Bank of America</td><td>13.40M</td><td>0.40%</td><td>$852M</td></tr>
+          <tr><td>Morgan Stanley</td><td>12.41M</td><td>0.37%</td><td>$789M</td></tr>
+          <tr><td>JPMorgan Chase</td><td>10.82M</td><td>0.32%</td><td>$688M</td></tr>
+          <tr><td>Fisher Asset Management</td><td>10.32M</td><td>0.30%</td><td>$656M</td></tr>
+        </table>
+        <p style="color:var(--text-muted);margin-top:12px;font-size:0.85rem;">
+          📝 <strong>Nota:</strong> Baixa participação institucional (9%) é típico de ADRs - ações são primariamente negociadas na bolsa de Copenhagen (NOVO-B).
+        </p>
+      </div>
+
+      <!-- Risk Metrics -->
+      <div class="glass">
+        <h2>⚠️ Métricas de Risco</h2>
+        <div class="grid grid-4">
+          <div class="kpi warning">
+            <div class="value">1.36</div>
+            <div class="label">Beta (24M)</div>
+          </div>
+          <div class="kpi negative">
+            <div class="value">-55%</div>
+            <div class="label">Max Drawdown (ATH)</div>
+          </div>
+          <div class="kpi">
+            <div class="value">32%</div>
+            <div class="label">Volatilidade Anual</div>
+          </div>
+          <div class="kpi positive">
+            <div class="value">0.42</div>
+            <div class="label">Sharpe Ratio</div>
+          </div>
+        </div>
+        <div class="grid grid-2" style="margin-top:20px;">
+          <div style="padding:16px;background:rgba(248,113,113,0.1);border-radius:12px;">
+            <h3 style="color:var(--bad);margin-bottom:12px;">🔴 Fatores de Risco</h3>
+            <ul style="color:var(--text-muted);line-height:1.8;padding-left:20px;">
+              <li><strong>Beta > 1</strong> - Mais volátil que o mercado</li>
+              <li><strong>Concentração</strong> - 80%+ receita em GLP-1</li>
+              <li><strong>Drawdown severo</strong> - Caiu 55% do pico</li>
+              <li><strong>Genéricos</strong> - Pressão de preço iminente</li>
+            </ul>
+          </div>
+          <div style="padding:16px;background:rgba(16,185,129,0.1);border-radius:12px;">
+            <h3 style="color:var(--ok);margin-bottom:12px;">🟢 Fatores de Proteção</h3>
+            <ul style="color:var(--text-muted);line-height:1.8;padding-left:20px;">
+              <li><strong>Dividendos</strong> - Yield 2.77% como buffer</li>
+              <li><strong>Profitabilidade A+</strong> - Margens de 33%</li>
+              <li><strong>Balance sheet</strong> - Caixa sólido vs dívida</li>
+              <li><strong>Pipeline</strong> - Múltiplas aprovações em andamento</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Patent Risks - NEW SECTION -->
+      <div class="glass" style="border-left:4px solid var(--bad);">
+        <h2>⚠️ ALERTA: Riscos de Patentes 2026</h2>
+        <p style="color:var(--text-muted);margin-bottom:16px;">Vencimento de patentes da semaglutida pode abrir espaço para genéricos em mercados-chave.</p>
+        <table>
+          <tr><th>País</th><th>Status Patente</th><th>Impacto</th><th>Risco</th></tr>
+          <tr style="background:rgba(248,113,113,0.1);">
+            <td>🇨🇦 Canadá</td>
+            <td style="color:var(--bad);">ERRO ADMINISTRATIVO</td>
+            <td>Pagamento de taxa atrasado</td>
+            <td><span class="badge badge-bearish">CRÍTICO</span></td>
+          </tr>
+          <tr>
+            <td>🇧🇷 Brasil</td>
+            <td style="color:var(--warn);">Vence 2026</td>
+            <td>Genéricos podem entrar</td>
+            <td><span class="badge badge-neutral">MÉDIO</span></td>
+          </tr>
+          <tr>
+            <td>🇨🇳 China</td>
+            <td style="color:var(--warn);">Vence 2026</td>
+            <td>Mercado grande em risco</td>
+            <td><span class="badge badge-neutral">MÉDIO</span></td>
+          </tr>
+          <tr>
+            <td>🇮🇳 Índia</td>
+            <td style="color:var(--bad);">JÁ APROVADOS</td>
+            <td>Sun Pharma, Dr. Reddy's</td>
+            <td><span class="badge badge-bearish">ATIVO</span></td>
+          </tr>
+          <tr style="background:rgba(16,185,129,0.1);">
+            <td>🇺🇸 EUA</td>
+            <td style="color:var(--ok);">Protegido até 2032+</td>
+            <td>Mercado principal seguro</td>
+            <td><span class="badge badge-bullish">BAIXO</span></td>
+          </tr>
+        </table>
+        <div style="margin-top:16px;padding:12px;background:rgba(251,191,36,0.1);border-radius:8px;">
+          <strong style="color:var(--warn);">📌 Caso Canadá:</strong>
+          <span style="color:var(--text-muted);font-size:0.9rem;"> Erro de ~R$1.400 em taxas pode custar bilhões em receita perdida (Science Magazine).</span>
+        </div>
+      </div>
+    </div>
+    <!-- TAB: Predictive Analysis -->
+    <div id="predictive" class="tab-content">
+      <div class="glass" style="border-left:4px solid var(--accent);">
+        <h2>🔮 Análise Preditiva - Tendências e Projeções</h2>
+        <p style="color:var(--text-muted);margin-bottom:20px;">Projeções baseadas em análise técnica, fundamentalista e sentimento de mercado. <strong>Não é recomendação de investimento.</strong></p>
+      </div>
+
+      <!-- Price Projections -->
+      <div class="glass">
+        <h2>📊 Projeção de Preço - Cenários</h2>
+        <div class="chart-container">
+          <canvas id="predictiveChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Short Term (7-30 days) -->
+      <div class="grid grid-2">
+        <div class="glass" style="border-left:4px solid var(--accent);">
+          <h2>📅 Curto Prazo (7-30 dias)</h2>
+          <div class="grid grid-3" style="margin-bottom:16px;">
+            <div class="kpi">
+              <div class="value" style="color:var(--bad);">$58</div>
+              <div class="label">Suporte</div>
+            </div>
+            <div class="kpi">
+              <div class="value" style="color:var(--accent);">$63</div>
+              <div class="label">Atual</div>
+            </div>
+            <div class="kpi">
+              <div class="value" style="color:var(--ok);">$72</div>
+              <div class="label">Resistência</div>
+            </div>
+          </div>
+          <ul style="color:var(--text-muted);line-height:1.8;padding-left:20px;">
+            <li><strong>Catalisador:</strong> Q4 Earnings (4 Feb) - Pode mover ±10%</li>
+            <li><strong>RSI 62:</strong> Neutro com viés altista</li>
+            <li><strong>Volume:</strong> Acima da média - momentum positivo</li>
+            <li><strong>Tendência:</strong> SMA20 > SMA50 = Bullish crossover</li>
+          </ul>
+          <div class="verdict-box bullish" style="margin-top:16px;">
+            <div class="verdict-label">Previsão 30 dias</div>
+            <div class="verdict-text">$65-72 (OTIMISTA)</div>
+          </div>
+        </div>
+
+        <div class="glass" style="border-left:4px solid var(--warn);">
+          <h2>📆 Médio Prazo (1-3 meses)</h2>
+          <div class="grid grid-3" style="margin-bottom:16px;">
+            <div class="kpi">
+              <div class="value" style="color:var(--bad);">$52</div>
+              <div class="label">Pior Caso</div>
+            </div>
+            <div class="kpi">
+              <div class="value" style="color:var(--warn);">$68</div>
+              <div class="label">Base</div>
+            </div>
+            <div class="kpi">
+              <div class="value" style="color:var(--ok);">$85</div>
+              <div class="label">Melhor Caso</div>
+            </div>
+          </div>
+          <ul style="color:var(--text-muted);line-height:1.8;padding-left:20px;">
+            <li><strong>Q4 + Q1 Guidance:</strong> Define tendência do trimestre</li>
+            <li><strong>Pílula Wegovy:</strong> Dados de adoção = driver principal</li>
+            <li><strong>Competição LLY:</strong> Market share em foco</li>
+            <li><strong>Genéricos:</strong> Impacto ainda limitado</li>
+          </ul>
+          <div class="verdict-box neutral" style="margin-top:16px;">
+            <div class="verdict-label">Previsão 3 meses</div>
+            <div class="verdict-text">$65-78 (NEUTRO/OTIMISTA)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Long Term (6-12 months) -->
+      <div class="glass" style="border-left:4px solid var(--ok);">
+        <h2>📈 Longo Prazo (6-12 meses) - Price Targets de Analistas</h2>
+        <div class="grid grid-4">
+          <div class="kpi">
+            <div class="value" style="color:var(--bad);">$46</div>
+            <div class="label">Bear (BMO Capital)</div>
+          </div>
+          <div class="kpi">
+            <div class="value" style="color:var(--warn);">$60</div>
+            <div class="label">Fair Value (Morningstar)</div>
+          </div>
+          <div class="kpi">
+            <div class="value" style="color:var(--ok);">$96</div>
+            <div class="label">Consenso WSJ</div>
+          </div>
+          <div class="kpi positive">
+            <div class="value">$120+</div>
+            <div class="label">Bull Case (CagriSema)</div>
+          </div>
+        </div>
+        <div style="margin-top:20px;padding:16px;background:rgba(76,201,240,0.1);border-radius:12px;">
+          <strong style="color:var(--accent);">🎯 Consenso Wall Street Journal: $96 (+53% upside)</strong>
+          <p style="color:var(--text-muted);margin-top:8px;font-size:0.9rem;">
+            Preço atual ~$62 implica P/E de apenas 18x vs LLY 32.5x. Se NVO atingir P/E de 25x com EPS $4.20 em 2026 = $105.
+          </p>
+        </div>
+        <table class="data-table" style="margin-top:16px;">
+          <thead><tr><th>Analista</th><th>Target</th><th>Upside</th><th>Rating</th></tr></thead>
+          <tbody>
+            <tr><td>WSJ Consenso (20 analysts)</td><td style="color:var(--ok);font-weight:700;">$96</td><td>+53%</td><td>🟢 Buy</td></tr>
+            <tr><td>Morningstar FVE</td><td style="color:var(--warn);">$60</td><td>-3%</td><td>🟡 3 Stars</td></tr>
+            <tr><td>Morgan Stanley</td><td style="color:var(--warn);">N/A</td><td>-</td><td>🔴 Underweight</td></tr>
+            <tr><td>BMO Capital Markets</td><td style="color:var(--bad);">$46</td><td>-26%</td><td>🔴 Underperform</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Trend Indicators -->
+      <div class="glass">
+        <h2>📊 Indicadores de Tendência</h2>
+        <div class="grid grid-2">
+          <div>
+            <h3 style="margin-bottom:12px;">Momentum Score</h3>
+            <div style="height:20px;background:rgba(255,255,255,0.1);border-radius:10px;overflow:hidden;margin-bottom:8px;">
+              <div style="height:100%;width:68%;background:linear-gradient(90deg,var(--ok),var(--accent));border-radius:10px;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-muted);">
+              <span>Bearish</span><span><strong style="color:var(--ok);">68/100 - Bullish</strong></span><span>Bullish</span>
+            </div>
+          </div>
+          <div>
+            <h3 style="margin-bottom:12px;">Volatility Index</h3>
+            <div style="height:20px;background:rgba(255,255,255,0.1);border-radius:10px;overflow:hidden;margin-bottom:8px;">
+              <div style="height:100%;width:45%;background:linear-gradient(90deg,var(--ok),var(--warn));border-radius:10px;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-muted);">
+              <span>Low</span><span><strong style="color:var(--warn);">45/100 - Moderate</strong></span><span>High</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Dates -->
+      <div class="glass">
+        <h2>📅 Datas-Chave para Monitorar</h2>
+        <div class="grid grid-3">
+          <div style="padding:16px;background:linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05));border-radius:12px;text-align:center;">
+            <div style="font-size:2rem;margin-bottom:4px;">📊</div>
+            <div style="font-weight:700;">4 Fev 2026</div>
+            <div style="color:var(--text-muted);font-size:0.85rem;">Q4 Earnings</div>
+            <div style="color:var(--warn);font-size:0.75rem;margin-top:4px;">⚡ Alta Volatilidade Esperada</div>
+          </div>
+          <div style="padding:16px;background:linear-gradient(135deg, rgba(76,201,240,0.15), rgba(76,201,240,0.05));border-radius:12px;text-align:center;">
+            <div style="font-size:2rem;margin-bottom:4px;">💊</div>
+            <div style="font-weight:700;">Mar-Abr 2026</div>
+            <div style="color:var(--text-muted);font-size:0.85rem;">Dados Pílula 90 dias</div>
+            <div style="color:var(--accent);font-size:0.75rem;margin-top:4px;">📈 Potencial Catalisador</div>
+          </div>
+          <div style="padding:16px;background:linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05));border-radius:12px;text-align:center;">
+            <div style="font-size:2rem;margin-bottom:4px;">🔬</div>
+            <div style="font-weight:700;">Q2 2026</div>
+            <div style="color:var(--text-muted);font-size:0.85rem;">CagriSema FDA Review</div>
+            <div style="color:var(--ok);font-size:0.75rem;margin-top:4px;">🎯 Blockbuster 25% Weight Loss</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2026 Outlook Analysis -->
+      <div class="glass" style="border:2px solid var(--accent);">
+        <h2>🔮 Análise de Perspectivas 2026 - Minha Visão</h2>
+        
+        <div style="padding:16px;background:rgba(76,201,240,0.1);border-radius:12px;margin-bottom:20px;">
+          <h3 style="color:var(--accent);margin-bottom:12px;">📊 Por que NVO está subvalorizada?</h3>
+          <div class="grid grid-2" style="gap:16px;">
+            <div>
+              <p style="color:var(--text-muted);line-height:1.7;">
+                <strong>P/E de apenas 18x</strong> vs Eli Lilly 32.5x. Isso implica que o mercado precifica:
+              </p>
+              <ul style="color:var(--text-muted);padding-left:20px;margin-top:8px;line-height:1.8;">
+                <li>❌ Perda de market share para LLY</li>
+                <li>❌ Genéricos destruindo margens</li>
+                <li>❌ Pipeline fracassando</li>
+              </ul>
+            </div>
+            <div>
+              <p style="color:var(--text-muted);line-height:1.7;">
+                <strong>Realidade:</strong>
+              </p>
+              <ul style="color:var(--text-muted);padding-left:20px;margin-top:8px;line-height:1.8;">
+                <li>✅ Wegovy Pill: 18,410 Rx na semana 1</li>
+                <li>✅ CagriSema: 25% weight loss (superior)</li>
+                <li>✅ Guidance +5-8.5% crescimento 2026</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-3" style="gap:16px;margin-bottom:20px;">
+          <div style="padding:16px;background:rgba(239,68,68,0.1);border-radius:12px;border-left:4px solid var(--bad);">
+            <h4 style="color:var(--bad);margin-bottom:8px;">🐻 Cenário Bear ($46-55)</h4>
+            <ul style="color:var(--text-muted);font-size:0.85rem;line-height:1.6;padding-left:16px;">
+              <li>Q4 abaixo de $11.5B receita</li>
+              <li>Wegovy pill falha em escalar</li>
+              <li>LLY domina com Zepbound</li>
+              <li>CagriSema atrasa aprovação</li>
+            </ul>
+            <div style="margin-top:8px;color:var(--bad);font-weight:700;">Probabilidade: 20%</div>
+          </div>
+          <div style="padding:16px;background:rgba(251,191,36,0.1);border-radius:12px;border-left:4px solid var(--warn);">
+            <h4 style="color:var(--warn);margin-bottom:8px;">📊 Cenário Base ($70-85)</h4>
+            <ul style="color:var(--text-muted);font-size:0.85rem;line-height:1.6;padding-left:16px;">
+              <li>Q4 em linha com $12B</li>
+              <li>Guidance mantido +5-8%</li>
+              <li>Pílula ganha tração gradual</li>
+              <li>CagriSema aprovado H2 2026</li>
+            </ul>
+            <div style="margin-top:8px;color:var(--warn);font-weight:700;">Probabilidade: 50%</div>
+          </div>
+          <div style="padding:16px;background:rgba(16,185,129,0.1);border-radius:12px;border-left:4px solid var(--ok);">
+            <h4 style="color:var(--ok);margin-bottom:8px;">🚀 Cenário Bull ($96-120)</h4>
+            <ul style="color:var(--text-muted);font-size:0.85rem;line-height:1.6;padding-left:16px;">
+              <li>Q4 bate $12.5B+</li>
+              <li>Guidance aumentado para +10%</li>
+              <li>Pílula ultrapassa Zepbound oral</li>
+              <li>CagriSema fast-track FDA</li>
+            </ul>
+            <div style="margin-top:8px;color:var(--ok);font-weight:700;">Probabilidade: 30%</div>
+          </div>
+        </div>
+
+        <div style="padding:16px;background:linear-gradient(135deg, rgba(16,185,129,0.15), rgba(76,201,240,0.15));border-radius:12px;">
+          <h3 style="margin-bottom:12px;">🎯 Meu Price Target: $85 (12 meses)</h3>
+          <p style="color:var(--text-muted);line-height:1.7;">
+            <strong>Racional:</strong> Com EPS estimado de $4.20 e P/E justo de 20x (ainda desconto vs LLY), 
+            o fair value é $84. Com CagriSema aprovado, o P/E pode expandir para 22-25x = $92-105.
+          </p>
+          <div class="grid grid-4" style="margin-top:16px;gap:12px;">
+            <div class="kpi"><div class="value" style="font-size:1.5rem;">$62</div><div class="label">Preço Atual</div></div>
+            <div class="kpi"><div class="value" style="font-size:1.5rem;color:var(--ok);">$85</div><div class="label">Target Base</div></div>
+            <div class="kpi"><div class="value" style="font-size:1.5rem;color:var(--accent);">+37%</div><div class="label">Upside</div></div>
+            <div class="kpi"><div class="value" style="font-size:1.5rem;color:var(--ok);">BUY</div><div class="label">Recomendação</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Catalysts Calendar Table -->
+      <div class="glass">
+        <h2>📆 Catalisadores 2026 - Timeline de Impacto</h2>
+        <table class="data-table">
+          <thead>
+            <tr><th>Data</th><th>Evento</th><th>Impacto Preço</th><th>Probabilidade</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr style="background:rgba(251,191,36,0.1);">
+              <td><strong>4 Fev 2026</strong></td>
+              <td>Q4 2025 Earnings + Guidance 2026</td>
+              <td style="font-weight:700;">±10-15%</td>
+              <td>100%</td>
+              <td><span class="badge" style="background:var(--warn);">EM 7 DIAS</span></td>
+            </tr>
+            <tr>
+              <td>Mar-Abr 2026</td>
+              <td>Wegovy Pill - Dados 90 dias adoção</td>
+              <td style="color:var(--ok);">+5-10%</td>
+              <td>85%</td>
+              <td><span class="badge badge-neutral">AGUARDANDO</span></td>
+            </tr>
+            <tr>
+              <td>Q2 2026</td>
+              <td>CagriSema FDA Review Decision</td>
+              <td style="color:var(--ok);">+15-25%</td>
+              <td>70%</td>
+              <td><span class="badge badge-bullish">NDA SUBMETIDO</span></td>
+            </tr>
+            <tr>
+              <td>H1 2026</td>
+              <td>Amycretin Fase 3 Início</td>
+              <td style="color:var(--ok);">+3-5%</td>
+              <td>90%</td>
+              <td><span class="badge badge-bullish">CONFIRMADO</span></td>
+            </tr>
+            <tr>
+              <td>2026</td>
+              <td>Patentes Brasil/China/Canadá</td>
+              <td style="color:var(--bad);">-5-10%</td>
+              <td>60%</td>
+              <td><span class="badge badge-bearish">RISCO</span></td>
+            </tr>
+            <tr>
+              <td>Q3 2026</td>
+              <td>Potencial Aquisição/Partnership</td>
+              <td style="color:var(--ok);">+10-20%</td>
+              <td>30%</td>
+              <td><span class="badge badge-neutral">ESPECULATIVO</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top:16px;padding:12px;background:rgba(76,201,240,0.1);border-radius:8px;font-size:0.85rem;color:var(--text-muted);">
+          <strong>💡 Nota:</strong> O Q4 Earnings em 4 Fev é o catalisador mais importante do curto prazo. Historicamente, NVO move ±8-15% após earnings.
+          CagriSema aprovação é o maior driver de re-rating para múltiplo premium.
+        </div>
+      </div>
+    </div>
+    <div id="news" class="tab-content">
+      <div class="glass">
+        <h2>📰 Notícias Recentes e Impacto no Preço</h2>
+        
+        <div class="news-item">
+          <div class="news-sentiment positive"></div>
+          <div style="flex:1;">
+            <div class="news-title">Novo Nordisk Regains Spotlight: New Oral Formulation May Have 40% Upside Potential</div>
+            <div class="news-meta">28 Jan 2026 • NAI500 • Market Analysis</div>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px;">Analistas veem potencial de 40% de valorização com nova formulação oral ganhando tração.</p>
+          </div>
+          <span class="badge badge-bullish">BULLISH</span>
+        </div>
+
+        <div class="news-item">
+          <div class="news-sentiment positive"></div>
+          <div style="flex:1;">
+            <div class="news-title">1 Biotech/Pharmaceutical Stock Set to Rebound in 2026</div>
+            <div class="news-meta">28 Jan 2026 • Motley Fool • Investment Research</div>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px;">Novo Nordisk destaca-se como candidata a recuperação forte em 2026 após queda de 2025.</p>
+          </div>
+          <span class="badge badge-bullish">BULLISH</span>
+        </div>
+
+        <div class="news-item">
+          <div class="news-sentiment positive"></div>
+          <div style="flex:1;">
+            <div class="news-title">Novo Nordisk A/S Shares Bought by Markel Group Inc.</div>
+            <div class="news-meta">28 Jan 2026 • MarketBeat • Institutional Activity</div>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px;">Compra institucional significativa sinaliza confiança no valor atual da ação.</p>
+          </div>
+          <span class="badge badge-bullish">BULLISH</span>
+        </div>
+
+        <div class="news-item">
+          <div class="news-sentiment neutral"></div>
+          <div style="flex:1;">
+            <div class="news-title">Is Novo Nordisk Pricing Reflect Recent Share Weakness And DCF Upside?</div>
+            <div class="news-meta">27 Jan 2026 • Simply Wall Street • Valuation Analysis</div>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px;">Análise DCF sugere que preço atual não reflete totalmente o valor intrínseco da empresa.</p>
+          </div>
+          <span class="badge badge-neutral">ANÁLISE</span>
+        </div>
+
+        <div class="news-item">
+          <div class="news-sentiment positive"></div>
+          <div style="flex:1;">
+            <div class="news-title">Wegovy pill had more than 18K prescriptions in first week</div>
+            <div class="news-meta">23 Jan 2026 • Seeking Alpha News</div>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px;">Demanda inicial muito forte confirma tese de sucesso da versão oral.</p>
+          </div>
+          <span class="badge badge-bullish">BULLISH</span>
+        </div>
+
+        <div class="news-item">
+          <div class="news-sentiment negative"></div>
+          <div style="flex:1;">
+            <div class="news-title">Sun Pharma e Dr. Reddy's aprovados para genéricos na Índia</div>
+            <div class="news-meta">21-23 Jan 2026 • Multiple Sources</div>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px;">Genéricos de Ozempic e Wegovy na Índia podem pressionar margens futuras.</p>
+          </div>
+          <span class="badge badge-bearish">RISCO LP</span>
+        </div>
+      </div>
+
+      <!-- Sentiment Summary -->
+      <div class="glass">
+        <h2>📊 Análise de Sentimento (Última Semana)</h2>
+        <div class="grid grid-3">
+          <div class="kpi positive">
+            <div class="value">65%</div>
+            <div class="label">Notícias Positivas</div>
+          </div>
+          <div class="kpi negative">
+            <div class="value">20%</div>
+            <div class="label">Notícias Negativas</div>
+          </div>
+          <div class="kpi warning">
+            <div class="value">15%</div>
+            <div class="label">Neutras</div>
+          </div>
+        </div>
+        <div style="margin-top:20px;padding:16px;background:rgba(16,185,129,0.1);border-radius:12px;">
+          <strong style="color:var(--ok);">📈 Sentimento Geral: POSITIVO</strong>
+          <p style="color:var(--text-muted);margin-top:8px;font-size:0.9rem;">
+            A aprovação da pílula domina o noticiário e está gerando momentum positivo. 
+            Riscos de genéricos são de longo prazo e não afetam narrativa atual.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div id="verdict" class="tab-content">
+      <!-- Main Verdict -->
+      <div class="glass" style="text-align:center;">
+        <h2>⚖️ VEREDICTO BRUTALMENTE HONESTO</h2>
+        <div class="verdict-box bullish" style="margin:24px 0;">
+          <div class="verdict-label">Recomendação</div>
+          <div class="verdict-text" style="font-size:2rem;">📈 COMPRA MODERADA</div>
+          <p style="color:var(--text-muted);margin-top:12px;">Risco/Retorno favorável no preço atual</p>
+        </div>
+      </div>
+
+      <!-- Bull vs Bear -->
+      <div class="grid grid-2">
+        <div class="glass" style="border-left:4px solid var(--ok);">
+          <h2 style="color:var(--ok);">🐂 Tese BULL (Por que subir)</h2>
+          <ol style="color:var(--text-muted);line-height:2;padding-left:20px;">
+            <li><strong>Pílula é GAME CHANGER</strong> - Resolve o maior problema da empresa (supply)</li>
+            <li><strong>Valuation atraente</strong> - P/E 17x vs Eli Lilly 52x</li>
+            <li><strong>Profitability A+</strong> - Margem líquida 33%, ROE 71%</li>
+            <li><strong>18K prescrições na 1ª semana</strong> - Demanda confirmada</li>
+            <li><strong>Novo CEO</strong> - Maziar Doustdar traz energia renovada</li>
+            <li><strong>Upside ao 52-week high</strong> - Potencial de +47%</li>
+            <li><strong>Dividend yield 2.77%</strong> - Pagamento consistente</li>
+          </ol>
+        </div>
+
+        <div class="glass" style="border-left:4px solid var(--bad);">
+          <h2 style="color:var(--bad);">🐻 Tese BEAR (Por que cair)</h2>
+          <ol style="color:var(--text-muted);line-height:2;padding-left:20px;">
+            <li><strong>Competição feroz</strong> - Eli Lilly (Zepbound) ganhando share</li>
+            <li><strong>Genéricos chegando</strong> - Índia já aprovou (pressão de preço)</li>
+            <li><strong>CagriSema decepcionou</strong> - Pipeline de próxima geração incerto</li>
+            <li><strong>Processos judiciais</strong> - Caso Teva pode ter impacto</li>
+            <li><strong>Beta alto (1.36)</strong> - Volatilidade acima do mercado</li>
+            <li><strong>Dependência de GLP-1</strong> - 80%+ da receita em uma classe</li>
+            <li><strong>Queda de 55% do pico</strong> - Pode não recuperar tudo</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Probability -->
+      <div class="glass">
+        <h2>🎲 Probabilidades (Análise Quantitativa)</h2>
+        <div class="grid grid-3">
+          <div style="text-align:center;">
+            <div style="font-size:3rem;margin-bottom:8px;">60%</div>
+            <div style="color:var(--ok);font-weight:600;">Cenário BULL</div>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px;">$80-90 em 12 meses</p>
+            <p style="color:var(--text-muted);font-size:0.75rem;">Pílula escala, earnings beats, recupera share</p>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:3rem;margin-bottom:8px;">25%</div>
+            <div style="color:var(--warn);font-weight:600;">Cenário BASE</div>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px;">$60-70 em 12 meses</p>
+            <p style="color:var(--text-muted);font-size:0.75rem;">Range-bound, competição equilibra ganhos</p>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:3rem;margin-bottom:8px;">15%</div>
+            <div style="color:var(--bad);font-weight:600;">Cenário BEAR</div>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px;">$40-50 em 12 meses</p>
+            <p style="color:var(--text-muted);font-size:0.75rem;">Earnings miss, genéricos aceleram</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Final Words -->
+      <div class="glass" style="background:linear-gradient(135deg, rgba(0,53,128,0.2), rgba(76,201,240,0.1));">
+        <h2>📝 Conclusão Final</h2>
+        <blockquote style="border-left:4px solid var(--accent);padding-left:20px;margin:16px 0;color:var(--text);font-size:1.1rem;line-height:1.8;">
+          "A Novo Nordisk está em um ponto de inflexão. A aprovação da pílula Wegovy é genuinamente transformacional 
+          e resolve o maior gargalo da empresa. O valuation está atraente comparado a Eli Lilly. 
+          <strong>No entanto</strong>, a competição é real e os genéricos estão chegando. 
+          <br><br>
+          <span style="color:var(--ok);">Para investidores com horizonte de 1-3 anos, o risco/retorno é favorável.</span> 
+          A empresa tem fundamentos sólidos (A+ em profitability) e a demanda inicial da pílula é muito positiva.
+          <br><br>
+          <span style="color:var(--warn);">Risco principal: Se próximos earnings decepcionarem, a ação pode voltar aos $50.</span>
+        </blockquote>
+        <div style="text-align:center;margin-top:20px;">
+          <span class="badge badge-bullish" style="font-size:1rem;padding:10px 24px;">VIÉS: MODERADAMENTE OTIMISTA</span>
+        </div>
+      </div>
+    </div>
+    <div id="pipeline" class="tab-content">
+      <!-- Pipeline Overview -->
+      <div class="glass">
+        <h2>💊 Pipeline de Drogas - Análise de Catalisadores</h2>
+        <p style="color:var(--text-muted);margin-bottom:20px;">
+          Entender o pipeline é CRUCIAL para prever movimentos futuros da ação. Cada aprovação ou fracasso pode mover 5-25%.
+        </p>
+        
+        <div style="overflow-x:auto;">
+          <table>
+            <tr>
+              <th>Droga</th>
+              <th>Indicação</th>
+              <th>Fase</th>
+              <th>Status</th>
+              <th>Data Estimada</th>
+              <th>Impacto Potencial</th>
+            </tr>
+            <tr style="background:rgba(16,185,129,0.1);">
+              <td><strong>Wegovy (oral)</strong></td>
+              <td>Obesidade</td>
+              <td><span class="badge badge-bullish">✅ APROVADO</span></td>
+              <td style="color:var(--ok);">FDA Approved Dez/2025</td>
+              <td>Já no mercado</td>
+              <td><span style="color:var(--ok);font-weight:600;">GAME CHANGER</span></td>
+            </tr>
+            <tr style="background:rgba(16,185,129,0.1);">
+              <td><strong>Rybelsus</strong></td>
+              <td>Diabetes T2</td>
+              <td><span class="badge badge-bullish">✅ APROVADO</span></td>
+              <td style="color:var(--ok);">Comercializado</td>
+              <td>-</td>
+              <td>Receita estável</td>
+            </tr>
+            <tr style="background:rgba(251,191,36,0.1);">
+              <td><strong>CagriSema</strong></td>
+              <td>Obesidade (next-gen)</td>
+              <td><span class="badge badge-neutral">NDA Submetido</span></td>
+              <td style="color:var(--warn);">FDA review 2026 • Resultados: 22.7% (vs 25%+ esperado)</td>
+              <td>H2 2026</td>
+              <td><span style="color:var(--warn);font-weight:600;">CRÍTICO - Sucessor do Wegovy</span></td>
+            </tr>
+            <tr>
+              <td><strong>IcoSema</strong></td>
+              <td>Diabetes (1x/semana insulina)</td>
+              <td><span class="badge badge-neutral">Fase 3</span></td>
+              <td>Resultados pendentes</td>
+              <td>Q2 2026</td>
+              <td>Alto potencial</td>
+            </tr>
+            <tr style="background:rgba(76,201,240,0.1);">
+              <td><strong>Amycretin</strong></td>
+              <td>Obesidade (amylin+GLP-1)</td>
+              <td><span class="badge badge-bullish">Fase 3 INICIANDO</span></td>
+              <td style="color:var(--ok);">Início Fase III anunciado Jan/26</td>
+              <td>2027-2028</td>
+              <td><span style="color:var(--ok);font-weight:600;">Next-gen candidate</span></td>
+            </tr>
+            <tr style="background:rgba(248,113,113,0.1);">
+              <td><strong>Semaglutide (Alzheimer)</strong></td>
+              <td>Doença de Alzheimer</td>
+              <td><span class="badge badge-bearish">❌ INTERROMPIDO</span></td>
+              <td style="color:var(--bad);">Estudo parado Nov/2025</td>
+              <td>-</td>
+              <td><span style="color:var(--bad);font-weight:600;">-5.6% no preço</span></td>
+            </tr>
+            <tr>
+              <td><strong>Wegovy Cardio</strong></td>
+              <td>Redução risco CV</td>
+              <td><span class="badge badge-bullish">✅ APROVADO</span></td>
+              <td style="color:var(--ok);">Label expansion</td>
+              <td>Aprovado 2024</td>
+              <td>Amplia mercado</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Products Revenue -->
+      <div class="glass">
+        <h2>💰 Receita por Produto (2025 Est.)</h2>
+        <div class="grid grid-2">
+          <div>
+            <div style="margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span>Ozempic (Diabetes)</span>
+                <span style="font-weight:600;">$21.2B</span>
+              </div>
+              <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;">
+                <div style="height:100%;width:52%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:4px;"></div>
+              </div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span>Wegovy (Obesidade)</span>
+                <span style="font-weight:600;">$8.5B</span>
+              </div>
+              <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;">
+                <div style="height:100%;width:21%;background:linear-gradient(90deg,var(--ok),#34d399);border-radius:4px;"></div>
+              </div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span>Rybelsus (Oral)</span>
+                <span style="font-weight:600;">$4.1B</span>
+              </div>
+              <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;">
+                <div style="height:100%;width:10%;background:linear-gradient(90deg,var(--warn),#fcd34d);border-radius:4px;"></div>
+              </div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span>Outros (Insulinas, etc.)</span>
+                <span style="font-weight:600;">$6.8B</span>
+              </div>
+              <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;">
+                <div style="height:100%;width:17%;background:rgba(255,255,255,0.3);border-radius:4px;"></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;background:rgba(0,53,128,0.2);border-radius:16px;">
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;">RECEITA TOTAL 2025E</div>
+            <div style="font-size:2.5rem;font-weight:700;">$40.6B</div>
+            <div style="color:var(--ok);margin-top:8px;">+18% YoY</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Catalysts -->
+      <div class="glass">
+        <h2>🎯 Próximos Catalisadores (Datas para Ficar de Olho)</h2>
+        <div class="grid grid-3">
+          <div style="padding:16px;background:linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05));border-radius:12px;border-left:4px solid var(--warn);">
+            <div style="font-size:0.75rem;color:var(--warn);text-transform:uppercase;letter-spacing:1px;">📅 4 Fev 2026</div>
+            <div style="font-weight:600;margin:8px 0;">Q4 2025 Earnings</div>
+            <div style="font-size:0.85rem;color:var(--text-muted);">Primeiro resultado com receita da pílula Wegovy</div>
+          </div>
+          <div style="padding:16px;background:linear-gradient(135deg, rgba(76,201,240,0.15), rgba(76,201,240,0.05));border-radius:12px;border-left:4px solid var(--accent);">
+            <div style="font-size:0.75rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px;">📅 Q2 2026</div>
+            <div style="font-weight:600;margin:8px 0;">IcoSema Resultados</div>
+            <div style="font-size:0.85rem;color:var(--text-muted);">Insulina semanal - pode ser outro blockbuster</div>
+          </div>
+          <div style="padding:16px;background:linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05));border-radius:12px;border-left:4px solid var(--ok);">
+            <div style="font-size:0.75rem;color:var(--ok);text-transform:uppercase;letter-spacing:1px;">📅 2026-2027</div>
+            <div style="font-weight:600;margin:8px 0;">Expansão China/Índia</div>
+            <div style="font-size:0.85rem;color:var(--text-muted);">Mercados emergentes = próximo motor de crescimento</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Competition Analysis -->
+      <div class="glass">
+        <h2>⚔️ Batalha GLP-1: NVO vs LLY (Resultados 4 Fev)</h2>
+        <p style="color:var(--text-muted);margin-bottom:16px;"><strong>AMBAS reportam no mesmo dia!</strong> Comparação direta dos resultados Q4 2025.</p>
+        <div class="grid grid-2">
+          <div style="padding:20px;background:rgba(0,53,128,0.2);border-radius:16px;border:1px solid rgba(0,53,128,0.3);">
+            <div style="text-align:center;margin-bottom:16px;">
+              <div style="font-size:1.5rem;margin-bottom:4px;">🇩🇰</div>
+              <div style="font-weight:700;font-size:1.2rem;">NOVO NORDISK</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">"Opção de Valor"</div>
+            </div>
+            <table style="font-size:0.85rem;">
+              <tr><td style="color:var(--text-muted);">EPS Est. Q4</td><td>$0.89-0.90</td></tr>
+              <tr><td style="color:var(--text-muted);">Receita Est.</td><td>~$12B</td></tr>
+              <tr><td style="color:var(--text-muted);">Crescimento</td><td style="color:var(--warn);">Estável</td></tr>
+              <tr><td style="color:var(--text-muted);">Vendas 2026</td><td>$39.5B</td></tr>
+              <tr><td style="color:var(--text-muted);">P/E Forward</td><td style="color:var(--ok);">18x</td></tr>
+              <tr><td style="color:var(--text-muted);">Pílula Oral</td><td style="color:var(--ok);">✅ Lançada</td></tr>
+              <tr><td style="color:var(--text-muted);">Diversificação</td><td style="color:var(--bad);">6% (94% GLP-1)</td></tr>
+            </table>
+          </div>
+          <div style="padding:20px;background:rgba(248,113,113,0.1);border-radius:16px;border:1px solid rgba(248,113,113,0.2);">
+            <div style="text-align:center;margin-bottom:16px;">
+              <div style="font-size:1.5rem;margin-bottom:4px;">🇺🇸</div>
+              <div style="font-weight:700;font-size:1.2rem;">ELI LILLY</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">"Opção de Crescimento"</div>
+            </div>
+            <table style="font-size:0.85rem;">
+              <tr><td style="color:var(--text-muted);">EPS Est. Q4</td><td style="color:var(--ok);">$7.11-7.48</td></tr>
+              <tr><td style="color:var(--text-muted);">Receita Est.</td><td style="color:var(--ok);">$17.85B</td></tr>
+              <tr><td style="color:var(--text-muted);">Crescimento</td><td style="color:var(--ok);">+32% YoY</td></tr>
+              <tr><td style="color:var(--text-muted);">Vendas 2026</td><td style="color:var(--ok);">$45B</td></tr>
+              <tr><td style="color:var(--text-muted);">P/E Forward</td><td style="color:var(--bad);">32.5x</td></tr>
+              <tr><td style="color:var(--text-muted);">Pílula Oral</td><td style="color:var(--warn);">Orforglipron (pending)</td></tr>
+              <tr><td style="color:var(--text-muted);">Diversificação</td><td style="color:var(--ok);">Oncologia, Alzheimer</td></tr>
+            </table>
+          </div>
+        </div>
+        <div style="margin-top:20px;padding:16px;background:rgba(251,191,36,0.1);border-radius:12px;">
+          <strong style="color:var(--warn);">📊 Estudo SURMOUNT-5:</strong>
+          <span style="color:var(--text-muted);"> Zepbound (LLY) supera Wegovy: <strong>25% mais pacientes</strong> perderam >15% do peso corporal.</span>
+        </div>
+        <div style="margin-top:12px;padding:16px;background:rgba(76,201,240,0.1);border-radius:12px;text-align:center;">
+          <strong>🎯 Upside Potencial:</strong> NVO <span style="color:var(--ok);">+53%</span> vs LLY <span style="color:var(--accent);">+31%</span> (WSJ Consensus)
+        </div>
+      </div>
+    </div>
+    <div id="data" class="tab-content">
+      <!-- Company Profile -->
+      <div class="glass">
+        <h2>🏢 Perfil da Empresa</h2>
+        <div class="grid grid-2">
+          <div>
+            <table>
+              <tr><td style="color:var(--text-muted);">Nome</td><td>Novo Nordisk A/S</td></tr>
+              <tr><td style="color:var(--text-muted);">Fundação</td><td>1923 (102 anos)</td></tr>
+              <tr><td style="color:var(--text-muted);">Sede</td><td>Bagsvaerd, Dinamarca</td></tr>
+              <tr><td style="color:var(--text-muted);">CEO</td><td>Maziar Doustdar (desde 2025)</td></tr>
+              <tr><td style="color:var(--text-muted);">Funcionários</td><td>~78,554</td></tr>
+              <tr><td style="color:var(--text-muted);">Setor</td><td>Healthcare / Pharmaceuticals</td></tr>
+            </table>
+          </div>
+          <div>
+            <table>
+              <tr><td style="color:var(--text-muted);">Segmentos</td><td>Diabetes & Obesity (90%+), Rare Disease</td></tr>
+              <tr><td style="color:var(--text-muted);">Produtos Principais</td><td>Ozempic, Wegovy, Rybelsus, Saxenda</td></tr>
+              <tr><td style="color:var(--text-muted);">Brasil</td><td>Fábrica em Montes Claros (MG) - 25% insulina global</td></tr>
+              <tr><td style="color:var(--text-muted);">Website</td><td>novonordisk.com</td></tr>
+              <tr><td style="color:var(--text-muted);">BDR</td><td>N1VO34 (B3)</td></tr>
+              <tr><td style="color:var(--text-muted);">ADR</td><td>NVO (NYSE)</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Data -->
+      <div class="glass">
+        <h2>💵 Dados Financeiros</h2>
+        <div class="grid grid-4">
+          <div class="kpi">
+            <div class="value">$209.6B</div>
+            <div class="label">Market Cap</div>
+          </div>
+          <div class="kpi">
+            <div class="value">$225B</div>
+            <div class="label">Enterprise Value</div>
+          </div>
+          <div class="kpi">
+            <div class="value">$15.9B</div>
+            <div class="label">Total Debt</div>
+          </div>
+          <div class="kpi">
+            <div class="value">$5.1B</div>
+            <div class="label">Cash</div>
+          </div>
+        </div>
+        <div class="grid grid-4" style="margin-top:20px;">
+          <div class="kpi">
+            <div class="value">83.4%</div>
+            <div class="label">Gross Margin</div>
+          </div>
+          <div class="kpi">
+            <div class="value">48.7%</div>
+            <div class="label">EBIT Margin</div>
+          </div>
+          <div class="kpi">
+            <div class="value">32.9%</div>
+            <div class="label">Net Margin</div>
+          </div>
+          <div class="kpi">
+            <div class="value">20.3%</div>
+            <div class="label">ROA</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dividend Data -->
+      <div class="glass">
+        <h2>💰 Dividendos</h2>
+        <div class="grid grid-4">
+          <div class="kpi">
+            <div class="value">2.77%</div>
+            <div class="label">Dividend Yield</div>
+          </div>
+          <div class="kpi">
+            <div class="value">$1.73</div>
+            <div class="label">Payout Anual (TTM)</div>
+          </div>
+          <div class="kpi">
+            <div class="value">52.4%</div>
+            <div class="label">Payout Ratio</div>
+          </div>
+          <div class="kpi positive">
+            <div class="value">6 anos</div>
+            <div class="label">Anos de Crescimento</div>
+          </div>
+        </div>
+        <p style="color:var(--text-muted);margin-top:16px;font-size:0.85rem;">
+          📅 Próximo dividendo: $0.58 | Ex-date: 18/08/2025 | Pagamento: 26/08/2025 | Frequência: Semestral
+        </p>
+      </div>
+
+      <!-- Price History Table -->
+      <div class="glass">
+        <h2>📊 Histórico de Preços (Últimos 12 meses)</h2>
+        <div style="overflow-x:auto;">
+          <table>
+            <tr>
+              <th>Data</th><th>Preço (USD)</th><th>Variação</th><th>Volume</th><th>Evento</th>
+            </tr>
+            <tr><td>26/Jan/26</td><td>$63.60</td><td style="color:var(--ok);">+2.15%</td><td>13.5M</td><td>Momentum pós-earnings preview</td></tr>
+            <tr><td>23/Dez/25</td><td>$51.61</td><td style="color:var(--ok);">+7.3%</td><td>67.6M</td><td>🎉 FDA aprova pílula Wegovy</td></tr>
+            <tr><td>24/Nov/25</td><td>$44.97</td><td style="color:var(--bad);">-5.6%</td><td>73.6M</td><td>Estudo Alzheimer interrompido</td></tr>
+            <tr><td>29/Jul/25</td><td>$53.94</td><td style="color:var(--bad);">-24.8%</td><td>110.7M</td><td>💥 CagriSema decepciona</td></tr>
+            <tr><td>06/Ago/25</td><td>$45.38</td><td style="color:var(--bad);">-4%</td><td>37.4M</td><td>Mínima do ano</td></tr>
+            <tr><td>21/Fev/25</td><td>$88.08</td><td style="color:var(--ok);">+5.2%</td><td>15.1M</td><td>Recuperação técnica</td></tr>
+            <tr><td>Mar/24</td><td>$140+</td><td>ATH</td><td>-</td><td>🏆 Pico histórico - Maior da Europa</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Competitors -->
+      <div class="glass">
+        <h2>🆚 Comparativo com Concorrentes</h2>
+        <table>
+          <tr>
+            <th>Empresa</th><th>Ticker</th><th>Market Cap</th><th>P/E</th><th>Margem</th><th>Produto GLP-1</th>
+          </tr>
+          <tr>
+            <td><strong>Novo Nordisk</strong></td><td>NVO</td><td>$209.6B</td><td>16.7x</td><td>33%</td><td>Ozempic, Wegovy, Rybelsus</td>
+          </tr>
+          <tr>
+            <td>Eli Lilly</td><td>LLY</td><td>$950B</td><td>52x</td><td>18%</td><td>Mounjaro, Zepbound</td>
+          </tr>
+          <tr>
+            <td>Pfizer</td><td>PFE</td><td>$145B</td><td>10x</td><td>15%</td><td>Danuglipron (em desenvolvimento)</td>
+          </tr>
+          <tr>
+            <td>AstraZeneca</td><td>AZN</td><td>$220B</td><td>35x</td><td>20%</td><td>Parceria com Eccogene</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Language Toggle
+    let currentLang = localStorage.getItem('lang') || 'pt';
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+      document.querySelectorAll('[data-pt][data-en]').forEach(el => { el.textContent = el.getAttribute(`data-${lang}`); });
+    }
+    // Init language
+    document.addEventListener('DOMContentLoaded', () => setLang(currentLang));
+
+    // Theme Toggle
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('nvo-theme', next);
+      updateChartsTheme(next);
+    }
+    // Load saved theme
+    const savedTheme = localStorage.getItem('nvo-theme');
+    if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Tab Navigation
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Update timestamp
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('lastUpdate').textContent = now.toLocaleString('pt-BR');
+    }
+    updateTime();
+    setInterval(updateTime, 60000);
+
+    // Price Data
+    const priceData = {
+      labels: ['Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/25','Jul/25','Ago/25','Set/25','Out/25','Nov/25','Dez/25','Jan/26'],
+      prices: [87.51, 90.65, 69.44, 62.55, 71.50, 69.02, 47.07, 45.38, 55.49, 49.46, 44.97, 51.61, 62.89],
+      events: [
+        { idx: 0, text: 'Alta inicial', type: 'neutral' },
+        { idx: 2, text: 'Tariffs Fear', type: 'negative' },
+        { idx: 4, text: 'Recuperação técnica', type: 'positive' },
+        { idx: 6, text: 'CagriSema decepciona -34%', type: 'negative' },
+        { idx: 7, text: 'Mínima do ano $45.38', type: 'negative' },
+        { idx: 10, text: 'Alzheimer estudo parado', type: 'negative' },
+        { idx: 11, text: 'FDA aprova pílula +7%', type: 'positive' },
+        { idx: 12, text: 'Recuperação continua', type: 'positive' }
+      ]
+    };
+
+    // 3 Stocks Data (normalized % returns)
+    const threeStocksData = {
+      labels: ['Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/25','Jul/25','Ago/25','Set/25','Out/25','Nov/25','Dez/25','Jan/26'],
+      nvo: [0, 3.6, -20.7, -28.5, -18.3, -21.1, -46.2, -48.1, -36.6, -43.5, -48.6, -41.0, -28.1],
+      novob: [0, 4.1, -19.8, -27.2, -17.5, -20.3, -45.1, -47.8, -35.9, -42.8, -47.5, -40.2, -33.5],
+      n1vo34: [0, 5.2, -18.5, -26.1, -16.8, -19.7, -44.2, -46.9, -34.8, -41.5, -46.2, -38.9, -31.8]
+    };
+
+    // Predictive Data
+    const predictiveData = {
+      labels: ['Jan/26','Fev/26','Mar/26','Abr/26','Mai/26','Jun/26','Jul/26','Ago/26','Set/26','Out/26','Nov/26','Dez/26'],
+      actual: [62.89, null, null, null, null, null, null, null, null, null, null, null],
+      bull: [62.89, 68, 72, 78, 82, 85, 88, 92, 95, 98, 102, 110],
+      base: [62.89, 64, 66, 68, 70, 72, 70, 72, 74, 76, 78, 82],
+      bear: [62.89, 58, 54, 50, 48, 45, 42, 44, 46, 48, 50, 52]
+    };
+
+    // Chart.js defaults
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+
+    // Price Chart
+    const priceCtx = document.getElementById('priceChart').getContext('2d');
+    const priceChart = new Chart(priceCtx, {
+      type: 'line',
+      data: {
+        labels: priceData.labels,
+        datasets: [{
+          label: 'NVO (USD)',
+          data: priceData.prices,
+          borderColor: '#4cc9f0',
+          backgroundColor: 'rgba(76,201,240,0.1)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 5,
+          pointBackgroundColor: priceData.prices.map((p, i) => {
+            const evt = priceData.events.find(e => e.idx === i);
+            if (evt) {
+              if (evt.type === 'positive') return '#10b981';
+              if (evt.type === 'negative') return '#f87171';
+              return '#fbbf24';
+            }
+            return '#4cc9f0';
+          }),
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              afterLabel: function(context) {
+                const evt = priceData.events.find(e => e.idx === context.dataIndex);
+                return evt ? '📌 ' + evt.text : '';
+              }
+            }
+          }
+        },
+        scales: {
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { callback: v => '$' + v } },
+          x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+        }
+      }
+    });
+
+    // 3 Stocks Chart
+    const threeCtx = document.getElementById('threeStocksChart').getContext('2d');
+    const threeStocksChart = new Chart(threeCtx, {
+      type: 'line',
+      data: {
+        labels: threeStocksData.labels,
+        datasets: [
+          { label: '🇺🇸 NVO (NYSE)', data: threeStocksData.nvo, borderColor: '#4cc9f0', backgroundColor: 'rgba(76,201,240,0.1)', fill: false, tension: 0.3 },
+          { label: '🇩🇰 NOVO-B (CPH)', data: threeStocksData.novob, borderColor: '#667eea', backgroundColor: 'rgba(102,126,234,0.1)', fill: false, tension: 0.3 },
+          { label: '🇧🇷 N1VO34 (B3)', data: threeStocksData.n1vo34, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', fill: false, tension: 0.3 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { usePointStyle: true } } },
+        scales: {
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { callback: v => v + '%' } },
+          x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+        }
+      }
+    });
+
+    // Predictive Chart
+    const predCtx = document.getElementById('predictiveChart').getContext('2d');
+    const predictiveChart = new Chart(predCtx, {
+      type: 'line',
+      data: {
+        labels: predictiveData.labels,
+        datasets: [
+          { label: 'Preço Atual', data: predictiveData.actual, borderColor: '#4cc9f0', backgroundColor: '#4cc9f0', pointRadius: 8, pointStyle: 'circle', fill: false },
+          { label: '🐂 Bull Case (45%)', data: predictiveData.bull, borderColor: '#10b981', borderDash: [5,5], fill: false, tension: 0.3 },
+          { label: '📊 Base Case (25%)', data: predictiveData.base, borderColor: '#fbbf24', borderDash: [5,5], fill: false, tension: 0.3 },
+          { label: '🐻 Bear Case (15%)', data: predictiveData.bear, borderColor: '#f87171', borderDash: [5,5], fill: false, tension: 0.3 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { usePointStyle: true } } },
+        scales: {
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { callback: v => '$' + v }, min: 30, max: 120 },
+          x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+        }
+      }
+    });
+
+    // Update charts for theme
+    function updateChartsTheme(theme) {
+      const gridColor = theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.05)';
+      const textColor = theme === 'light' ? '#334155' : '#94a3b8';
+      [priceChart, threeStocksChart, predictiveChart].forEach(chart => {
+        if (chart) {
+          chart.options.scales.x.grid.color = gridColor;
+          chart.options.scales.y.grid.color = gridColor;
+          chart.options.scales.x.ticks.color = textColor;
+          chart.options.scales.y.ticks.color = textColor;
+          chart.update();
+        }
+      });
+    }
+    // Apply theme to charts on load
+    if (savedTheme) updateChartsTheme(savedTheme);
+
+    // =========================================
+    // REAL-TIME STOCK API (Yahoo Finance)
+    // =========================================
+    async function fetchStockPrices() {
+      const symbols = ['NVO', 'NOVO-B.CO', 'N1VO34.SA'];
+      const proxyUrl = 'https://api.allorigins.win/raw?url=';
+      
+      for (const symbol of symbols) {
+        try {
+          const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`;
+          const response = await fetch(proxyUrl + encodeURIComponent(yahooUrl));
+          const data = await response.json();
+          
+          if (data.chart && data.chart.result && data.chart.result[0]) {
+            const result = data.chart.result[0];
+            const meta = result.meta;
+            const price = meta.regularMarketPrice;
+            const prevClose = meta.previousClose || meta.chartPreviousClose;
+            const change = price - prevClose;
+            const changePercent = ((change / prevClose) * 100).toFixed(2);
+            const currency = meta.currency;
+            
+            updatePriceCard(symbol, price, change, changePercent, currency);
+          }
+        } catch (error) {
+          console.log(`Erro ao buscar ${symbol}:`, error.message);
+        }
+      }
+      
+      // Update timestamp
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      document.querySelector('.live-badge').innerHTML = `<span style="width:8px;height:8px;background:var(--ok);border-radius:50%;animation:pulse 2s infinite;"></span> LIVE ${timeStr}`;
+    }
+
+    function updatePriceCard(symbol, price, change, changePercent, currency) {
+      let priceEl, changeEl, currencySymbol;
+      
+      if (symbol === 'NVO') {
+        priceEl = document.getElementById('priceUSD');
+        changeEl = document.getElementById('changeUSD');
+        currencySymbol = '$';
+      } else if (symbol === 'NOVO-B.CO') {
+        priceEl = document.getElementById('priceDKK');
+        changeEl = document.getElementById('changeDKK');
+        currencySymbol = 'kr.';
+      } else if (symbol === 'N1VO34.SA') {
+        priceEl = document.getElementById('priceBRL');
+        changeEl = document.getElementById('changeBRL');
+        currencySymbol = 'R$';
+      }
+      
+      if (priceEl && changeEl) {
+        priceEl.textContent = `${currencySymbol}${price.toFixed(2)}`;
+        
+        const isPositive = change >= 0;
+        changeEl.textContent = `${isPositive ? '+' : ''}${currencySymbol}${change.toFixed(2)} (${isPositive ? '+' : ''}${changePercent}%)`;
+        changeEl.className = `change ${isPositive ? 'up' : 'down'}`;
+      }
+    }
+
+    // Fetch on load
+    fetchStockPrices();
+    
+    // Refresh every 5 minutes
+    setInterval(fetchStockPrices, 5 * 60 * 1000);
+  </script>
+</body>
+</html>

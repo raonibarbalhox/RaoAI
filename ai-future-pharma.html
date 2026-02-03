@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI in Pharmaceutical Industry | 2026-2030</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        tailwindcss.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'accent': { 500: '#0070f3', 600: '#0051cc' },
+                        'success': { 500: '#10b981', 600: '#059669' },
+                        'warning': { 500: '#f59e0b', 600: '#d97706' },
+                        'danger': { 500: '#ef4444', 600: '#dc2626' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        /* Theme Variables */
+        :root {
+            --bg-primary: #030303;
+            --bg-secondary: #0a0a0a;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #f0f4f8;
+            --bg-secondary: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        /* Background Image */
+        .bg-image {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: linear-gradient(135deg, #0070f3 0%, #8b5cf6 50%, #10b981 100%);
+            opacity: 0.05;
+        }
+        
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: var(--bg-primary);
+            opacity: 0.95;
+        }
+        
+        [data-theme="light"] .bg-overlay {
+            opacity: 0.98;
+        }
+        
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="light"] .glass {
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .slide { min-height: 100vh; display: none; position: relative; }
+        .slide.active { display: flex; }
+        .gradient-text { background: linear-gradient(135deg, #0070f3, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Light theme fixes */
+        [data-theme="light"] h1,
+        [data-theme="light"] h2,
+        [data-theme="light"] h3,
+        [data-theme="light"] p,
+        [data-theme="light"] span,
+        [data-theme="light"] div { color: var(--text-primary) !important; }
+        
+        [data-theme="light"] .text-slate-400 { color: var(--text-secondary) !important; }
+        [data-theme="light"] .gradient-text { 
+            background: linear-gradient(135deg, #0052cc, #059669);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0070f3, #10b981);
+            z-index: 9999;
+            transition: width 0.3s ease;
+        }
+        
+        .particles {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+        
+        .stat-card {
+            background: var(--bg-glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 112, 243, 0.2);
+        }
+        
+        @media print {
+            .bg-image, .bg-overlay, .particles, nav { display: none !important; }
+            @page { size: A4 landscape; margin: 1cm; }
+            body { background: white !important; color: black !important; }
+            .glass { background: #f8fafc !important; backdrop-filter: none !important; }
+            .slide { display: flex !important; height: 100vh !important; page-break-after: always !important; }
+        }
+    </style>
+</head>
+<body class="text-white overflow-x-hidden">
+
+    <!-- Background -->
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar" style="width: 5%"></div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass px-6 py-3">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-sm hover:text-accent-500 transition-colors">← Hub</a>
+                <span class="text-xs text-slate-400">Slide <span id="currentSlide">1</span>/<span id="totalSlides">20</span></span>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="toggleTheme()" class="p-2 hover:bg-white/10 rounded-lg transition-all" title="Toggle theme">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+                <button onclick="toggleLang()" class="text-sm px-3 py-1 hover:bg-white/10 rounded-lg transition-all" data-pt="🇧🇷 PT" data-en="🇺🇸 EN">🇺🇸 EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Slides Container -->
+    <div id="slidesContainer"></div>
+
+    <!-- Side Navigation Buttons -->
+    <div class="fixed left-4 top-1/2 -translate-y-1/2 z-40 no-print">
+        <button onclick="goToSlide(currentSlide - 1)" class="glass p-3 rounded-full hover:bg-white/10 transition-all mb-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+    </div>
+    <div class="fixed right-4 top-1/2 -translate-y-1/2 z-40 no-print">
+        <button onclick="goToSlide(currentSlide + 1)" class="glass p-3 rounded-full hover:bg-white/10 transition-all">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        // Theme management
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
+
+        // Language management
+        function toggleLang() {
+            const current = localStorage.getItem('lang') || 'en';
+            const next = current === 'en' ? 'pt' : 'en';
+            localStorage.setItem('lang', next);
+            document.querySelectorAll('[data-pt][data-en]').forEach(el => {
+                el.textContent = el.getAttribute(`data-${next}`);
+            });
+        }
+
+        // Apply saved theme and language
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        const savedLang = localStorage.getItem('lang') || 'en';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-pt][data-en]').forEach(el => {
+                el.textContent = el.getAttribute(`data-${savedLang}`);
+            });
+        });
+
+        // Presentation data
+        const slides = [
+            {
+                id: 1,
+                type: 'title',
+                title: 'The Future of AI in<br>Pharmaceutical Industry',
+                subtitle: 'Autonomous Agents, Digital Transformation & Competitive Strategy<br>Novo Nordisk 2026-2030',
+                author: 'Raoni Barbalho | IT System Management & Validation Specialist'
+            },
+            {
+                id: 2,
+                type: 'agenda',
+                title: 'Agenda',
+                items: [
+                    { icon: '🤖', text: 'AI Evolution: From Tools to Autonomous Agents' },
+                    { icon: '🏭', text: 'Impact on Pharma Operations (GxP, CSV, Manufacturing)' },
+                    { icon: '⚔️', text: 'Competitive Landscape: Novo Nordisk vs Eli Lilly' },
+                    { icon: '📊', text: 'Workforce Transformation (2026-2030 Timeline)' },
+                    { icon: '🎯', text: 'Strategic Recommendations for Novo Nordisk' },
+                    { icon: '💡', text: 'Action Plan: How to Lead, Not Follow' }
+                ]
+            },
+            {
+                id: 3,
+                type: 'chapter',
+                title: 'Chapter 1: AI Evolution',
+                subtitle: 'From Chatbots to Autonomous Agents'
+            },
+            {
+                id: 4,
+                type: 'stats',
+                title: 'The AI Maturity Curve',
+                stats: [
+                    { value: '2022', label: 'ChatGPT Launch', desc: 'Era of conversational AI', color: '#94a3b8' },
+                    { value: '2024-2025', label: 'Generative AI Boom', desc: 'Content creation, coding assistants', color: '#f59e0b' },
+                    { value: '2026', label: 'Agentic AI Era', desc: 'Autonomous task execution', color: '#10b981' },
+                    { value: '2027-2030', label: 'Hyperautomation', desc: 'End-to-end process ownership', color: '#0070f3' }
+                ]
+            },
+            {
+                id: 5,
+                type: 'comparison',
+                title: 'Chatbot vs Autonomous Agent',
+                comparison: {
+                    left: {
+                        title: '💬 Traditional AI (Chatbot)',
+                        items: [
+                            'Responds to queries',
+                            'Requires human prompting',
+                            'Limited to text generation',
+                            'No integration with systems',
+                            'No decision-making authority'
+                        ]
+                    },
+                    right: {
+                        title: '🤖 Autonomous Agent (2026+)',
+                        items: [
+                            'Executes end-to-end workflows',
+                            'Proactive problem detection',
+                            'Multi-system integration (SAP, ServiceNow, MES)',
+                            'Autonomous approvals (within governance)',
+                            'Self-healing & learning capabilities'
+                        ]
+                    }
+                }
+            },
+            {
+                id: 6,
+                type: 'data-chart',
+                title: 'AI Adoption in Pharma (2025 Survey)',
+                chartType: 'bar',
+                chartData: {
+                    labels: ['R&D / Drug Discovery', 'Manufacturing QC', 'Supply Chain', 'Regulatory Compliance', 'IT / Automation', 'Clinical Trials'],
+                    values: [78, 45, 52, 38, 61, 55],
+                    benchmark: 50
+                },
+                insight: 'R&D leads adoption (78%), but IT/Automation (61%) is the fastest-growing segment. Compliance lags at 38% due to regulatory caution.',
+                source: {
+                    text: 'McKinsey Global Survey on AI in Pharma (2025)',
+                    url: 'https://www.mckinsey.com/industries/life-sciences/our-insights'
+                }
+            },
+            {
+                id: 7,
+                type: 'case-study',
+                title: 'Real-World Example: SAP Joule Agents',
+                content: {
+                    logo: 'SAP',
+                    description: 'SAP Business AI agents now autonomously manage Finance, Supply Chain, and HR workflows.',
+                    features: [
+                        { icon: '📄', title: 'Invoice Processing', desc: 'Chobani: 75% faster expense processing' },
+                        { icon: '🏭', title: 'Supply Chain', desc: 'Western Sugar: 40K invoices processed with zero human intervention' },
+                        { icon: '👥', title: 'HR Talent', desc: 'Delta Air Lines: AI-driven talent intelligence hub' }
+                    ],
+                    stat: '91% of vendor invoices automated (De Agostini case)',
+                    source: {
+                        text: 'SAP Business AI Customer Stories, 2026',
+                        url: 'https://www.sap.com/products/artificial-intelligence.html'
+                    }
+                }
+            },
+            {
+                id: 8,
+                type: 'chapter',
+                title: 'Chapter 2: Impact on Pharma',
+                subtitle: 'GxP, CSV, Manufacturing & Compliance'
+            },
+            {
+                id: 9,
+                type: 'impact-areas',
+                title: 'Where AI Transforms Pharma Operations',
+                areas: [
+                    {
+                        icon: '🧬',
+                        title: 'Drug Discovery',
+                        current: 'Manual screening, 10+ years per drug',
+                        future: 'AI predicts molecular interactions, reduces discovery to 3-5 years',
+                        impact: '60% time reduction',
+                        example: 'Eli Lilly + Nvidia supercomputer partnership'
+                    },
+                    {
+                        icon: '🏭',
+                        title: 'Manufacturing & QC',
+                        current: 'Manual batch reviews, 48h release cycle',
+                        future: 'Real-time AI quality control, predictive equipment maintenance',
+                        impact: '30% faster time-to-market',
+                        example: 'Aseptic filling with computer vision QC'
+                    },
+                    {
+                        icon: '📋',
+                        title: 'CSV & Validation',
+                        current: 'Manual test execution, weeks of documentation',
+                        future: 'Self-validating systems, auto-generated protocols (GAMP 5 compliant)',
+                        impact: '80% reduction in validation effort',
+                        example: 'FDA Computer Software Assurance (CSA) guidance 2025'
+                    },
+                    {
+                        icon: '✅',
+                        title: 'Compliance & Audits',
+                        current: 'Reactive audit trail review',
+                        future: '24/7 AI auditors, real-time 21 CFR Part 11 compliance',
+                        impact: 'Zero audit findings',
+                        example: 'Continuous verification of data integrity (ALCOA+)'
+                    }
+                ]
+            },
+            {
+                id: 10,
+                type: 'fda-insight',
+                title: 'FDA Computer Software Assurance (2025)',
+                content: {
+                    headline: 'NEW: FDA shifts from traditional CSV to risk-based CSA',
+                    keyPoints: [
+                        'Focus on critical functionality, not exhaustive testing',
+                        'Encourages automated testing and CI/CD in GxP',
+                        'Aligns with GAMP 5 V-Model but adds AI/ML considerations',
+                        'Opens door for AI-validated systems (with human oversight)'
+                    ],
+                    quote: '"FDA recognizes that modern software assurance practices can achieve greater confidence than traditional validation." - FDA Guidance Sept 2025',
+                    opportunity: 'Novo Nordisk can pioneer AI-driven CSA workflows, gaining 12-18 months advantage over competitors still using manual CSV.',
+                    source: {
+                        text: 'FDA Computer Software Assurance Guidance (September 2025)',
+                        url: 'https://www.fda.gov/regulatory-information/search-fda-guidance-documents/computer-software-assurance-production-and-quality-system-software'
+                    }
+                }
+            },
+            {
+                id: 11,
+                type: 'chapter',
+                title: 'Chapter 3: Competitive Landscape',
+                subtitle: 'Novo Nordisk vs Eli Lilly'
+            },
+            {
+                id: 12,
+                type: 'competitor-analysis',
+                title: 'The AI Arms Race in Pharma',
+                comparison: {
+                    company1: {
+                        name: 'Novo Nordisk',
+                        products: 'Ozempic, Wegovy (GLP-1 dominance)',
+                        aiInvestment: 'Growing but conservative',
+                        partnerships: 'Limited public AI partnerships',
+                        strengths: [
+                            'Strong manufacturing efficiency',
+                            'Global GxP expertise',
+                            'Patient data from CGM devices'
+                        ],
+                        risks: [
+                            'Risk-averse culture may slow AI adoption',
+                            'No flagship AI announcement',
+                            'Competitor momentum in AI-driven R&D'
+                        ]
+                    },
+                    company2: {
+                        name: 'Eli Lilly',
+                        products: 'Mounjaro, Zepbound (GLP-1 challenger)',
+                        aiInvestment: '$1.12B AI supercomputer with Nvidia (Jan 2026)',
+                        partnerships: 'Nvidia, Superluminal (biocomputing)',
+                        strengths: [
+                            'Aggressive AI investment strategy',
+                            'Pharma\'s most powerful supercomputer',
+                            'Gene therapy + AI synergy'
+                        ],
+                        risks: [
+                            'Execution risk on unproven AI models',
+                            'Nvidia dependency',
+                            'Playing catch-up in GLP-1 market share'
+                        ]
+                    },
+                    source: {
+                        text: 'Pharmaceutical Technology: Eli Lilly-Nvidia $1.12B Partnership (Jan 2026)',
+                        url: 'https://www.pharmaceutical-technology.com/news/eli-lilly-and-nvidia-to-build-pharmas-most-powerful-supercomputer/'
+                    }
+                },
+                verdict: 'Lilly is betting on AI to disrupt faster drug development. Novo Nordisk must respond with manufacturing & compliance AI to defend market position.'
+            },
+            {
+                id: 13,
+                type: 'market-data',
+                title: 'GLP-1 Market Dynamics (2026-2030)',
+                chartType: 'line',
+                chartData: {
+                    labels: ['2024', '2025', '2026', '2027', '2028', '2029', '2030'],
+                    datasets: [
+                        { label: 'Novo Nordisk (Wegovy)', data: [18, 24, 28, 32, 35, 37, 38], color: '#0070f3' },
+                        { label: 'Eli Lilly (Zepbound)', data: [5, 12, 18, 25, 30, 35, 38], color: '#ef4444' }
+                    ]
+                },
+                insight: 'Without AI acceleration, Novo Nordisk could lose market leadership by 2029. AI-driven manufacturing efficiency is the battleground.',
+                source: {
+                    text: 'GlobalData Pharma Market Analysis (Q4 2025)',
+                    url: 'https://www.globaldata.com/store/report/pharma-m-and-a-trends-analysis'
+                }
+            },
+            {
+                id: 14,
+                type: 'chapter',
+                title: 'Chapter 4: Workforce Impact',
+                subtitle: 'The 3-5 Year Timeline of AI Substitution'
+            },
+            {
+                id: 15,
+                type: 'workforce-timeline',
+                title: 'Jobs Transformation: 2026-2030',
+                phases: [
+                    {
+                        year: '2026-2027',
+                        stage: 'Phase 1: Repetitive Tasks',
+                        impactLevel: 'Low',
+                        roles: [
+                            { job: 'Data Entry Specialists', automation: '90%', newRole: 'Data Quality Auditors (AI oversight)' },
+                            { job: 'Level 1 IT Support', automation: '75%', newRole: 'AI Agent Trainers' },
+                            { job: 'Manual Report Generation', automation: '85%', newRole: 'Business Intelligence Analysts' }
+                        ]
+                    },
+                    {
+                        year: '2027-2028',
+                        stage: 'Phase 2: Knowledge Work',
+                        impactLevel: 'Medium',
+                        roles: [
+                            { job: 'Document Controllers', automation: '70%', newRole: 'Governance & AI Policy Managers' },
+                            { job: 'CSV Test Executors', automation: '80%', newRole: 'Validation Architects (AI-CSA)' },
+                            { job: 'QC Batch Record Review', automation: '65%', newRole: 'Quality Risk Intelligence Leads' }
+                        ]
+                    },
+                    {
+                        year: '2028-2030',
+                        stage: 'Phase 3: Strategic Oversight',
+                        impactLevel: 'High',
+                        roles: [
+                            { job: 'Change Coordinators', automation: '60%', newRole: 'AI Change Orchestrators' },
+                            { job: 'Audit Trail Reviewers', automation: '75%', newRole: 'Continuous Compliance Officers' },
+                            { job: 'Project Coordinators', automation: '50%', newRole: 'Agentic Workflow Designers' }
+                        ]
+                    }
+                ],
+                summary: 'AI doesn\'t eliminate jobs—it transforms them. Winners will be those who shift from execution to strategy, from reactive to proactive.'
+            },
+            {
+                id: 16,
+                type: 'skill-map',
+                title: 'Skills of the Future (IT & Validation)',
+                skills: {
+                    declining: [
+                        'Manual test execution',
+                        'Copy-paste documentation',
+                        'Reactive incident response',
+                        'Siloed tool expertise'
+                    ],
+                    emerging: [
+                        'AI agent configuration & orchestration',
+                        'Prompt engineering for agents',
+                        'AI risk assessment (FMEA for algorithms)',
+                        'Cross-functional data governance',
+                        'Agentic workflow design',
+                        'AI ethics & compliance auditing'
+                    ]
+                },
+                recommendation: 'Novo Nordisk should invest in reskilling programs NOW. Partner with universities for "AI for GxP" certifications.'
+            },
+            {
+                id: 17,
+                type: 'chapter',
+                title: 'Chapter 5: Strategic Recommendations',
+                subtitle: 'How Novo Nordisk Wins the AI Race'
+            },
+            {
+                id: 18,
+                type: 'strategy-pillars',
+                title: 'The 4-Pillar AI Strategy',
+                pillars: [
+                    {
+                        number: '01',
+                        title: 'AI-Native Manufacturing',
+                        description: 'Deploy autonomous agents in aseptic filling, packaging, and warehousing.',
+                        actions: [
+                            'Pilot AI-powered computer vision for 100% inspection (Clayton, NC facility)',
+                            'Implement predictive maintenance to reduce downtime by 40%',
+                            'Target: 30% reduction in batch release cycle time by 2027'
+                        ],
+                        investment: '$50-80M over 2 years',
+                        roi: '3-5x return via reduced waste and faster throughput'
+                    },
+                    {
+                        number: '02',
+                        title: 'CSV 2.0: Computer Software Assurance',
+                        description: 'Pioneer FDA-aligned AI-driven validation across all GxP systems.',
+                        actions: [
+                            'Replace manual IQ/OQ/PQ with AI-generated test protocols',
+                            'Deploy continuous validation agents (real-time compliance monitoring)',
+                            'Build internal "AI Validation Center of Excellence"'
+                        ],
+                        investment: '$30-40M (tools + training)',
+                        roi: '12-18 month competitive advantage in system deployments'
+                    },
+                    {
+                        number: '03',
+                        title: 'ServiceNow + SAP Hyperautomation',
+                        description: 'Connect IT, Quality, and Operations through agentic AI.',
+                        actions: [
+                            'Implement SAP Joule agents for change control, deviations, CAPA',
+                            'Deploy ServiceNow AI agents for incident auto-resolution',
+                            'Target: 70% of Level 1/2 tickets resolved by agents'
+                        ],
+                        investment: '$20-30M (licensing + integration)',
+                        roi: 'Free up 500+ FTE hours/month for strategic work'
+                    },
+                    {
+                        number: '04',
+                        title: 'Workforce Readiness Program',
+                        description: 'Reskill 1,000+ employees on AI literacy, agent management, and prompt engineering.',
+                        actions: [
+                            'Launch "AI Academy" with MIT/Stanford partnerships',
+                            'Mandatory training: All IT, Quality, Ops roles by Q2 2027',
+                            'Create "AI Champions" network (100 internal evangelists)'
+                        ],
+                        investment: '$15-20M',
+                        roi: 'Future-proof talent, reduce attrition, attract top candidates'
+                    }
+                ]
+            },
+            {
+                id: 19,
+                type: 'roi-calculator',
+                title: 'Projected ROI: AI Investment Scenario',
+                scenarios: {
+                    conservative: {
+                        investment: '$120M over 3 years',
+                        benefits: [
+                            { item: 'Manufacturing efficiency gain', value: '$180M' },
+                            { item: 'Reduced validation costs', value: '$45M' },
+                            { item: 'IT/Ops productivity boost', value: '$90M' },
+                            { item: 'Faster time-to-market (1 drug)', value: '$500M+' }
+                        ],
+                        total: '$815M',
+                        roi: '6.8x'
+                    },
+                    aggressive: {
+                        investment: '$200M over 3 years',
+                        benefits: [
+                            { item: 'Manufacturing efficiency gain', value: '$320M' },
+                            { item: 'AI-driven drug discovery (2 drugs)', value: '$1.2B+' },
+                            { item: 'Market share defense vs Lilly', value: '$800M' },
+                            { item: 'Operational excellence', value: '$150M' }
+                        ],
+                        total: '$2.47B',
+                        roi: '12.4x'
+                    }
+                },
+                recommendation: 'Conservative scenario already justifies investment. Aggressive scenario positions Novo Nordisk as pharma AI leader.'
+            },
+            {
+                id: 20,
+                type: 'conclusion',
+                title: 'The Choice is Clear',
+                conclusion: {
+                    challenge: 'AI is not a future trend—it\'s a present reality. Eli Lilly is already betting billions.',
+                    opportunity: 'Novo Nordisk has the expertise, infrastructure, and market position to lead in AI-driven pharma operations.',
+                    urgency: 'The window is 12-24 months. After that, competitors will have built insurmountable AI moats.',
+                    action: 'We must act now: Pilot in Clayton, scale globally, and transform before we\'re forced to catch up.'
+                },
+                cta: 'Let\'s build the future of pharmaceutical manufacturing—together.'
+            },
+            {
+                id: 21,
+                type: 'references',
+                title: 'References & Sources',
+                references: [
+                    {
+                        category: 'FDA & Regulatory',
+                        items: [
+                            { title: 'FDA Computer Software Assurance Guidance', date: 'September 2025', url: 'https://www.fda.gov/regulatory-information/search-fda-guidance-documents/computer-software-assurance-production-and-quality-system-software' },
+                            { title: 'FDA 21 CFR Part 11 - Electronic Records', date: 'Current', url: 'https://www.fda.gov/regulatory-information/search-fda-guidance-documents/part-11-electronic-records-electronic-signatures-scope-and-application' }
+                        ]
+                    },
+                    {
+                        category: 'Industry Reports & Analysis',
+                        items: [
+                            { title: 'McKinsey: The State of AI in Organizations', date: 'March 2025', url: 'https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-how-organizations-are-rewiring-to-capture-value' },
+                            { title: 'Gartner: AI Roadmap for Enterprises', date: '2025', url: 'https://www.gartner.com/en/articles/ai-roadmap' },
+                            { title: 'GlobalData: Pharma M&A Trends', date: 'Q4 2025', url: 'https://www.globaldata.com/store/report/pharma-m-and-a-trends-analysis' }
+                        ]
+                    },
+                    {
+                        category: 'Pharmaceutical Technology News',
+                        items: [
+                            { title: 'Eli Lilly-Nvidia $1.12B AI Supercomputer Partnership', date: 'January 2026', url: 'https://www.pharmaceutical-technology.com/news/eli-lilly-and-nvidia-to-build-pharmas-most-powerful-supercomputer/' },
+                            { title: 'AI-Driven Drug Discovery: Market Trends', date: '2025', url: 'https://www.pharmaceutical-technology.com/features/' }
+                        ]
+                    },
+                    {
+                        category: 'SAP Business AI',
+                        items: [
+                            { title: 'SAP Joule Agents & Customer Case Studies', date: '2026', url: 'https://www.sap.com/products/artificial-intelligence.html' },
+                            { title: 'SAP Business AI Release Highlights Q4 2025', date: 'January 2026', url: 'https://news.sap.com/2026/01/sap-business-ai-release-highlights-q4-2025/' }
+                        ]
+                    },
+                    {
+                        category: 'Academic & Research',
+                        items: [
+                            { title: 'ISPE GAMP 5 Guide', date: '2nd Edition', url: 'https://ispe.org/publications/guidance-documents/gamp-5' },
+                            { title: 'McKinsey: Economic Potential of Generative AI', date: 'June 2023', url: 'https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-economic-potential-of-generative-ai-the-next-productivity-frontier' }
+                        ]
+                    }
+                ],
+                note: 'All data and statistics presented are based on publicly available reports and industry publications as of February 2026. Market projections represent analyst consensus estimates.'
+            }
+        ];
+
+        // Render slides function
+        function renderSlides() {
+            const container = document.getElementById('slidesContainer');
+            container.innerHTML = slides.map((slide, index) => {
+                if (slide.type === 'title') {
+                    return `
+                        <div class="slide ${index === 0 ? 'active' : ''} flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="text-center max-w-4xl">
+                                <h1 class="text-6xl font-black mb-6 gradient-text leading-tight">${slide.title}</h1>
+                                <p class="text-xl text-slate-400 mb-8">${slide.subtitle}</p>
+                                <p class="text-sm text-slate-500">${slide.author}</p>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'agenda') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-5xl w-full">
+                                <h2 class="text-5xl font-bold mb-12 text-center gradient-text">${slide.title}</h2>
+                                <div class="grid grid-cols-2 gap-6">
+                                    ${slide.items.map(item => `
+                                        <div class="glass p-6 rounded-2xl hover:scale-105 transition-transform cursor-pointer">
+                                            <div class="text-4xl mb-3">${item.icon}</div>
+                                            <div class="text-lg font-semibold">${item.text}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'chapter') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="text-center max-w-4xl">
+                                <div class="text-6xl mb-8">📖</div>
+                                <h2 class="text-5xl font-black mb-4 gradient-text">${slide.title}</h2>
+                                <p class="text-2xl text-slate-400">${slide.subtitle}</p>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'stats') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-6xl w-full">
+                                <h2 class="text-4xl font-bold mb-12 text-center">${slide.title}</h2>
+                                <div class="grid grid-cols-4 gap-6">
+                                    ${slide.stats.map(stat => `
+                                        <div class="glass p-6 rounded-2xl text-center">
+                                            <div class="text-4xl font-black mb-2" style="color: ${stat.color}">${stat.value}</div>
+                                            <div class="text-lg font-semibold mb-2">${stat.label}</div>
+                                            <div class="text-sm text-slate-400">${stat.desc}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'comparison') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-6xl w-full">
+                                <h2 class="text-4xl font-bold mb-12 text-center">${slide.title}</h2>
+                                <div class="grid grid-cols-2 gap-8">
+                                    <div class="glass p-8 rounded-2xl">
+                                        <h3 class="text-2xl font-bold mb-6">${slide.comparison.left.title}</h3>
+                                        <ul class="space-y-3">
+                                            ${slide.comparison.left.items.map(item => `
+                                                <li class="flex items-start gap-3">
+                                                    <span class="text-red-400">✗</span>
+                                                    <span>${item}</span>
+                                                </li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                    <div class="glass p-8 rounded-2xl border-2 border-accent-500">
+                                        <h3 class="text-2xl font-bold mb-6">${slide.comparison.right.title}</h3>
+                                        <ul class="space-y-3">
+                                            ${slide.comparison.right.items.map(item => `
+                                                <li class="flex items-start gap-3">
+                                                    <span class="text-green-400">✓</span>
+                                                    <span>${item}</span>
+                                                </li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'data-chart') {
+                    const chartId = `chart-${slide.id}`;
+                    setTimeout(() => initBarChart(chartId, slide.chartData), 100);
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-5xl w-full">
+                                <h2 class="text-4xl font-bold mb-8 text-center">${slide.title}</h2>
+                                <div class="glass p-8 rounded-2xl mb-6">
+                                    <canvas id="${chartId}" height="300"></canvas>
+                                </div>
+                                <div class="glass p-6 rounded-2xl">
+                                    <p class="text-lg"><strong>Key Insight:</strong> ${slide.insight}</p>
+                                    ${slide.source ? `<p class="text-sm text-slate-400 mt-2">📚 Source: <a href="${slide.source.url}" target="_blank" class="text-accent-500 hover:underline">${slide.source.text}</a></p>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'case-study') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-5xl w-full">
+                                <h2 class="text-4xl font-bold mb-8 text-center">${slide.title}</h2>
+                                <div class="glass p-8 rounded-2xl mb-6">
+                                    <div class="text-3xl font-black mb-4 text-accent-500">${slide.content.logo}</div>
+                                    <p class="text-xl mb-6">${slide.content.description}</p>
+                                    <div class="grid grid-cols-3 gap-4 mb-6">
+                                        ${slide.content.features.map(f => `
+                                            <div class="bg-white/5 p-4 rounded-xl">
+                                                <div class="text-2xl mb-2">${f.icon}</div>
+                                                <div class="font-semibold mb-1">${f.title}</div>
+                                                <div class="text-sm text-slate-400">${f.desc}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-4xl font-black text-green-400 mb-2">${slide.content.stat}</div>
+                                        <div class="text-sm text-slate-400">${slide.content.source.text}</div>
+                                        <a href="${slide.content.source.url}" target="_blank" class="text-xs text-accent-500 hover:underline">View Source →</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'impact-areas') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-6xl w-full">
+                                <h2 class="text-4xl font-bold mb-8 text-center">${slide.title}</h2>
+                                <div class="grid grid-cols-2 gap-6">
+                                    ${slide.areas.map(area => `
+                                        <div class="glass p-6 rounded-2xl">
+                                            <div class="flex items-center gap-3 mb-4">
+                                                <div class="text-3xl">${area.icon}</div>
+                                                <div class="text-xl font-bold">${area.title}</div>
+                                            </div>
+                                            <div class="space-y-2 mb-4">
+                                                <div><span class="text-red-400">Before:</span> ${area.current}</div>
+                                                <div><span class="text-green-400">After AI:</span> ${area.future}</div>
+                                            </div>
+                                            <div class="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
+                                                <div class="text-2xl font-black text-accent-500">${area.impact}</div>
+                                                <div class="text-xs text-slate-400">${area.example}</div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'fda-insight') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-5xl w-full">
+                                <h2 class="text-4xl font-bold mb-8 text-center">${slide.title}</h2>
+                                <div class="glass p-8 rounded-2xl mb-6">
+                                    <div class="text-2xl font-bold mb-6 text-accent-500">${slide.content.headline}</div>
+                                    <ul class="space-y-3 mb-6">
+                                        ${slide.content.keyPoints.map(point => `
+                                            <li class="flex items-start gap-3">
+                                                <span class="text-green-400 mt-1">✓</span>
+                                                <span>${point}</span>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                    <div class="bg-white/5 p-6 rounded-xl mb-6 italic border-l-4 border-accent-500">
+                                        ${slide.content.quote}
+                                    </div>
+                                    <div class="bg-green-500/10 p-6 rounded-xl border border-green-500/30">
+                                        <div class="font-bold text-green-400 mb-2">💡 Strategic Opportunity</div>
+                                        ${slide.content.source ? `<a href="${slide.content.source.url}" target="_blank" class="text-xs text-accent-500 hover:underline mt-2 block">📄 ${slide.content.source.text}</a>` : ''}
+                                        <div>${slide.content.opportunity}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'competitor-analysis') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-6xl w-full">
+                                <h2 class="text-4xl font-bold mb-8 text-center">${slide.title}</h2>
+                                <div class="grid grid-cols-2 gap-6 mb-6">
+                                    ${[slide.comparison.company1, slide.comparison.company2].map((company, idx) => `
+                                        <div class="glass p-6 rounded-2xl ${idx === 1 ? 'border-2 border-red-400' : ''}">
+                                            <div class="text-2xl font-black mb-4 ${idx === 0 ? 'text-blue-400' : 'text-red-400'}">${company.name}</div>
+                                            <div class="space-y-3 mb-4 text-sm">
+                                                <div><strong>Products:</strong> ${company.products}</div>
+                                                <div><strong>AI Investment:</strong> ${company.aiInvestment}</div>
+                                                <div><strong>Partnerships:</strong> ${company.partnerships}</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <div class="font-bold text-green-400 mb-2">Strengths</div>
+                                                <ul class="text-sm space-y-1">
+                                                    ${company.strengths.map(s => `<li>• ${s}</li>`).join('')}
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                <div class="font-bold text-red-400 mb-2">Risks</div>
+                                                <ul class="text-sm space-y-1">
+                                                    ${company.risks.map(r => `<li>• ${r}</li>`).join('')}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="glass p-6 rounded-2xl bg-orange-500/10 border border-orange-500/30">
+                                    <div class="font-bold text-orange-400 mb-2">⚠️ Verdict</div>
+                                    ${slide.source ? `<a href="${slide.source.url}" target="_blank" class="text-xs text-accent-500 hover:underline mt-2 block">📚 ${slide.source.text}</a>` : ''}
+                                    <div>${slide.verdict}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'workforce-timeline') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-6xl w-full">
+                                <h2 class="text-4xl font-bold mb-8 text-center">${slide.title}</h2>
+                                ${slide.phases.map((phase, idx) => `
+                                    <div class="glass p-6 rounded-2xl mb-4">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div>
+                                                <div class="text-2xl font-black text-accent-500">${phase.year}</div>
+                                                <div class="text-lg font-semibold">${phase.stage}</div>
+                                            </div>
+                                            <div class="px-4 py-2 rounded-full ${
+                                                phase.impactLevel === 'Low' ? 'bg-green-500/20 text-green-400' :
+                                                phase.impactLevel === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                'bg-red-500/20 text-red-400'
+                                            }">
+                                                ${phase.impactLevel} Impact
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-4">
+                                            ${phase.roles.map(role => `
+                                                <div class="bg-white/5 p-4 rounded-xl">
+                                                    <div class="text-sm mb-2 line-through text-slate-500">${role.job}</div>
+                                                    <div class="text-xs text-red-400 mb-2">${role.automation} automated</div>
+                                                    <div class="text-sm font-semibold text-green-400">${role.newRole}</div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                                <div class="glass p-6 rounded-2xl bg-blue-500/10 border border-blue-500/30">
+                                    <p class="text-lg font-semibold">${slide.summary}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'skill-map') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-6xl w-full">
+                                <h2 class="text-4xl font-bold mb-8 text-center">${slide.title}</h2>
+                                <div class="grid grid-cols-2 gap-8">
+                                    <div class="glass p-6 rounded-2xl border-2 border-red-400">
+                                        <div class="text-2xl font-bold mb-4 text-red-400">📉 Declining Skills</div>
+                                        <ul class="space-y-3">
+                                            ${slide.skills.declining.map(skill => `
+                                                <li class="flex items-start gap-3">
+                                                    <span class="text-red-400">↓</span>
+                                                    <span class="line-through text-slate-400">${skill}</span>
+                                                </li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                    <div class="glass p-6 rounded-2xl border-2 border-green-400">
+                                        <div class="text-2xl font-bold mb-4 text-green-400">📈 Emerging Skills</div>
+                                        <ul class="space-y-3">
+                                            ${slide.skills.emerging.map(skill => `
+                                                <li class="flex items-start gap-3">
+                                                    <span class="text-green-400">↑</span>
+                                                    <span>${skill}</span>
+                                                </li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="glass p-6 rounded-2xl mt-6 bg-orange-500/10 border border-orange-500/30">
+                                    <div class="font-bold text-orange-400 mb-2">💡 Recommendation</div>
+                                    <div>${slide.recommendation}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'strategy-pillars') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-6xl w-full">
+                                <h2 class="text-4xl font-bold mb-8 text-center">${slide.title}</h2>
+                                <div class="grid grid-cols-2 gap-6">
+                                    ${slide.pillars.map(pillar => `
+                                        <div class="glass p-6 rounded-2xl">
+                                            <div class="text-5xl font-black text-accent-500 mb-2">${pillar.number}</div>
+                                            <div class="text-xl font-bold mb-3">${pillar.title}</div>
+                                            <div class="text-sm text-slate-400 mb-4">${pillar.description}</div>
+                                            <div class="bg-white/5 p-4 rounded-xl mb-3">
+                                                <div class="text-xs font-semibold text-green-400 mb-2">Key Actions</div>
+                                                <ul class="text-xs space-y-1">
+                                                    ${pillar.actions.map(action => `<li>• ${action}</li>`).join('')}
+                                                </ul>
+                                            </div>
+                                            <div class="flex justify-between text-xs">
+                                                <div><span class="text-slate-400">Investment:</span> ${pillar.investment}</div>
+                                                <div><span class="text-green-400">ROI:</span> ${pillar.roi}</div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'roi-calculator') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-6xl w-full">
+                                <h2 class="text-4xl font-bold mb-8 text-center">${slide.title}</h2>
+                                <div class="grid grid-cols-2 gap-6">
+                                    ${Object.entries(slide.scenarios).map(([key, scenario]) => `
+                                        <div class="glass p-6 rounded-2xl ${key === 'aggressive' ? 'border-2 border-green-400' : ''}">
+                                            <div class="text-2xl font-black mb-4 ${key === 'conservative' ? 'text-blue-400' : 'text-green-400'}">
+                                                ${key.toUpperCase()} Scenario
+                                            </div>
+                                            <div class="bg-white/5 p-4 rounded-xl mb-4">
+                                                <div class="text-sm text-slate-400 mb-2">Investment</div>
+                                                <div class="text-3xl font-black text-red-400">${scenario.investment}</div>
+                                            </div>
+                                            <div class="space-y-2 mb-4">
+                                                <div class="text-sm font-semibold text-green-400 mb-2">Benefits</div>
+                                                ${scenario.benefits.map(benefit => `
+                                                    <div class="flex justify-between text-sm">
+                                                        <span class="text-slate-400">${benefit.item}</span>
+                                                        <span class="text-green-400 font-semibold">${benefit.value}</span>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                            <div class="border-t border-white/10 pt-4">
+                                                <div class="flex justify-between items-center">
+                                                    <div>
+                                                        <div class="text-xs text-slate-400">Total Return</div>
+                                                        <div class="text-2xl font-black text-green-400">${scenario.total}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-xs text-slate-400">ROI</div>
+                                                        <div class="text-4xl font-black text-accent-500">${scenario.roi}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="glass p-6 rounded-2xl mt-6 bg-green-500/10 border border-green-500/30">
+                                    <div class="font-bold text-green-400 mb-2">💰 Bottom Line</div>
+                                    <div>${slide.recommendation}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'conclusion') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-5xl w-full">
+                                <h2 class="text-5xl font-black mb-12 text-center gradient-text">${slide.title}</h2>
+                                <div class="space-y-6 mb-12">
+                                    <div class="glass p-6 rounded-2xl">
+                                        <div class="font-bold text-red-400 mb-2">⚠️ The Challenge</div>
+                                        <div class="text-lg">${slide.conclusion.challenge}</div>
+                                    </div>
+                                    <div class="glass p-6 rounded-2xl">
+                                        <div class="font-bold text-blue-400 mb-2">💎 The Opportunity</div>
+                                        <div class="text-lg">${slide.conclusion.opportunity}</div>
+                                    </div>
+                                    <div class="glass p-6 rounded-2xl">
+                                        <div class="font-bold text-orange-400 mb-2">⏰ The Urgency</div>
+                                        <div class="text-lg">${slide.conclusion.urgency}</div>
+                                    </div>
+                                    <div class="glass p-6 rounded-2xl bg-green-500/10 border-2 border-green-400">
+                                        <div class="font-bold text-green-400 mb-2">🎯 The Action</div>
+                                        <div class="text-lg">${slide.conclusion.action}</div>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-black gradient-text">${slide.cta}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (slide.type === 'references') {
+                    return `
+                        <div class="slide flex items-center justify-center p-8" data-slide="${slide.id}">
+                            <div class="max-w-6xl w-full">
+                                <h2 class="text-4xl font-bold mb-8 text-center gradient-text">${slide.title}</h2>
+                                <div class="grid grid-cols-2 gap-6 mb-6">
+                                    ${slide.references.map(category => `
+                                        <div class="glass p-6 rounded-2xl">
+                                            <div class="text-lg font-bold mb-4 text-accent-500">${category.category}</div>
+                                            <ul class="space-y-3 text-sm">
+                                                ${category.items.map(item => `
+                                                    <li class="border-l-2 border-accent-500/30 pl-3">
+                                                        <a href="${item.url}" target="_blank" class="text-white hover:text-accent-500 transition-colors">
+                                                            <div class="font-semibold">${item.title}</div>
+                                                            <div class="text-xs text-slate-400">${item.date}</div>
+                                                        </a>
+                                                    </li>
+                                                `).join('')}
+                                            </ul>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="glass p-4 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-sm text-center">
+                                    <strong>Note:</strong> ${slide.note}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                return '';
+            }).join('');
+            
+            document.getElementById('totalSlides').textContent = slides.length;
+        }
+
+        // Chart.js initialization functions
+        function initBarChart(canvasId, data) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Adoption Rate (%)',
+                        data: data.values,
+                        backgroundColor: '#0070f3',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `${context.parsed.y}% adoption`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { color: '#94a3b8', callback: (value) => `${value}%` }
+                        },
+                        x: { ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+        }
+
+        function initLineChart(canvasId, data) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: data.datasets.map(ds => ({
+                        label: ds.label,
+                        data: ds.data,
+                        borderColor: ds.color,
+                        backgroundColor: ds.color + '20',
+                        tension: 0.4,
+                        fill: true
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true, labels: { color: '#fff' } },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `${context.dataset.label}: $${context.parsed.y}B`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true,
+                            ticks: { color: '#94a3b8', callback: (value) => `$${value}B` }
+                        },
+                        x: { ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+        }
+
+        // Navigation
+        let currentSlide = 0;
+        function goToSlide(index) {
+            const allSlides = document.querySelectorAll('.slide');
+            if (index < 0 || index >= allSlides.length) return;
+            
+            allSlides[currentSlide].classList.remove('active');
+            currentSlide = index;
+            allSlides[currentSlide].classList.add('active');
+            
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            const progress = ((currentSlide + 1) / allSlides.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') goToSlide(currentSlide + 1);
+            if (e.key === 'ArrowLeft') goToSlide(currentSlide - 1);
+        });
+
+        // Particles animation (simplified)
+        const particlesEl = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.style.cssText = `position:absolute;width:2px;height:2px;background:#0070f3;border-radius:50%;
+                top:${Math.random()*100}%;left:${Math.random()*100}%;
+                animation:float ${5+Math.random()*10}s infinite ease-in-out;`;
+            particlesEl.appendChild(particle);
+        }
+
+        // CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0%, 100% { transform: translateY(0px); }
+                50% { transform: translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize
+        renderSlides();
+    </script>
+
+</body>
+</html>

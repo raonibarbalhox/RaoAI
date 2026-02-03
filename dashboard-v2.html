@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - RaoniX Platform</title>
+    
+    <!-- Tabler CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/demo.min.css" rel="stylesheet"/>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        :root {
+            --bg-primary: #030303;
+            --text-primary: #ffffff;
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --text-primary: #0f172a;
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        .sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+        }
+        
+        .page-wrapper {
+            background: var(--bg-primary);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <h1 class="navbar-brand navbar-brand-undecor">
+                    <a href=".">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="navbar-brand-image" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17.77 13.5L18.54 20.5L12 17.77L5.46 20.5L6.23 13.5L2 9.27L8.91 8.26L12 2Z"/></svg>
+                    </a>
+                </h1>
+                <div class="collapse navbar-collapse" id="navbar-menu">
+                    <ul class="navbar-nav pt-lg-3">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#navbar-overview" data-bs-toggle="collapse" role="button" aria-expanded="true">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                </span>
+                                <span class="nav-link-title">Overview</span>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#navbar-tools" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6V2M12 6a10 10 0 0 1 10 10v6H2v-6a10 10 0 0 1 10-10Z"/></svg>
+                                </span>
+                                <span class="nav-link-title">Tools</span>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="tools/gamp-translator.html">🔤 GAMP Translator</a>
+                                <a class="dropdown-item" href="tools/checklist-manager.html">✅ Checklist Manager</a>
+                                <a class="dropdown-item" href="tools/csv-protocol.html">📄 CSV Protocol</a>
+                                <a class="dropdown-item" href="tools/meeting-prep.html">📅 Meeting Prep</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#navbar-analytics" data-bs-toggle="collapse" role="button" aria-expanded="false">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9M13 17v-4M8 17v-7"/></svg>
+                                </span>
+                                <span class="nav-link-title">Analytics</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#navbar-settings" data-bs-toggle="collapse" role="button" aria-expanded="false">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m2.12 2.12l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m2.12-2.12l4.24-4.24"/></svg>
+                                </span>
+                                <span class="nav-link-title">Settings</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <div class="page-wrapper">
+            <!-- Header -->
+            <div class="sticky-top navbar navbar-expand-md d-print-none sticky-top">
+                <div class="container-xl">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-nav flex-row order-md-last">
+                        <div class="nav-item d-none d-md-flex me-3">
+                            <div class="btn-list">
+                                <button onclick="toggleTheme()" class="btn icon btn-ghost" title="Toggle theme">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                                <span class="avatar avatar-sm bg-blue-lt">
+                                    <span class="avatar-initials">RB</span>
+                                </span>
+                                <div class="d-none d-xl-block ps-2">
+                                    <div class="font-weight-medium">Raoni</div>
+                                    <div class="mt-1 small text-muted">Quality Manager</div>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <a href="index-new.html" class="dropdown-item">Back to Home</a>
+                                        <a href="#" class="dropdown-item">Settings</a>
+                                        <hr class="m-0">
+                                        <a href="index-new.html" class="dropdown-item">Logout</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Title -->
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h2 class="page-title">Dashboard</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row row-deck row-cards">
+                        <!-- KPI Cards -->
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-baseline">
+                                        <div class="h1 mb-0">5</div>
+                                        <div class="ms-2">
+                                            <span class="text-success">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 17.5"/><polyline points="17 6 23 6 23 12"/></svg>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="text-muted mt-3">
+                                        <div class="ms-auto flex-shrink-0 d-flex align-items-center">
+                                            <div class="btn-list flex-nowrap">
+                                                Tools Used
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-baseline">
+                                        <div class="h1 mb-0">24</div>
+                                        <div class="ms-2">
+                                            <span class="text-danger">hours</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-muted mt-3">
+                                        <div class="ms-auto flex-shrink-0 d-flex align-items-center">
+                                            Time Saved This Month
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-baseline">
+                                        <div class="h1 mb-0">100%</div>
+                                        <div class="ms-2">
+                                            <span class="text-success">Compliance</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-muted mt-3">
+                                        <div class="ms-auto flex-shrink-0 d-flex align-items-center">
+                                            All Systems Validated
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Section -->
+                    <div class="row row-deck row-cards mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Recent Activity</h3>
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    <div class="list-group-item">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <span class="badge bg-success"></span>
+                                            </div>
+                                            <div class="col text-truncate">
+                                                <strong>GAMP Translator</strong>
+                                                <br/>
+                                                <span class="d-block text-muted text-truncate mt-n1">Searched for "Computer System Validation"</span>
+                                            </div>
+                                            <div class="col-auto">
+                                                <span class="text-muted">2 hours ago</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <span class="badge bg-blue"></span>
+                                            </div>
+                                            <div class="col text-truncate">
+                                                <strong>Checklist Manager</strong>
+                                                <br/>
+                                                <span class="d-block text-muted text-truncate mt-n1">Completed 3 validation checkpoints</span>
+                                            </div>
+                                            <div class="col-auto">
+                                                <span class="text-muted">5 hours ago</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabler JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+    
+    <script>
+        function toggleTheme() {
+            document.documentElement.setAttribute('data-theme', 
+                document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light'
+            )
+        }
+
+        // Check auth
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+        const supabase = createClient(
+            'https://sjhhnzmqafkbodjakzdz.supabase.co',
+            'sb_publishable_x6zS8GIZfTo_hvqjcBLcWA_qhEJMtFa'
+        )
+
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (!session) {
+                window.location.href = 'login.html'
+            }
+        })
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Validation Tracker | RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #030303; color: #ffffff; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: rgba(10, 10, 10, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.1); z-index: 100; }
+        .main-content { margin-left: 250px; padding: 2rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: rgba(255, 255, 255, 0.05); padding: 1rem; text-align: left; font-weight: 600; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        td { padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        tr:hover { background: rgba(255, 255, 255, 0.03); }
+        .phase-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        .phase-planning { background: rgba(100, 116, 139, 0.2); color: #cbd5e1; }
+        .phase-iq { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .phase-oq { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .phase-pq { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+        .phase-released { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar (igual GxP) -->
+    <div class="sidebar">
+        <div class="p-6">
+            <h1 class="text-2xl font-black mb-8" style="background: linear-gradient(135deg, #fff, #0070f3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">RaoniX</h1>
+            <nav class="space-y-2">
+                <a href="/index.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🏠 Hub</a>
+                <a href="/gxp-dashboard.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">✅ GxP Dashboard</a>
+                <a href="#" class="block px-4 py-2 rounded-lg bg-white/10">📋 CSV Tracker</a>
+                <a href="/capa-system.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🔧 CAPA System</a>
+                <a href="/audit-trail.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🔍 Audit Trail</a>
+            </nav>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="mb-8">
+            <h1 class="text-4xl font-black mb-2">CSV Validation Lifecycle Tracker</h1>
+            <p class="text-slate-400">Computer System Validation status • IQ/OQ/PQ execution tracking</p>
+        </div>
+        
+        <!-- Filter Bar -->
+        <div class="glass rounded-2xl p-4 mb-6 flex gap-4">
+            <input type="text" placeholder="Search systems..." class="flex-1 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white">
+            <select class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white">
+                <option>All Phases</option>
+                <option>Planning</option>
+                <option>IQ</option>
+                <option>OQ</option>
+                <option>PQ</option>
+                <option>Released</option>
+            </select>
+            <select class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white">
+                <option>All GAMP Categories</option>
+                <option>Cat 5 (Custom)</option>
+                <option>Cat 4 (Configurable)</option>
+                <option>Cat 3 (Non-Configurable)</option>
+            </select>
+            <button class="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 font-semibold">+ New Validation</button>
+        </div>
+        
+        <!-- CSV Table -->
+        <div class="glass rounded-2xl overflow-hidden">
+            <table>
+                <thead>
+                    <tr>
+                        <th>System Name</th>
+                        <th>GAMP Cat</th>
+                        <th>Phase</th>
+                        <th>Progress</th>
+                        <th>Owner</th>
+                        <th>Target Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="font-semibold">SAP S/4HANA QM Module</div>
+                            <div class="text-xs text-slate-400">Upgrade to 2023 FPS01</div>
+                        </td>
+                        <td><span class="phase-badge phase-planning">Cat 4</span></td>
+                        <td><span class="phase-badge phase-released">Released</span></td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full bg-green-500" style="width: 100%"></div>
+                                </div>
+                                <span class="text-xs text-slate-400">100%</span>
+                            </div>
+                        </td>
+                        <td class="text-sm text-slate-300">Raoni Barbosa</td>
+                        <td class="text-sm text-slate-400">Dec 15, 2025</td>
+                        <td>
+                            <button class="text-blue-400 hover:underline text-sm">View Docs</button>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="font-semibold">MES - Manufacturing Execution System</div>
+                            <div class="text-xs text-slate-400">Aseptic Filling Line A</div>
+                        </td>
+                        <td><span class="phase-badge phase-planning">Cat 5</span></td>
+                        <td><span class="phase-badge phase-pq">PQ</span></td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full bg-purple-500" style="width: 75%"></div>
+                                </div>
+                                <span class="text-xs text-slate-400">75%</span>
+                            </div>
+                        </td>
+                        <td class="text-sm text-slate-300">Carolina Lima</td>
+                        <td class="text-sm text-slate-400">Mar 30, 2026</td>
+                        <td>
+                            <button class="text-blue-400 hover:underline text-sm">Continue</button>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="font-semibold">LIMS - Laboratory Info System</div>
+                            <div class="text-xs text-slate-400">LabWare 8.2</div>
+                        </td>
+                        <td><span class="phase-badge phase-planning">Cat 4</span></td>
+                        <td><span class="phase-badge phase-oq">OQ</span></td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full bg-orange-500" style="width: 50%"></div>
+                                </div>
+                                <span class="text-xs text-slate-400">50%</span>
+                            </div>
+                        </td>
+                        <td class="text-sm text-slate-300">Pedro Santos</td>
+                        <td class="text-sm text-slate-400">Feb 28, 2026</td>
+                        <td>
+                            <button class="text-blue-400 hover:underline text-sm">Continue</button>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="font-semibold">SCADA - Process Control</div>
+                            <div class="text-xs text-slate-400">Wonderware System Platform</div>
+                        </td>
+                        <td><span class="phase-badge phase-planning">Cat 3</span></td>
+                        <td><span class="phase-badge phase-iq">IQ</span></td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-500" style="width: 25%"></div>
+                                </div>
+                                <span class="text-xs text-slate-400">25%</span>
+                            </div>
+                        </td>
+                        <td class="text-sm text-slate-300">Ana Costa</td>
+                        <td class="text-sm text-slate-400">Apr 15, 2026</td>
+                        <td>
+                            <button class="text-blue-400 hover:underline text-sm">Continue</button>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="font-semibold">ERP - Business Suite</div>
+                            <div class="text-xs text-slate-400">SAP ECC 6.0 → S/4HANA Migration</div>
+                        </td>
+                        <td><span class="phase-badge phase-planning">Cat 4</span></td>
+                        <td><span class="phase-badge phase-planning">Planning</span></td>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-500" style="width: 10%"></div>
+                                </div>
+                                <span class="text-xs text-slate-400">10%</span>
+                            </div>
+                        </td>
+                        <td class="text-sm text-slate-300">Raoni Barbosa</td>
+                        <td class="text-sm text-slate-400">Jun 30, 2026</td>
+                        <td>
+                            <button class="text-blue-400 hover:underline text-sm">Start</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

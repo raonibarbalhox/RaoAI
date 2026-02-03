@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandbox Environment Implementation Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        :root {
+            --bg-primary: #030303;
+            --bg-secondary: #0a0a0a;
+            --bg-glass: rgba(255,255,255,0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+            --border-glass: rgba(255,255,255,0.1);
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #f0f4f8;
+            --bg-secondary: #e2e8f0;
+            --bg-glass: rgba(255,255,255,0.95);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --border-glass: rgba(0,0,0,0.1);
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        .glass {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(10px);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .metric-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #0070f3, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        [data-theme="light"] .gradient-text {
+            background: linear-gradient(135deg, #0052cc, #0070f3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <nav class="glass border-b sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black gradient-text">🏗️ Sandbox Analysis</h1>
+                <p class="text-sm text-slate-400">GxP Environment Implementation Strategy</p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="toggleTheme()" class="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <a href="/" class="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">← Hub</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <!-- TAB NAVIGATION -->
+        <div class="glass rounded-xl p-1 mb-8 flex gap-2 overflow-x-auto">
+            <button onclick="switchTab('overview')" class="tab-btn active px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap" data-tab="overview">📊 Overview</button>
+            <button onclick="switchTab('ai-agents')" class="tab-btn px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap" data-tab="ai-agents">🤖 AI Agents</button>
+            <button onclick="switchTab('gamification')" class="tab-btn px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap" data-tab="gamification">🎮 Gamification</button>
+            <button onclick="switchTab('roi')" class="tab-btn px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap" data-tab="roi">💰 ROI Analysis</button>
+            <button onclick="switchTab('timeline')" class="tab-btn px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap" data-tab="timeline">📅 Timeline</button>
+            <button onclick="switchTab('implementation')" class="tab-btn px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap" data-tab="implementation">⚙️ Implementation</button>
+        </div>
+
+        <!-- TAB 1: OVERVIEW -->
+        <div id="overview" class="tab-content active">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="glass rounded-2xl p-6 metric-card">
+                    <p class="text-sm text-slate-400 mb-2">Estimated Time Savings</p>
+                    <p class="text-4xl font-black gradient-text">90%</p>
+                    <p class="text-xs text-slate-500 mt-2">Manual work eliminated</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-6 metric-card">
+                    <p class="text-sm text-slate-400 mb-2">Lead Time Reduction</p>
+                    <p class="text-4xl font-black gradient-text">3.5x</p>
+                    <p class="text-xs text-slate-500 mt-2">Faster validation cycles</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-6 metric-card">
+                    <p class="text-sm text-slate-400 mb-2">Error Rate</p>
+                    <p class="text-4xl font-black text-green-400">0%</p>
+                    <p class="text-xs text-slate-500 mt-2">With deterministic testing</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-6 metric-card">
+                    <p class="text-sm text-slate-400 mb-2">Team Adoption</p>
+                    <p class="text-4xl font-black text-blue-400">100%</p>
+                    <p class="text-xs text-slate-500 mt-2">With proper training</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Current vs Target -->
+                <div class="glass rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-6">📈 Current vs Target State</h2>
+                    <canvas id="currentVsTargetChart"></canvas>
+                </div>
+
+                <!-- Key Benefits -->
+                <div class="glass rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-6">✨ Key Benefits</h2>
+                    <ul class="space-y-4">
+                        <li class="flex gap-3">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <p class="font-semibold">Deterministic Testing</p>
+                                <p class="text-sm text-slate-400">Repeatable, consistent results</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <p class="font-semibold">ALCOA+ Compliance</p>
+                                <p class="text-sm text-slate-400">100% data integrity coverage</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <p class="font-semibold">Continuous Integration</p>
+                                <p class="text-sm text-slate-400">24/7 automated validation</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-green-400">✓</span>
+                            <div>
+                                <p class="font-semibold">Audit Ready</p>
+                                <p class="text-sm text-slate-400">FDA/ANVISA compliant logs</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: AI AGENTS -->
+        <div id="ai-agents" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="text-lg font-bold mb-4">🤖 Agent 1: Validation Orchestrator</h3>
+                    <p class="text-sm text-slate-400 mb-4">Coordinates test execution and validation workflows</p>
+                    <ul class="space-y-2 text-sm">
+                        <li>✓ Manage test suites</li>
+                        <li>✓ Parallel execution</li>
+                        <li>✓ Real-time reporting</li>
+                        <li>✓ Escalation triggers</li>
+                    </ul>
+                </div>
+
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="text-lg font-bold mb-4">🤖 Agent 2: Risk Analyzer</h3>
+                    <p class="text-sm text-slate-400 mb-4">AI-powered risk identification and mitigation</p>
+                    <ul class="space-y-2 text-sm">
+                        <li>✓ Anomaly detection</li>
+                        <li>✓ Predictive analytics</li>
+                        <li>✓ Root cause analysis</li>
+                        <li>✓ Recommendations</li>
+                    </ul>
+                </div>
+
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="text-lg font-bold mb-4">🤖 Agent 3: Compliance Monitor</h3>
+                    <p class="text-sm text-slate-400 mb-4">Ensures ALCOA+ and CSV compliance throughout</p>
+                    <ul class="space-y-2 text-sm">
+                        <li>✓ Data traceability</li>
+                        <li>✓ Audit trail logging</li>
+                        <li>✓ Deviation alerts</li>
+                        <li>✓ Report generation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="glass rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-8">🔄 AI Agent Workflow</h2>
+                <div class="space-y-6">
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold text-blue-400">1</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-2">Trigger → Validation Agent Receives Test Request</h3>
+                            <p class="text-slate-400">User/system submits validation request with parameters. Agent parses requirements and creates execution plan.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold text-green-400">2</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-2">Execute → Risk Agent Monitors in Real-Time</h3>
+                            <p class="text-slate-400">Tests run with live anomaly detection. ML model flags deviations from expected behavior patterns.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold text-purple-400">3</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-2">Validate → Compliance Agent Logs Everything</h3>
+                            <p class="text-slate-400">Every action, parameter, result logged with timestamps and digital signatures. ALCOA+ audit trail created automatically.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                            <span class="font-bold text-yellow-400">4</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-2">Report → Agents Generate Insights</h3>
+                            <p class="text-slate-400">Automated report generation with KPIs, deviations, recommendations. FDA-ready documentation created instantly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: GAMIFICATION -->
+        <div id="gamification" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="glass rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-6">🏆 Achievement System</h2>
+                    <canvas id="gamificationChart"></canvas>
+                </div>
+
+                <div class="glass rounded-2xl p-6">
+                    <h2 class="text-xl font-bold mb-6">🎯 Engagement Goals</h2>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <span class="text-2xl">🥇</span>
+                            <div>
+                                <p class="font-bold">Level 1: First Steps</p>
+                                <p class="text-sm text-slate-400">Complete first validation test</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-2xl">🥈</span>
+                            <div>
+                                <p class="font-bold">Level 2: Validator Pro</p>
+                                <p class="text-sm text-slate-400">10 successful tests passed</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-2xl">🥉</span>
+                            <div>
+                                <p class="font-bold">Level 3: Zero Defects</p>
+                                <p class="text-sm text-slate-400">50 consecutive passes (no failures)</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-2xl">👑</span>
+                            <div>
+                                <p class="font-bold">Level 4: Compliance Master</p>
+                                <p class="text-sm text-slate-400">100% ALCOA+ score for 30 days</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="glass rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6">🌟 Gamification Elements</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white/5 rounded-xl p-6">
+                        <p class="text-4xl mb-2">⭐</p>
+                        <h3 class="font-bold mb-2">Points System</h3>
+                        <p class="text-sm text-slate-400">Earn pts for tests, docs, reports</p>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-6">
+                        <p class="text-4xl mb-2">📈</p>
+                        <h3 class="font-bold mb-2">Leaderboard</h3>
+                        <p class="text-sm text-slate-400">Team rankings (opt-in transparency)</p>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-6">
+                        <p class="text-4xl mb-2">🎁</p>
+                        <h3 class="font-bold mb-2">Badges</h3>
+                        <p class="text-sm text-slate-400">Visual recognition of milestones</p>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-6">
+                        <p class="text-4xl mb-2">🔥</p>
+                        <h3 class="font-bold mb-2">Streaks</h3>
+                        <p class="text-sm text-slate-400">Consecutive daily engagement bonus</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass rounded-2xl p-8 mt-8">
+                <h2 class="text-2xl font-bold mb-6">📊 Projected Adoption Curve</h2>
+                <canvas id="adoptionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- TAB 4: ROI ANALYSIS -->
+        <div id="roi" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="glass rounded-2xl p-6">
+                    <p class="text-sm text-slate-400 mb-2">Year 1 Investment</p>
+                    <p class="text-3xl font-bold">€150K</p>
+                    <p class="text-xs text-slate-500 mt-2">Infrastructure + training</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-6">
+                    <p class="text-sm text-slate-400 mb-2">Year 1 Savings</p>
+                    <p class="text-3xl font-bold text-green-400">€600K</p>
+                    <p class="text-xs text-slate-500 mt-2">Labor + reduced incidents</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-6">
+                    <p class="text-sm text-slate-400 mb-2">ROI</p>
+                    <p class="text-3xl font-bold text-green-400">400%</p>
+                    <p class="text-xs text-slate-500 mt-2">Payback in 3 months</p>
+                </div>
+            </div>
+
+            <div class="glass rounded-2xl p-8 mb-8">
+                <h2 class="text-2xl font-bold mb-6">💹 ROI Projection (3 Years)</h2>
+                <canvas id="roiChart"></canvas>
+            </div>
+
+            <div class="glass rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6">📋 Cost-Benefit Breakdown</h2>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-bold text-green-400 mb-3">💰 Benefits (Year 1)</h3>
+                        <ul class="space-y-2 text-sm ml-4">
+                            <li class="flex justify-between">
+                                <span>Manual work elimination (20 FTEs @ 8h/day)</span>
+                                <span class="font-bold">€400K</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>Incident reduction (80% fewer escapes)</span>
+                                <span class="font-bold">€120K</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>Compliance audit pass (zero findings)</span>
+                                <span class="font-bold">€80K</span>
+                            </li>
+                            <li class="flex justify-between border-t border-white/10 pt-2 font-bold">
+                                <span>Total Benefits</span>
+                                <span class="text-green-400">€600K</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-orange-400 mb-3">💸 Costs (Year 1)</h3>
+                        <ul class="space-y-2 text-sm ml-4">
+                            <li class="flex justify-between">
+                                <span>Infrastructure setup + licensing</span>
+                                <span class="font-bold">€80K</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>Development + customization (200h)</span>
+                                <span class="font-bold">€50K</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>Team training (20 people × 2 days)</span>
+                                <span class="font-bold">€20K</span>
+                            </li>
+                            <li class="flex justify-between border-t border-white/10 pt-2 font-bold">
+                                <span>Total Costs</span>
+                                <span class="text-orange-400">€150K</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: TIMELINE -->
+        <div id="timeline" class="tab-content">
+            <div class="glass rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-8">📅 Implementation Timeline</h2>
+                <div class="space-y-8">
+                    <div class="flex gap-6">
+                        <div class="w-32 flex-shrink-0">
+                            <div class="text-sm font-bold text-blue-400">Phase 1</div>
+                            <div class="text-xs text-slate-400">Jan - Feb 2026</div>
+                        </div>
+                        <div class="flex-1 border-l-2 border-blue-400 pl-6 pb-6">
+                            <h3 class="font-bold mb-3">Planning & Design</h3>
+                            <ul class="space-y-2 text-sm text-slate-400">
+                                <li>✓ Requirements gathering</li>
+                                <li>✓ Architecture design</li>
+                                <li>✓ Infrastructure planning</li>
+                                <li>✓ Budget approval</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-6">
+                        <div class="w-32 flex-shrink-0">
+                            <div class="text-sm font-bold text-green-400">Phase 2</div>
+                            <div class="text-xs text-slate-400">Mar - Apr 2026</div>
+                        </div>
+                        <div class="flex-1 border-l-2 border-green-400 pl-6 pb-6">
+                            <h3 class="font-bold mb-3">Development & Setup</h3>
+                            <ul class="space-y-2 text-sm text-slate-400">
+                                <li>✓ Infrastructure provisioning</li>
+                                <li>✓ AI agents development</li>
+                                <li>✓ Dashboard creation</li>
+                                <li>✓ Integration testing</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-6">
+                        <div class="w-32 flex-shrink-0">
+                            <div class="text-sm font-bold text-purple-400">Phase 3</div>
+                            <div class="text-xs text-slate-400">May 2026</div>
+                        </div>
+                        <div class="flex-1 border-l-2 border-purple-400 pl-6 pb-6">
+                            <h3 class="font-bold mb-3">Training & Pilot</h3>
+                            <ul class="space-y-2 text-sm text-slate-400">
+                                <li>✓ Team training (5 days)</li>
+                                <li>✓ Pilot with 5 projects</li>
+                                <li>✓ Feedback collection</li>
+                                <li>✓ Adjustments & refinement</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-6">
+                        <div class="w-32 flex-shrink-0">
+                            <div class="text-sm font-bold text-yellow-400">Phase 4</div>
+                            <div class="text-xs text-slate-400">Jun 2026</div>
+                        </div>
+                        <div class="flex-1 border-l-2 border-yellow-400 pl-6">
+                            <h3 class="font-bold mb-3">Full Rollout</h3>
+                            <ul class="space-y-2 text-sm text-slate-400">
+                                <li>✓ Complete team deployment</li>
+                                <li>✓ All 50+ projects migrated</li>
+                                <li>✓ 24/7 support structure</li>
+                                <li>✓ Success metrics tracking</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6: IMPLEMENTATION STRATEGY -->
+        <div id="implementation" class="tab-content">
+            <div class="glass rounded-2xl p-8 mb-8">
+                <h2 class="text-2xl font-bold mb-6">🎯 Success Criteria</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white/5 rounded-xl p-6">
+                        <h3 class="font-bold mb-4">Technical Success</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li>✓ 99.9% system uptime</li>
+                            <li>✓ Test execution < 2 hours</li>
+                            <li>✓ Zero unplanned outages</li>
+                            <li>✓ Audit trail 100% complete</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-6">
+                        <h3 class="font-bold mb-4">Business Success</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li>✓ 80% team adoption (Month 3)</li>
+                            <li>✓ Lead time reduced 50%+</li>
+                            <li>✓ Zero FDA findings</li>
+                            <li>✓ Budget variance < 5%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6">🚀 Critical Success Factors</h2>
+                <div class="space-y-6">
+                    <div class="flex gap-4">
+                        <div class="text-2xl">1️⃣</div>
+                        <div>
+                            <h3 class="font-bold mb-2">Executive Sponsorship</h3>
+                            <p class="text-sm text-slate-400">Strong visible support from leadership ensures resource allocation and team buy-in.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="text-2xl">2️⃣</div>
+                        <div>
+                            <h3 class="font-bold mb-2">Change Management</h3>
+                            <p class="text-sm text-slate-400">Clear communication, training, and support for team adaptation to new workflows.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="text-2xl">3️⃣</div>
+                        <div>
+                            <h3 class="font-bold mb-2">Phased Rollout</h3>
+                            <p class="text-sm text-slate-400">Start with pilot projects, validate, iterate based on feedback before full deployment.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="text-2xl">4️⃣</div>
+                        <div>
+                            <h3 class="font-bold mb-2">Continuous Monitoring</h3>
+                            <p class="text-sm text-slate-400">Real-time metrics, KPI tracking, rapid response to issues, regular retrospectives.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="text-2xl">5️⃣</div>
+                        <div>
+                            <h3 class="font-bold mb-2">Center of Excellence</h3>
+                            <p class="text-sm text-slate-400">Dedicated team to maintain, evolve, and support the sandbox platform post-launch.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="mt-20 py-8 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-slate-400">
+            <p>Raoni Barbalho · IT Validation & Compliance · Novo Nordisk</p>
+            <p class="mt-2">Document: Sandbox Environment Implementation Analysis v1.0</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sandbox-theme', next);
+            document.getElementById('theme-icon').textContent = next === 'light' ? '🌙' : '☀️';
+        }
+
+        // Load saved theme
+        const saved = localStorage.getItem('sandbox-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', saved);
+        document.getElementById('theme-icon').textContent = saved === 'light' ? '🌙' : '☀️';
+
+        // Tab Switching
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-white/20');
+                el.classList.add('hover:bg-white/10');
+            });
+            
+            document.getElementById(tab).classList.add('active');
+            document.querySelector(`[data-tab="${tab}"]`).classList.remove('hover:bg-white/10');
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('bg-white/20');
+        }
+
+        // Chart Configuration
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() || '#fff',
+                        font: { family: "'Inter', sans-serif", weight: 500 }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() || '#cbd5e1' },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                },
+                x: {
+                    ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim() || '#cbd5e1' },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                }
+            }
+        };
+
+        // Chart 1: Current vs Target
+        new Chart(document.getElementById('currentVsTargetChart'), {
+            type: 'radar',
+            data: {
+                labels: ['Lead Time', 'Error Rate', 'Compliance', 'Team Adoption', 'Automation', 'Cost Efficiency'],
+                datasets: [
+                    {
+                        label: 'Current State',
+                        data: [30, 80, 60, 40, 20, 30],
+                        borderColor: '#f97316',
+                        backgroundColor: 'rgba(249,115,22,0.1)',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Target State',
+                        data: [90, 0, 100, 90, 90, 95],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16,185,129,0.1)',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: chartOptions
+        });
+
+        // Chart 2: Gamification
+        new Chart(document.getElementById('gamificationChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Badges Earned', 'Streaks', 'Leaderboard', 'Points Redeemed'],
+                datasets: [{
+                    data: [35, 25, 30, 10],
+                    backgroundColor: ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b']
+                }]
+            },
+            options: chartOptions
+        });
+
+        // Chart 3: Adoption Curve
+        new Chart(document.getElementById('adoptionChart'), {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Month 2', 'Month 3'],
+                datasets: [{
+                    label: 'Team Adoption %',
+                    data: [20, 35, 50, 65, 80, 95],
+                    borderColor: '#0070f3',
+                    backgroundColor: 'rgba(0,112,243,0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: chartOptions
+        });
+
+        // Chart 4: ROI Projection
+        new Chart(document.getElementById('roiChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Year 1', 'Year 2', 'Year 3'],
+                datasets: [
+                    {
+                        label: 'Investment (€K)',
+                        data: [150, 50, 30],
+                        backgroundColor: '#f97316'
+                    },
+                    {
+                        label: 'Savings (€K)',
+                        data: [600, 800, 1000],
+                        backgroundColor: '#10b981'
+                    },
+                    {
+                        label: 'Net Benefit (€K)',
+                        data: [450, 750, 970],
+                        backgroundColor: '#0070f3'
+                    }
+                ]
+            },
+            options: {
+                ...chartOptions,
+                scales: {
+                    ...chartOptions.scales,
+                    y: {
+                        ...chartOptions.scales.y,
+                        stacked: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

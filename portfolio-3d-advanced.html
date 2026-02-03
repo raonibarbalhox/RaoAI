@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raoni Barbalho | Advanced 3D Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        /* ========== CSS VARIABLES & THEMES ========== */
+        :root {
+            --duration: 0.3s;
+            --easing: cubic-bezier(0.16, 1, 0.3, 1);
+            
+            /* Dark Mode (default) */
+            --bg-primary: #030303;
+            --bg-secondary: #0f172a;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            
+            /* Accent Colors - Navy (default) */
+            --accent-primary: #0052cc;
+            --accent-light: #3b82f6;
+            --accent-dark: #001a4d;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            
+            /* Particles */
+            --particles-opacity: 0.8;
+            --particles-size: 0.08;
+        }
+
+        /* Light Mode */
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-glass: rgba(0, 0, 0, 0.03);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --particles-opacity: 0.4;
+            --particles-size: 0.04;
+        }
+
+        /* Paleta Aurora */
+        [data-palette="aurora"] {
+            --accent-primary: #7c3aed;
+            --accent-light: #a78bfa;
+            --accent-dark: #5b21b6;
+        }
+
+        /* Paleta Sunset */
+        [data-palette="sunset"] {
+            --accent-primary: #ea580c;
+            --accent-light: #fb923c;
+            --accent-dark: #92400e;
+        }
+
+        /* Paleta Forest */
+        [data-palette="forest"] {
+            --accent-primary: #059669;
+            --accent-light: #34d399;
+            --accent-dark: #064e3b;
+        }
+
+        /* Paleta Synthwave */
+        [data-palette="synthwave"] {
+            --accent-primary: #ec4899;
+            --accent-light: #f472b6;
+            --accent-dark: #831843;
+        }
+
+        /* ========== GLOBAL STYLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background var(--duration) var(--easing), color var(--duration) var(--easing);
+        }
+
+        /* ========== 3D CANVAS ========== */
+        #canvas-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(3,3,3,0) 0%, rgba(3,3,3,0.7) 100%);
+            z-index: 1;
+            pointer-events: none;
+            transition: background var(--duration) var(--easing);
+        }
+
+        [data-theme="light"] .overlay {
+            background: radial-gradient(ellipse at center, rgba(248,250,252,0) 0%, rgba(248,250,252,0.5) 100%);
+        }
+
+        /* ========== NAVBAR ========== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 20px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            background: rgba(3, 3, 3, 0.7);
+            border-bottom: 1px solid var(--border-color);
+            transition: all var(--duration) var(--easing);
+        }
+
+        [data-theme="light"] nav {
+            background: rgba(248, 250, 252, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-brand {
+            font-size: 1.3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            position: relative;
+            transition: color var(--duration) var(--easing);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            transition: width var(--duration) var(--easing);
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--duration) var(--easing);
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        /* ========== CUSTOMIZATION PANEL ========== */
+        .customize-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 99;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-light));
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 10px 40px rgba(0, 82, 204, 0.3);
+            transition: all var(--duration) var(--easing);
+        }
+
+        .customize-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 50px rgba(0, 82, 204, 0.5);
+        }
+
+        .customize-panel {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 380px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            z-index: 98;
+            overflow-y: auto;
+            transition: right 0.4s var(--easing);
+            padding: 24px;
+        }
+
+        .customize-panel.active {
+            right: 0;
+        }
+
+        .customize-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .customize-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .customize-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color var(--duration) var(--easing);
+        }
+
+        .customize-close:hover {
+            color: var(--text-primary);
+        }
+
+        .customize-section {
+            margin-bottom: 24px;
+        }
+
+        .customize-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .customize-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .customize-option {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-glass);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all var(--duration) var(--easing);
+        }
+
+        .customize-option:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .customize-option.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .color-option {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all var(--duration) var(--easing);
+        }
+
+        .color-option:hover {
+            transform: scale(1.05);
+        }
+
+        .color-option.active {
+            border-color: var(--text-primary);
+            box-shadow: 0 0 12px currentColor;
+        }
+
+        .color-navy { background: linear-gradient(135deg, #0052cc, #3b82f6); }
+        .color-aurora { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+        .color-sunset { background: linear-gradient(135deg, #ea580c, #fb923c); }
+        .color-forest { background: linear-gradient(135deg, #059669, #34d399); }
+        .color-synthwave { background: linear-gradient(135deg, #ec4899, #f472b6); }
+
+        /* ========== MAIN CONTENT ========== */
+        main {
+            position: relative;
+            z-index: 2;
+        }
+
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 48px;
+            position: relative;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            nav {
+                padding: 16px 24px;
+            }
+
+            .nav-center {
+                display: none;
+            }
+
+            .customize-panel {
+                width: 100%;
+                right: -100%;
+            }
+
+            section {
+                padding: 80px 24px;
+            }
+
+            .customize-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========== PRINT STYLES ========== */
+        @media print {
+            nav,
+            .customize-btn,
+            .customize-panel,
+            .overlay {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            section {
+                page-break-after: always;
+            }
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(0, 82, 204, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(0, 82, 204, 0.6);
+            }
+        }
+
+        /* Apply animations */
+        section h2 {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        section p {
+            animation: fadeInUp 0.8s ease-out 0.1s forwards;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Background Canvas -->
+    <canvas id="canvas-3d"></canvas>
+    <div class="overlay"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-brand">Raoni</div>
+        <div class="nav-center">
+            <a href="#about" class="nav-link">About</a>
+            <a href="#skills" class="nav-link">Skills</a>
+            <a href="#experience" class="nav-link">Experience</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </div>
+        <div class="nav-controls">
+            <button class="nav-btn" id="theme-toggle" title="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="nav-btn" id="lang-toggle" title="Alternar idioma">
+                <i class="fas fa-globe"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Customization Panel -->
+    <button class="customize-btn" id="customize-open">
+        <i class="fas fa-palette"></i>
+    </button>
+
+    <div class="customize-panel" id="customize-panel">
+        <div class="customize-header">
+            <h3>Personalizar</h3>
+            <button class="customize-close" id="customize-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="customize-section">
+            <label class="customize-label">Tema</label>
+            <div class="customize-options">
+                <button class="customize-option active" data-theme="dark">🌙 Dark</button>
+                <button class="customize-option" data-theme="light">☀️ Light</button>
+            </div>
+        </div>
+
+        <div class="customize-section">
+            <label class="customize-label">Paleta de Cores</label>
+            <div class="color-grid">
+                <button class="color-option color-navy active" data-palette="navy" title="Navy"></button>
+                <button class="color-option color-aurora" data-palette="aurora" title="Aurora"></button>
+                <button class="color-option color-sunset" data-palette="sunset" title="Sunset"></button>
+                <button class="color-option color-forest" data-palette="forest" title="Forest"></button>
+                <button class="color-option color-synthwave" data-palette="synthwave" title="Synthwave"></button>
+            </div>
+        </div>
+
+        <div class="customize-section">
+            <label class="customize-label">Efeitos de Partícula</label>
+            <div class="customize-options">
+                <button class="customize-option" data-particles="light">✨ Leve</button>
+                <button class="customize-option active" data-particles="medium">⭐ Médio</button>
+                <button class="customize-option" data-particles="heavy">🌟 Pesado</button>
+            </div>
+        </div>
+
+        <div class="customize-section">
+            <label class="customize-label">Animação de Scroll</label>
+            <div class="customize-options">
+                <button class="customize-option active" data-scroll="parallax">📐 Parallax</button>
+                <button class="customize-option" data-scroll="zoom">🔍 Zoom</button>
+                <button class="customize-option" data-scroll="fade">🎭 Fade</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="hero">
+            <div style="text-align: center; position: relative; z-index: 10;">
+                <h1 style="font-size: 4rem; font-weight: 900; margin-bottom: 16px; animation: fadeInUp 1s ease-out forwards;">
+                    Raoni Barbalho
+                </h1>
+                <p style="font-size: 1.3rem; color: var(--text-secondary); margin-bottom: 32px; animation: fadeInUp 1s ease-out 0.2s forwards; opacity: 0;">
+                    IT Validation & Compliance Specialist
+                </p>
+                <div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 32px;">
+                    <button style="
+                        padding: 14px 32px;
+                        background: linear-gradient(135deg, var(--accent-primary), var(--accent-light));
+                        border: none;
+                        color: white;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all var(--duration) var(--easing);
+                        animation: fadeInUp 1s ease-out 0.4s forwards;
+                        opacity: 0;
+                    " onclick="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 15px 40px rgba(0, 82, 204, 0.4)'; setTimeout(() => { this.style.transform='translateY(0)'; this.style.boxShadow='none'; }, 200);">
+                        Ver Portfolio
+                    </button>
+                    <a href="mailto:raobarbalho@hotmail.com" style="
+                        padding: 14px 32px;
+                        background: var(--bg-glass);
+                        border: 1px solid var(--border-color);
+                        color: var(--text-primary);
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all var(--duration) var(--easing);
+                        animation: fadeInUp 1s ease-out 0.4s forwards;
+                        opacity: 0;
+                        text-decoration: none;
+                        display: inline-block;
+                    ">
+                        Entrar em Contato
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;">
+            <div>
+                <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 24px;">
+                    Sobre Mim
+                </h2>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 16px;">
+                    Sou um especialista em Validação e Conformidade de TI com mais de 8 anos de experiência no setor farmacêutico (Novo Nordisk, MSD). Especializado em governança de TI, conformidade FDA/ANVISA e gestão de riscos.
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 16px;">
+                    Meu diferencial: entrego 3.5x mais rápido que a média, com zero findings em auditorias, e automatizo processos complexos com Python/PowerShell.
+                </p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px;">
+                    <div style="background: var(--bg-glass); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color);">
+                        <div style="font-size: 2rem; font-weight: 900; color: var(--accent-primary); margin-bottom: 8px;">3.5x</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">Mais Rápido</div>
+                    </div>
+                    <div style="background: var(--bg-glass); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color);">
+                        <div style="font-size: 2rem; font-weight: 900; color: var(--success); margin-bottom: 8px;">0</div>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">FDA Findings</div>
+                    </div>
+                </div>
+            </div>
+            <div style="
+                background: var(--bg-glass);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 40px;
+                text-align: center;
+                backdrop-filter: blur(10px);
+            ">
+                <div style="
+                    width: 200px;
+                    height: 200px;
+                    background: linear-gradient(135deg, var(--accent-primary), var(--accent-light));
+                    border-radius: 50%;
+                    margin: 0 auto 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 4rem;
+                ">👨‍💼</div>
+                <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 8px;">Raoni Barbalho</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 16px;">IT Validation Specialist</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">📍 Montes Claros, Brasil<br/>🌍 Aberto a: Dinamarca, Europa</p>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills">
+            <div style="width: 100%; max-width: 1200px;">
+                <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 64px; text-align: center;">
+                    Minhas Competências
+                </h2>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 48px;">
+                    <!-- GxP Compliance -->
+                    <div style="
+                        background: var(--bg-glass);
+                        border: 1px solid var(--border-color);
+                        border-radius: 12px;
+                        padding: 32px 24px;
+                        text-align: center;
+                        backdrop-filter: blur(10px);
+                        transition: all var(--duration) var(--easing);
+                    " onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--accent-primary)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--border-color)';">
+                        <div style="font-size: 2.5rem; margin-bottom: 16px;">🔒</div>
+                        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 12px;">GxP Compliance</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">FDA 21 CFR Part 11, ANVISA, EU Annex 11, IQ/OQ/PQ</p>
+                    </div>
+
+                    <!-- IT Validation -->
+                    <div style="
+                        background: var(--bg-glass);
+                        border: 1px solid var(--border-color);
+                        border-radius: 12px;
+                        padding: 32px 24px;
+                        text-align: center;
+                        backdrop-filter: blur(10px);
+                        transition: all var(--duration) var(--easing);
+                    " onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--accent-primary)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--border-color)';">
+                        <div style="font-size: 2.5rem; margin-bottom: 16px;">✅</div>
+                        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 12px;">IT Validation</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">VPs, URSs, Risk Assessments, Design Docs</p>
+                    </div>
+
+                    <!-- Automation -->
+                    <div style="
+                        background: var(--bg-glass);
+                        border: 1px solid var(--border-color);
+                        border-radius: 12px;
+                        padding: 32px 24px;
+                        text-align: center;
+                        backdrop-filter: blur(10px);
+                        transition: all var(--duration) var(--easing);
+                    " onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--accent-primary)';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--border-color)';">
+                        <div style="font-size: 2.5rem; margin-bottom: 16px;">⚙️</div>
+                        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 12px;">Automation</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Python, PowerShell, 90% esforço reduzido</p>
+                    </div>
+                </div>
+
+                <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 24px; text-align: center; color: var(--text-secondary);">Tech Stack</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+                    <span style="background: var(--bg-glass); padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem;">Python</span>
+                    <span style="background: var(--bg-glass); padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem;">PowerShell</span>
+                    <span style="background: var(--bg-glass); padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem;">ServiceNow</span>
+                    <span style="background: var(--bg-glass); padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem;">Aconex</span>
+                    <span style="background: var(--bg-glass); padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem;">SQL</span>
+                    <span style="background: var(--bg-glass); padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem;">ITSM</span>
+                    <span style="background: var(--bg-glass); padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem;">Risk Management</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience">
+            <div style="width: 100%; max-width: 1000px;">
+                <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 64px; text-align: center;">
+                    Experiência Profissional
+                </h2>
+
+                <div style="position: relative;">
+                    <!-- Timeline Line -->
+                    <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent-primary), var(--accent-light)); transform: translateX(-50%);"></div>
+
+                    <!-- Experience Item 1 -->
+                    <div style="margin-bottom: 64px; opacity: 0; animation: fadeInUp 0.8s ease-out forwards;">
+                        <div style="text-align: right; padding-right: 52%; margin-bottom: 0;">
+                            <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 4px;">IT Validation & Compliance Analyst</h3>
+                            <p style="color: var(--accent-primary); font-weight: 600; margin-bottom: 8px;">Novo Nordisk</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Abril 2023 - Presente</p>
+                            <p style="color: var(--text-secondary); margin-top: 12px;">Lead time 3.5x mais rápido | Zero FDA findings</p>
+                        </div>
+                    </div>
+
+                    <!-- Experience Item 2 -->
+                    <div style="margin-bottom: 64px; opacity: 0; animation: fadeInUp 0.8s ease-out 0.2s forwards;">
+                        <div style="text-align: left; padding-left: 52%;">
+                            <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 4px;">IT Tech Leader</h3>
+                            <p style="color: var(--accent-primary); font-weight: 600; margin-bottom: 8px;">Cognizant (Cliente: MSD)</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">2021 - 2023</p>
+                            <p style="color: var(--text-secondary); margin-top: 12px;">End of Year Award | 100% Client Satisfaction</p>
+                        </div>
+                    </div>
+
+                    <!-- Experience Item 3 -->
+                    <div style="margin-bottom: 64px; opacity: 0; animation: fadeInUp 0.8s ease-out 0.4s forwards;">
+                        <div style="text-align: right; padding-right: 52%;">
+                            <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 4px;">IT Analyst</h3>
+                            <p style="color: var(--accent-primary); font-weight: 600; margin-bottom: 8px;">Merck Sharp & Dohme (MSD)</p>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Outubro 2020 - Setembro 2023</p>
+                            <p style="color: var(--text-secondary); margin-top: 12px;">Global Infrastructure & Data Center Management</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" style="flex-direction: column;">
+            <div style="text-align: center; max-width: 600px;">
+                <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 24px;">
+                    Vamos Conectar?
+                </h2>
+                <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 48px;">
+                    Estou sempre aberto para conversar sobre oportunidades e desafios em IT Validation & Compliance.
+                </p>
+
+                <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <a href="mailto:raobarbalho@hotmail.com" style="
+                        padding: 14px 32px;
+                        background: linear-gradient(135deg, var(--accent-primary), var(--accent-light));
+                        border: none;
+                        color: white;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        text-decoration: none;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all var(--duration) var(--easing);
+                    " onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 15px 40px rgba(0, 82, 204, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="https://www.linkedin.com/in/raoni-barbalho-9064b0a4/" target="_blank" style="
+                        padding: 14px 32px;
+                        background: var(--bg-glass);
+                        border: 1px solid var(--border-color);
+                        color: var(--text-primary);
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        text-decoration: none;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all var(--duration) var(--easing);
+                    " onmouseover="this.style.transform='translateY(-4px)'; this.style.background='var(--accent-primary)'; this.style.borderColor='var(--accent-primary)'; this.style.color='white';" onmouseout="this.style.transform='translateY(0)'; this.style.background='var(--bg-glass)'; this.style.borderColor='var(--border-color)'; this.style.color='var(--text-primary)';">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="https://github.com/raonibarbalhox" target="_blank" style="
+                        padding: 14px 32px;
+                        background: var(--bg-glass);
+                        border: 1px solid var(--border-color);
+                        color: var(--text-primary);
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        text-decoration: none;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all var(--duration) var(--easing);
+                    " onmouseover="this.style.transform='translateY(-4px)'; this.style.background='var(--accent-primary)'; this.style.borderColor='var(--accent-primary)'; this.style.color='white';" onmouseout="this.style.transform='translateY(0)'; this.style.background='var(--bg-glass)'; this.style.borderColor='var(--border-color)'; this.style.color='var(--text-primary)';">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                </div>
+
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 32px;">
+                    📞 +55 (38) 99139-9293
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer style="
+        position: relative;
+        z-index: 2;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border-color);
+        padding: 48px;
+        text-align: center;
+        color: var(--text-secondary);
+    ">
+        <p style="margin-bottom: 16px;">
+            © 2026 Raoni Barbalho. Crafted with precision.
+        </p>
+        <div style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; font-size: 0.9rem;">
+            <a href="https://raonix.vercel.app" style="color: var(--accent-primary); text-decoration: none;">Portfolio Hub</a>
+            <a href="https://www.linkedin.com/in/raoni-barbalho-9064b0a4/" style="color: var(--accent-primary); text-decoration: none;">LinkedIn</a>
+            <a href="mailto:raobarbalho@hotmail.com" style="color: var(--accent-primary); text-decoration: none;">Email</a>
+        </div>
+    </footer>
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        // ========== LANGUAGE & LOCALIZATION ==========
+        const translations = {
+            'pt-BR': {
+                aboutTitle: 'Sobre Mim',
+                aboutP1: 'Sou um especialista em Validação e Conformidade de TI com mais de 8 anos de experiência no setor farmacêutico (Novo Nordisk, MSD). Especializado em governança de TI, conformidade FDA/ANVISA e gestão de riscos.',
+                aboutP2: 'Meu diferencial: entrego 3.5x mais rápido que a média, com zero findings em auditorias, e automatizo processos complexos com Python/PowerShell.',
+                skillsTitle: 'Minhas Competências',
+                gxpTitle: 'GxP Compliance',
+                gxpDesc: 'FDA 21 CFR Part 11, ANVISA, EU Annex 11, IQ/OQ/PQ',
+                validationTitle: 'IT Validation',
+                validationDesc: 'VPs, URSs, Risk Assessments, Design Docs',
+                automationTitle: 'Automation',
+                automationDesc: 'Python, PowerShell, 90% esforço reduzido',
+                techStack: 'Tech Stack',
+                experienceTitle: 'Experiência Profissional',
+                exp1Title: 'IT Validation & Compliance Analyst',
+                exp1Company: 'Novo Nordisk',
+                exp1Date: 'Abril 2023 - Presente',
+                exp1Desc: 'Lead time 3.5x mais rápido | Zero FDA findings',
+                exp2Title: 'IT Tech Leader',
+                exp2Company: 'Cognizant (Cliente: MSD)',
+                exp2Date: '2021 - 2023',
+                exp2Desc: 'End of Year Award | 100% Client Satisfaction',
+                exp3Title: 'IT Analyst',
+                exp3Company: 'Merck Sharp & Dohme (MSD)',
+                exp3Date: 'Outubro 2020 - Setembro 2023',
+                exp3Desc: 'Global Infrastructure & Data Center Management',
+                contactTitle: 'Vamos Conectar?',
+                contactDesc: 'Estou sempre aberto para conversar sobre oportunidades e desafios em IT Validation & Compliance.',
+                footerText: '© 2026 Raoni Barbalho. Crafted with precision.'
+            },
+            'en-US': {
+                aboutTitle: 'About Me',
+                aboutP1: 'I\'m an IT Validation & Compliance specialist with 8+ years of experience in the pharmaceutical industry (Novo Nordisk, MSD). Specialized in IT governance, FDA/ANVISA compliance, and risk management.',
+                aboutP2: 'My differentiator: I deliver 3.5x faster than average, with zero audit findings, and automate complex processes with Python/PowerShell.',
+                skillsTitle: 'My Skills',
+                gxpTitle: 'GxP Compliance',
+                gxpDesc: 'FDA 21 CFR Part 11, ANVISA, EU Annex 11, IQ/OQ/PQ',
+                validationTitle: 'IT Validation',
+                validationDesc: 'VPs, URSs, Risk Assessments, Design Docs',
+                automationTitle: 'Automation',
+                automationDesc: 'Python, PowerShell, 90% effort reduction',
+                techStack: 'Tech Stack',
+                experienceTitle: 'Professional Experience',
+                exp1Title: 'IT Validation & Compliance Analyst',
+                exp1Company: 'Novo Nordisk',
+                exp1Date: 'April 2023 - Present',
+                exp1Desc: 'Lead time 3.5x faster | Zero FDA findings',
+                exp2Title: 'IT Tech Leader',
+                exp2Company: 'Cognizant (Client: MSD)',
+                exp2Date: '2021 - 2023',
+                exp2Desc: 'End of Year Award | 100% Client Satisfaction',
+                exp3Title: 'IT Analyst',
+                exp3Company: 'Merck Sharp & Dohme (MSD)',
+                exp3Date: 'October 2020 - September 2023',
+                exp3Desc: 'Global Infrastructure & Data Center Management',
+                contactTitle: 'Let\'s Connect?',
+                contactDesc: 'I\'m always open to discussing opportunities and challenges in IT Validation & Compliance.',
+                footerText: '© 2026 Raoni Barbalho. Crafted with precision.'
+            }
+        };
+
+        let currentLang = localStorage.getItem('lang') || 'pt-BR';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.documentElement.lang = lang;
+            updatePageText();
+        }
+
+        function updatePageText() {
+            const t = translations[currentLang];
+            
+            // Update all text elements (this is a foundation - can be expanded)
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    el.textContent = t[key];
+                }
+            });
+        }
+
+        document.getElementById('lang-toggle').addEventListener('click', () => {
+            setLanguage(currentLang === 'pt-BR' ? 'en-US' : 'pt-BR');
+        });
+
+        setLanguage(currentLang);
+
+        // ========== THEME & CUSTOMIZATION ==========
+        function loadSettings() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            const palette = localStorage.getItem('palette') || 'navy';
+            const particles = localStorage.getItem('particles') || 'medium';
+            const scroll = localStorage.getItem('scroll') || 'parallax';
+
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.setAttribute('data-palette', palette);
+            document.documentElement.setAttribute('data-particles', particles);
+            document.documentElement.setAttribute('data-scroll', scroll);
+
+            // Update UI
+            document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
+            document.querySelector(`[data-palette="${palette}"]`)?.classList.add('active');
+            document.querySelector(`[data-particles="${particles}"]`).classList.add('active');
+            document.querySelector(`[data-scroll="${scroll}"]`).classList.add('active');
+        }
+
+        function saveSettings(key, value) {
+            localStorage.setItem(key, value);
+            document.documentElement.setAttribute(`data-${key}`, value);
+        }
+
+        loadSettings();
+
+        // Theme Toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            saveSettings('theme', next);
+            document.getElementById('theme-toggle').innerHTML = next === 'light' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // Customize Panel
+        document.getElementById('customize-open').addEventListener('click', () => {
+            document.getElementById('customize-panel').classList.add('active');
+        });
+
+        document.getElementById('customize-close').addEventListener('click', () => {
+            document.getElementById('customize-panel').classList.remove('active');
+        });
+
+        // Theme Options
+        document.querySelectorAll('[data-theme]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-theme]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                saveSettings('theme', this.getAttribute('data-theme'));
+                document.getElementById('theme-toggle').innerHTML = this.getAttribute('data-theme') === 'light' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            });
+        });
+
+        // Palette Options
+        document.querySelectorAll('[data-palette]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-palette]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                saveSettings('palette', this.getAttribute('data-palette'));
+            });
+        });
+
+        // Particles Options
+        document.querySelectorAll('[data-particles]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-particles]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                saveSettings('particles', this.getAttribute('data-particles'));
+                updateParticles();
+            });
+        });
+
+        // Scroll Options
+        document.querySelectorAll('[data-scroll]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-scroll]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                saveSettings('scroll', this.getAttribute('data-scroll'));
+            });
+        });
+
+        // ========== 3D PARTICLES ENGINE ==========
+        const canvas = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setClearColor(0x000000, 0);
+
+        camera.position.z = 12;
+
+        let particlesCount = 20000;
+        let particles = null;
+
+        function createParticles() {
+            if (particles) scene.remove(particles);
+
+            const positions = new Float32Array(particlesCount * 3);
+            const colors = new Float32Array(particlesCount * 3);
+
+            for (let i = 0; i < particlesCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 30;
+                positions[i + 1] = (Math.random() - 0.5) * 30;
+                positions[i + 2] = (Math.random() - 0.5) * 30;
+
+                const hue = Math.random() * 0.3 + 0.5;
+                const color = new THREE.Color().setHSL(hue, 0.8, 0.6);
+                colors[i] = color.r;
+                colors[i + 1] = color.g;
+                colors[i + 2] = color.b;
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.08,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: true
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+        }
+
+        function updateParticles() {
+            const level = document.documentElement.getAttribute('data-particles');
+            particlesCount = level === 'light' ? 5000 : level === 'heavy' ? 30000 : 20000;
+            createParticles();
+        }
+
+        createParticles();
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let scrollY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY * 0.005;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (particles) {
+                particles.rotation.x += 0.00015 + mouseY * 0.0001;
+                particles.rotation.y += 0.0002 + mouseX * 0.0001;
+                particles.rotation.z += scrollY * 0.0001;
+            }
+
+            camera.position.y = -window.scrollY * 0.005;
+            camera.position.z = 12 + Math.sin(Date.now() * 0.0001) * 2;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ========== SCROLL ANIMATIONS ==========
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Fade-in animations on scroll
+        gsap.utils.toArray('section').forEach(section => {
+            gsap.to(section, {
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top center',
+                    end: 'center center',
+                    scrub: 1
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1
+            });
+        });
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    gsap.to(window, {
+                        duration: 1,
+                        scrollTo: { y: target, offsetY: 80 },
+                        ease: 'power3.inOut'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

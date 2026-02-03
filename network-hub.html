@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Hub | RaoniX Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030303;
+            --text: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 32px;
+            background: rgba(3,3,3,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--text); }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 32px 60px;
+        }
+        
+        /* Header */
+        .header {
+            margin-bottom: 48px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 16px;
+        }
+        
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .tab-btn:hover { color: var(--text); }
+        
+        .tab-btn.active {
+            color: var(--accent);
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+        
+        /* Content Sections */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Connections Grid */
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .connection-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+        
+        .connection-card:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+        
+        .connection-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .connection-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .connection-info h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .connection-role {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        
+        .connection-company {
+            font-size: 0.8rem;
+            color: var(--accent-light);
+        }
+        
+        .connection-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 10px 12px;
+            background: rgba(99,102,241,0.1);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 8px;
+            color: var(--accent-light);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .action-btn:hover {
+            background: rgba(99,102,241,0.2);
+            border-color: var(--accent);
+        }
+        
+        /* Resources Section */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .resource-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+        
+        .resource-card:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: var(--accent);
+        }
+        
+        .resource-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+        
+        .resource-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .resource-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        .resource-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+        
+        .resource-link:hover {
+            gap: 10px;
+        }
+        
+        /* Events Section */
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .event-item {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            gap: 16px;
+            transition: all 0.3s;
+        }
+        
+        .event-item:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: var(--accent);
+        }
+        
+        .event-date {
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .event-date .month {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        
+        .event-date .day {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        
+        .event-info h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .event-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        .event-btn {
+            margin-left: auto;
+            align-self: center;
+            padding: 8px 16px;
+            background: rgba(99,102,241,0.1);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 6px;
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .event-btn:hover {
+            background: rgba(99,102,241,0.2);
+        }
+        
+        /* Footer */
+        footer {
+            padding: 40px 32px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 60px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 16px;
+        }
+        
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--text);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .container { padding: 100px 16px 60px; }
+            .header h1 { font-size: 1.8rem; }
+            .tabs { flex-direction: column; }
+            .connections-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-brand">
+            🌐 Network Hub
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Platform Hub</a>
+            <a href="portfolio-3d.html">Portfolio</a>
+            <a href="interview-prep.html">Interview Prep</a>
+        </div>
+    </nav>
+    
+    <!-- Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Professional Network</h1>
+            <p>Connect, learn, and grow with industry professionals in IT Validation & Compliance</p>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('connections')">🤝 Connections</button>
+            <button class="tab-btn" onclick="switchTab('resources')">📚 Resources</button>
+            <button class="tab-btn" onclick="switchTab('events')">📅 Events</button>
+        </div>
+        
+        <!-- Connections Tab -->
+        <div id="connections" class="tab-content active">
+            <div class="connections-grid">
+                <!-- Connection Card 1 -->
+                <div class="connection-card">
+                    <div class="connection-header">
+                        <div class="connection-avatar">👨‍💼</div>
+                        <div class="connection-info">
+                            <h3>João Silva</h3>
+                            <div class="connection-role">IT Validation Manager</div>
+                            <div class="connection-company">Novo Nordisk 🇧🇷</div>
+                        </div>
+                    </div>
+                    <div class="connection-actions">
+                        <button class="action-btn">Message</button>
+                        <button class="action-btn">Add</button>
+                    </div>
+                </div>
+                
+                <!-- Connection Card 2 -->
+                <div class="connection-card">
+                    <div class="connection-header">
+                        <div class="connection-avatar" style="background: linear-gradient(135deg, #818cf8, #10b981);">👩‍💼</div>
+                        <div class="connection-info">
+                            <h3>Maria Santos</h3>
+                            <div class="connection-role">Compliance Specialist</div>
+                            <div class="connection-company">Sanofi 🇧🇷</div>
+                        </div>
+                    </div>
+                    <div class="connection-actions">
+                        <button class="action-btn">Message</button>
+                        <button class="action-btn">Add</button>
+                    </div>
+                </div>
+                
+                <!-- Connection Card 3 -->
+                <div class="connection-card">
+                    <div class="connection-header">
+                        <div class="connection-avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">👨‍💻</div>
+                        <div class="connection-info">
+                            <h3>Carlos Mendes</h3>
+                            <div class="connection-role">Validation Engineer</div>
+                            <div class="connection-company">Merck 🇸🇪</div>
+                        </div>
+                    </div>
+                    <div class="connection-actions">
+                        <button class="action-btn">Message</button>
+                        <button class="action-btn">Add</button>
+                    </div>
+                </div>
+                
+                <!-- Connection Card 4 -->
+                <div class="connection-card">
+                    <div class="connection-header">
+                        <div class="connection-avatar" style="background: linear-gradient(135deg, #06b6d4, #8b5cf6);">👩‍🔬</div>
+                        <div class="connection-info">
+                            <h3>Ana Oliveira</h3>
+                            <div class="connection-role">GxP Consultant</div>
+                            <div class="connection-company">Independent 🇸🇦</div>
+                        </div>
+                    </div>
+                    <div class="connection-actions">
+                        <button class="action-btn">Message</button>
+                        <button class="action-btn">Add</button>
+                    </div>
+                </div>
+                
+                <!-- Connection Card 5 -->
+                <div class="connection-card">
+                    <div class="connection-header">
+                        <div class="connection-avatar" style="background: linear-gradient(135deg, #ec4899, #f59e0b);">👨‍🎓</div>
+                        <div class="connection-info">
+                            <h3>Pedro Costa</h3>
+                            <div class="connection-role">IT Quality Manager</div>
+                            <div class="connection-company">GSK 🇬🇧</div>
+                        </div>
+                    </div>
+                    <div class="connection-actions">
+                        <button class="action-btn">Message</button>
+                        <button class="action-btn">Add</button>
+                    </div>
+                </div>
+                
+                <!-- Connection Card 6 -->
+                <div class="connection-card">
+                    <div class="connection-header">
+                        <div class="connection-avatar" style="background: linear-gradient(135deg, #10b981, #06b6d4);">👩‍💼</div>
+                        <div class="connection-info">
+                            <h3>Beatriz Rocha</h3>
+                            <div class="connection-role">Regulatory Affairs</div>
+                            <div class="connection-company">Roche 🇩🇪</div>
+                        </div>
+                    </div>
+                    <div class="connection-actions">
+                        <button class="action-btn">Message</button>
+                        <button class="action-btn">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resources Tab -->
+        <div id="resources" class="tab-content">
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">📖</div>
+                    <h3>GAMP 5 Guide</h3>
+                    <p>Complete guide to GAMP 5 lifecycle model for computer systems validation in pharma.</p>
+                    <a href="#" class="resource-link">Learn more →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">📜</div>
+                    <h3>21 CFR Part 11</h3>
+                    <p>FDA regulations for electronic records and signatures. Essential for compliance roles.</p>
+                    <a href="#" class="resource-link">Explore →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">🎥</div>
+                    <h3>Video Tutorials</h3>
+                    <p>Watch expert interviews and technical walkthroughs on validation best practices.</p>
+                    <a href="#" class="resource-link">Watch →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">📊</div>
+                    <h3>Case Studies</h3>
+                    <p>Real-world examples of successful validation projects and lessons learned.</p>
+                    <a href="#" class="resource-link">Read →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">🛠️</div>
+                    <h3>Tools & Templates</h3>
+                    <p>Ready-to-use templates for protocols, specs, and validation documentation.</p>
+                    <a href="#" class="resource-link">Download →</a>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">📚</div>
+                    <h3>Knowledge Base</h3>
+                    <p>Searchable database of common questions and technical deep-dives.</p>
+                    <a href="#" class="resource-link">Search →</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Events Tab -->
+        <div id="events" class="tab-content">
+            <div class="events-list">
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="month">Feb</div>
+                        <div class="day">15</div>
+                    </div>
+                    <div class="event-info">
+                        <h3>Webinar: GAMP 5 Deep Dive</h3>
+                        <div class="event-meta">🕐 2:00 PM UTC | 🎤 Expert Roundtable</div>
+                    </div>
+                    <button class="event-btn">Register</button>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="month">Feb</div>
+                        <div class="day">22</div>
+                    </div>
+                    <div class="event-info">
+                        <h3>Networking Session: IT Leaders in Pharma</h3>
+                        <div class="event-meta">🕖 3:00 PM UTC | 👥 100+ attendees expected</div>
+                    </div>
+                    <button class="event-btn">Join</button>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="month">Mar</div>
+                        <div class="day">05</div>
+                    </div>
+                    <div class="event-info">
+                        <h3>Workshop: Azure Cloud Compliance</h3>
+                        <div class="event-meta">🕐 1:00 PM UTC | 📝 Hands-on training</div>
+                    </div>
+                    <button class="event-btn">Enroll</button>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="month">Mar</div>
+                        <div class="day">12</div>
+                    </div>
+                    <div class="event-info">
+                        <h3>Conference: Validation Trends 2026</h3>
+                        <div class="event-meta">🕖 All day | 🏢 Virtual & In-person</div>
+                    </div>
+                    <button class="event-btn">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div>Professional Network | RaoniX Platform 2026</div>
+        <div class="footer-links">
+            <a href="portfolio-3d.html">My Portfolio</a>
+            <a href="interview-prep.html">Interview Prep</a>
+            <a href="cv-hub.html">My CV</a>
+        </div>
+    </footer>
+    
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

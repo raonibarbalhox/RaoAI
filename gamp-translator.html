@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMP 5 Translator | RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #030303; color: #ffffff; min-height: 100vh; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: rgba(10, 10, 10, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.1); z-index: 100; }
+        .main-content { margin-left: 250px; padding: 2rem; }
+        .category-badge { display: inline-block; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; }
+        .cat1 { background: rgba(100, 116, 139, 0.2); color: #cbd5e1; }
+        .cat3 { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .cat4 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .cat5 { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .norm-item { border-left: 3px solid #0070f3; padding-left: 1rem; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="p-6">
+            <h1 class="text-2xl font-black mb-8" style="background: linear-gradient(135deg, #fff, #0070f3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">RaoniX</h1>
+            <nav class="space-y-2 text-sm">
+                <a href="/index.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🏠 Hub</a>
+                <a href="#" class="block px-4 py-2 rounded-lg bg-white/10">📚 GAMP Translator</a>
+                <a href="/checklist-manager.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">✓ Checklist Manager</a>
+                <a href="/csv-protocol.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🧪 CSV Protocol</a>
+                <a href="/meeting-prep.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">📋 Meeting Prep</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="mb-8">
+            <h1 class="text-4xl font-black mb-2">GAMP 5 Translator</h1>
+            <p class="text-slate-400">Traduz conceitos técnicos de GAMP 5 para linguagem de negócio • Para leigos entenderem validação</p>
+        </div>
+
+        <!-- Search/Input -->
+        <div class="glass rounded-2xl p-6 mb-6">
+            <label class="block text-sm font-semibold mb-3">O que você quer entender?</label>
+            <div class="flex gap-2">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Ex: O que é IQ? O que é GAMP Cat 5? O que é CSV?"
+                    class="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500"
+                >
+                <button id="searchBtn" class="px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 font-semibold transition">
+                    🔍 Explicar
+                </button>
+            </div>
+        </div>
+
+        <!-- Glossário Interativo -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- GAMP Categories -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-xl font-bold mb-4">Categorias GAMP 5</h2>
+                <div class="space-y-3">
+                    <div class="cursor-pointer hover:bg-white/5 p-3 rounded-lg transition" onclick="explainCategory('cat1')">
+                        <span class="category-badge cat1">Cat 1</span>
+                        <div class="text-sm text-slate-300 mt-1">Infrastructure não-configurable</div>
+                    </div>
+                    <div class="cursor-pointer hover:bg-white/5 p-3 rounded-lg transition" onclick="explainCategory('cat3')">
+                        <span class="category-badge cat3">Cat 3</span>
+                        <div class="text-sm text-slate-300 mt-1">Non-configurable application software</div>
+                    </div>
+                    <div class="cursor-pointer hover:bg-white/5 p-3 rounded-lg transition" onclick="explainCategory('cat4')">
+                        <span class="category-badge cat4">Cat 4</span>
+                        <div class="text-sm text-slate-300 mt-1">Configurable application software</div>
+                    </div>
+                    <div class="cursor-pointer hover:bg-white/5 p-3 rounded-lg transition" onclick="explainCategory('cat5')">
+                        <span class="category-badge cat5">Cat 5</span>
+                        <div class="text-sm text-slate-300 mt-1">Custom/Bespoke software</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fases CSV -->
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-xl font-bold mb-4">Fases de Validação (CSV)</h2>
+                <div class="space-y-3">
+                    <div class="cursor-pointer hover:bg-white/5 p-3 rounded-lg transition" onclick="explainPhase('iq')">
+                        <div class="font-semibold text-blue-400">IQ - Installation Qualification</div>
+                        <div class="text-xs text-slate-400 mt-1">Hardware/Software instalado corretamente?</div>
+                    </div>
+                    <div class="cursor-pointer hover:bg-white/5 p-3 rounded-lg transition" onclick="explainPhase('oq')">
+                        <div class="font-semibold text-orange-400">OQ - Operational Qualification</div>
+                        <div class="text-xs text-slate-400 mt-1">Sistema funciona de acordo com especificações?</div>
+                    </div>
+                    <div class="cursor-pointer hover:bg-white/5 p-3 rounded-lg transition" onclick="explainPhase('pq')">
+                        <div class="font-semibold text-purple-400">PQ - Performance Qualification</div>
+                        <div class="text-xs text-slate-400 mt-1">Sistema produz dados confiáveis sob condições reais?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultado da Explicação -->
+        <div id="resultBox" class="glass rounded-2xl p-6 hidden">
+            <div class="flex items-start gap-4">
+                <div class="text-3xl">💡</div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold mb-2" id="resultTitle"></h3>
+                    <p class="text-slate-300 leading-relaxed" id="resultDescription"></p>
+                    
+                    <!-- Exemplos Práticos -->
+                    <div id="examplesBox" class="mt-4 pt-4 border-t border-white/10">
+                        <div class="font-semibold text-sm mb-2">📌 Exemplo Prático:</div>
+                        <div class="text-sm text-slate-400" id="resultExample"></div>
+                    </div>
+
+                    <!-- Normas/Referências -->
+                    <div id="normsBox" class="mt-4 pt-4 border-t border-white/10">
+                        <div class="font-semibold text-sm mb-2">📋 Normas Aplicáveis:</div>
+                        <div id="resultNorms" class="space-y-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="mt-8 pt-6 border-t border-white/10">
+            <p class="text-sm text-slate-400 mb-4">📚 Leitura Recomendada:</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="#" class="glass p-4 rounded-xl hover:bg-white/10 transition">
+                    <div class="font-semibold mb-1">GAMP 5 Overview</div>
+                    <div class="text-xs text-slate-400">Introdução a GAMP 5 e suas categorias</div>
+                </a>
+                <a href="#" class="glass p-4 rounded-xl hover:bg-white/10 transition">
+                    <div class="font-semibold mb-1">21 CFR Part 11</div>
+                    <div class="text-xs text-slate-400">Compliance para sistemas eletrônicos</div>
+                </a>
+                <a href="#" class="glass p-4 rounded-xl hover:bg-white/10 transition">
+                    <div class="font-semibold mb-1">ALCOA+ Principles</div>
+                    <div class="text-xs text-slate-400">Princípios de integridade de dados</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const knowledgeBase = {
+            // Categorias GAMP
+            'cat1': {
+                title: 'Cat 1: Infrastructure (Sistema Operacional)',
+                description: 'São os componentes básicos que NÃO podem ser customizados. Exemplo: Windows Server, servidor físico, rede.',
+                example: 'Você compra um Windows Server - ele vem pronto do Microsoft. Você NÃO pode mudar como funciona internamente. Apenas usa.',
+                normas: ['GAMP 5 Part 3', 'PIC/S Annex 11', '21 CFR Part 11']
+            },
+            'cat3': {
+                title: 'Cat 3: Non-configurable Software (Software Fechado)',
+                description: 'Software pronto do fornecedor que você NÃO pode customizar. O que você vê é exatamente o que funciona.',
+                example: 'Um software antivírus, Adobe Reader, ou um ERP comprado que NÃO permite alterações de código.',
+                normas: ['GAMP 5 Part 4', 'Software Risk Classification']
+            },
+            'cat4': {
+                title: 'Cat 4: Configurable Software (Software Configurável)',
+                description: 'Software que permite customização SEM alterar código-fonte. Você configura via interface, parâmetros, regras.',
+                example: 'SAP: você configura módulos, cria campos customizados, mas não mexe no código Java do SAP.',
+                normas: ['GAMP 5 Part 5', 'Configuration Management', 'Change Control']
+            },
+            'cat5': {
+                title: 'Cat 5: Custom/Bespoke Software (Software Customizado)',
+                description: 'Software feito do zero ou fortemente customizado para sua organização. Você TEM TOTAL controle e responsabilidade.',
+                example: 'Um script em Python para automação de LIMS, um sistema que seu time de TI desenvolveu internamente.',
+                normas: ['GAMP 5 Part 6', 'Development & Testing', 'Source Code Control']
+            },
+            
+            // Fases CSV
+            'iq': {
+                title: 'IQ: Installation Qualification - "Instalou certo?"',
+                description: 'Você verifica se o software/hardware foi instalado exatamente como especificado. Hardware correto? Versão certa? Segurança OK?',
+                example: 'Você recebe um novo servidor SAP. IQ verifica: SO correto? Memória conforme spec? Patches aplicados? Certificados SSL? Backup configurado?',
+                normas: ['GAMP 5 Part 3', '21 CFR Part 11', 'Installation Checklist']
+            },
+            'oq': {
+                title: 'OQ: Operational Qualification - "Funciona conforme spec?"',
+                description: 'Você testa se o sistema FUNCIONA de acordo com suas especificações técnicas. Testes de performance, limites, error handling.',
+                example: 'Com SAP QM: teste se cria ordem de compra em < 2 segundos, se armazena 1 milhão de registros sem lentidão, se relatórios rodam sem erro.',
+                normas: ['GAMP 5 Part 4', 'System Testing', 'Performance Testing']
+            },
+            'pq': {
+                title: 'PQ: Performance Qualification - "Produz dados confiáveis?"',
+                description: 'Você valida que o sistema produz dados CONFIÁVEIS e ÍNTEGROS em condições reais de produção. ALCOA+ compliance.',
+                example: 'Com LIMS: teste 100 amostras reais, verifica se dados são rastreáveis, timestamps corretos, auditoria funciona, ninguém pode alterar.',
+                normas: ['GAMP 5 Part 5', 'ALCOA+ Principles', '21 CFR Part 11 Section 11.10']
+            },
+
+            // Conceitos-Chave
+            'csv': {
+                title: 'CSV: Computer System Validation',
+                description: 'É o PROCESSO de garantir que um sistema de computador produz dados confiáveis, rastreáveis e íntegros. Obrigação regulatória (FDA, ANVISA).',
+                example: 'Você implementa um SAP para farmacêutica. CSV garante que CADA dado que o SAP gera é confiável e pode ser rastreado. Se FDA vem fiscalizar, CSV prova conformidade.',
+                normas: ['21 CFR Part 11', 'GAMP 5', 'FDA Guidance 2011', 'PIC/S Annex 11']
+            },
+            'alcoa': {
+                title: 'ALCOA+: Princípios de Integridade de Dados',
+                description: 'Attributable (rastreável), Legible (legível), Contemporaneous (em tempo real), Original (original), Accurate (preciso), + Compliant & Secure.',
+                example: 'Cada resultado de teste no LIMS deve ter: quem fez (Attributable), data/hora exata (Contemporaneous), assinatura digital (não alterável/Original).',
+                normas: ['21 CFR Part 11', 'FDA Guidance 2015', 'ANVISA', 'PIC/S']
+            },
+            'gamp': {
+                title: 'GAMP 5: Good Automated Manufacturing Practice',
+                description: 'É a NORMA que diz como validar sistemas de computador em indústria farmacêutica. Divide em 5 categorias conforme risco/customização.',
+                example: 'GAMP 5 diz: "Cat 5 precisa de testes unitários, integração, user acceptance, e mais rigor". Cat 1 precisa de menos validação porque é software padrão.",
+                normas: ['GAMP 5 Guideline', 'FDA Guidance', 'PIC/S Annex 11', 'ISPE Standards']
+            }
+        };
+
+        document.getElementById('searchBtn').addEventListener('click', search);
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') search();
+        });
+
+        function search() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            
+            for (const [key, value] of Object.entries(knowledgeBase)) {
+                if (value.title.toLowerCase().includes(query) || 
+                    value.description.toLowerCase().includes(query) ||
+                    key.includes(query)) {
+                    showResult(value);
+                    return;
+                }
+            }
+            
+            showResult({
+                title: '❓ Não encontrei explicação exata',
+                description: 'Tente um desses termos: Cat 1, Cat 3, Cat 4, Cat 5, IQ, OQ, PQ, CSV, ALCOA, GAMP',
+                example: 'Clique nas categorias ou fases acima para entender melhor!',
+                normas: []
+            });
+        }
+
+        function explainCategory(cat) {
+            document.getElementById('searchInput').value = '';
+            showResult(knowledgeBase[cat]);
+        }
+
+        function explainPhase(phase) {
+            document.getElementById('searchInput').value = '';
+            showResult(knowledgeBase[phase]);
+        }
+
+        function showResult(content) {
+            document.getElementById('resultTitle').textContent = content.title;
+            document.getElementById('resultDescription').textContent = content.description;
+            document.getElementById('resultExample').textContent = content.example;
+            
+            const normsBox = document.getElementById('resultNorms');
+            if (content.normas && content.normas.length > 0) {
+                normsBox.innerHTML = content.normas.map(norm => `
+                    <div class="norm-item text-sm">${norm}</div>
+                `).join('');
+            }
+            
+            document.getElementById('resultBox').classList.remove('hidden');
+            document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+</body>
+</html>

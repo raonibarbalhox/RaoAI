@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raoni Barbalho | IT Validation & Compliance Specialist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+                    colors: {
+                        dark: { 950: '#030303', 900: '#0a0a0a', 800: '#111111', 700: '#1a1a1a' },
+                        accent: { 500: '#0070f3', 400: '#3b9eff', 600: '#0058cc' },
+                        success: { 500: '#10b981', 400: '#34d399' },
+                        warning: { 500: '#f59e0b', 400: '#fbbf24' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        body { 
+            background: 
+                radial-gradient(ellipse at 20% 0%, rgba(0,112,243,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(16,185,129,0.08) 0%, transparent 50%),
+                #030303;
+            min-height: 100vh;
+            color: #ffffff;
+        }
+        
+        .glass { 
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .gradient-text { 
+            background: linear-gradient(135deg, #0070f3, #00bcd4, #3b9eff); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        .badge { 
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .badge-success { background: rgba(16,185,129,0.2); color: #34d399; }
+        .badge-warning { background: rgba(245,158,11,0.2); color: #fbbf24; }
+        .badge-accent { background: rgba(0,112,243,0.2); color: #3b9eff; }
+        
+        @media print {
+            body { background: white !important; color: #000; }
+            .glass { background: #f8f9fa !important; border: 1px solid #e5e7eb !important; }
+            .gradient-text { background: none; -webkit-text-fill-color: #0070f3; color: #0070f3; }
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="pt-32 pb-24 relative">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <!-- Bio Header -->
+                <div class="mb-8">
+                    <div class="inline-block glass rounded-full px-6 py-2 mb-6">
+                        <span class="text-sm font-medium text-slate-300">🇧🇷 Montes Claros, MG • 🌍 Open to Relocation (Denmark/EU)</span>
+                    </div>
+                </div>
+                
+                <!-- Name & Title -->
+                <h1 class="text-6xl lg:text-7xl font-black mb-4">
+                    <span class="gradient-text">Raoni Barbalho</span>
+                </h1>
+                <p class="text-2xl font-semibold text-slate-300 mb-6">
+                    IT Validation & Compliance Specialist
+                </p>
+                <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10">
+                    Transforming pharma IT through GAMP 5 compliance, industrial automation, and 90% faster validation cycles at Novo Nordisk
+                </p>
+                
+                <!-- Achievement Badges -->
+                <div class="flex flex-wrap justify-center gap-4 mb-8">
+                    <div class="badge badge-success">🏆 3,400 QNOW Points</div>
+                    <div class="badge badge-accent">✅ Zero FDA Findings</div>
+                    <div class="badge badge-warning">⚡ 3.5x Faster Delivery</div>
+                    <div class="badge badge-success">🎯 90.9% Satisfaction</div>
+                    <div class="badge badge-accent">🤖 90% Automation</div>
+                </div>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="/" class="glass px-8 py-3 rounded-lg font-semibold hover:bg-opacity-20 transition-all">
+                        ← Back to Hub
+                    </a>
+                    <a href="mailto:raobarbalho@hotmail.com" class="bg-accent-500 hover:bg-accent-600 text-white px-8 py-3 rounded-lg font-semibold transition-all">
+                        Get in Touch
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ACHIEVEMENTS GRID -->
+    <section class="py-24 relative">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-black mb-4">
+                <span class="gradient-text">Achievements & Impact</span>
+            </h2>
+            <p class="text-slate-400 mb-12">Measured results from 2+ years at Novo Nordisk Montes Claros</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Lead Time -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="text-5xl mb-4">⚡</div>
+                    <div class="text-5xl font-black text-success-400 mb-2">3.5x</div>
+                    <div class="font-semibold mb-2">Lead Time Improvement</div>
+                    <p class="text-sm text-slate-400">5 days average vs 17.4 days industry standard</p>
+                </div>
+                
+                <!-- Stakeholder Satisfaction -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="text-5xl mb-4">⭐</div>
+                    <div class="text-5xl font-black text-accent-400 mb-2">90.9%</div>
+                    <div class="font-semibold mb-2">Stakeholder Rating</div>
+                    <p class="text-sm text-slate-400">Infrastructure Survey 2024</p>
+                </div>
+                
+                <!-- Automation Savings -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="text-5xl mb-4">🤖</div>
+                    <div class="text-5xl font-black text-warning-400 mb-2">90%</div>
+                    <div class="font-semibold mb-2">Manual Work Reduced</div>
+                    <p class="text-sm text-slate-400">30 days → 3 days (complex cases)</p>
+                </div>
+                
+                <!-- Audit Compliance -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="text-5xl mb-4">🛡️</div>
+                    <div class="text-5xl font-black text-success-400 mb-2">0</div>
+                    <div class="font-semibold mb-2">FDA/ANVISA Findings</div>
+                    <p class="text-sm text-slate-400">100% documentation approval rate</p>
+                </div>
+                
+                <!-- Critical Projects -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="text-5xl mb-4">📊</div>
+                    <div class="text-5xl font-black text-accent-400 mb-2">8</div>
+                    <div class="font-semibold mb-2">Technical Case Studies</div>
+                    <p class="text-sm text-slate-400">@200 QNOW points each = 3,400 total</p>
+                </div>
+                
+                <!-- Hours Saved -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="text-5xl mb-4">⏱️</div>
+                    <div class="text-5xl font-black text-warning-400 mb-2">200+</div>
+                    <div class="font-semibold mb-2">Rework Hours Avoided</div>
+                    <p class="text-sm text-slate-400">Data Center & Migration Projects</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERTISE SHOWCASE -->
+    <section class="py-24 relative">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-black mb-12">
+                <span class="gradient-text">Core Expertise</span>
+            </h2>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- GxP & Compliance -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="text-3xl mb-4">🔒</div>
+                    <h3 class="text-2xl font-bold mb-4">Validation & Compliance</h3>
+                    <ul class="space-y-3 text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>GAMP 5</strong> — Computerized System Validation</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>CSV</strong> — IQ/OQ/PQ lifecycle validation</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>21 CFR Part 11</strong> — FDA Compliance</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>ALCOA+</strong> — Data Integrity</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>Risk Assessment</strong> — ITRA/DRA</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Automation & Infrastructure -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="text-3xl mb-4">⚙️</div>
+                    <h3 class="text-2xl font-bold mb-4">Automation & Infrastructure</h3>
+                    <ul class="space-y-3 text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>Python</strong> — Compliance automation scripts</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>PowerShell</strong> — Windows hardening</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>SCADA/PLCs</strong> — Industrial systems</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>Data Centers</strong> — Infra design/validation</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>Veeam/SAN</strong> — Backup & storage</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Tools & Methodologies -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="text-3xl mb-4">🛠️</div>
+                    <h3 class="text-2xl font-bold mb-4">Tools & Leadership</h3>
+                    <ul class="space-y-3 text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>ServiceNow</strong> — ITSM & ITRAs</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>QualityDocs</strong> — Regulatory docs</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>Aconex</strong> — Project documentation</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>ITIL v4</strong> — IT Service Management</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-400 mt-1">✓</span>
+                            <span><strong>Agile/SCRUM</strong> — Project delivery</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERIENCE TIMELINE -->
+    <section class="py-24 relative">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-black mb-12">
+                <span class="gradient-text">Professional Journey</span>
+            </h2>
+            
+            <div class="space-y-8">
+                <!-- Current: Novo Nordisk -->
+                <div class="glass rounded-2xl p-8 border-l-4 border-success-400">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold">IT Validation & Compliance Analyst</h3>
+                            <p class="text-slate-400">Novo Nordisk • Montes Claros, Brasil</p>
+                        </div>
+                        <span class="badge badge-success">April 2023 - Present</span>
+                    </div>
+                    <p class="text-slate-300 mb-4">Leading IT validation, compliance governance, and automation for pharmaceutical infrastructure projects across Novo Nordisk Montes Claros.</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Key Achievements</p>
+                            <ul class="text-sm space-y-1">
+                                <li>✓ 3.5x faster lead times</li>
+                                <li>✓ 90.9% stakeholder satisfaction</li>
+                                <li>✓ Zero FDA findings</li>
+                                <li>✓ 8 critical projects delivered</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Technical Focus</p>
+                            <ul class="text-sm space-y-1">
+                                <li>✓ GAMP 5 Validation</li>
+                                <li>✓ Data Center & Infrastructure</li>
+                                <li>✓ SCADA/PLC Modernization</li>
+                                <li>✓ Compliance Automation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cognizant IT Tech Leader -->
+                <div class="glass rounded-2xl p-8 border-l-4 border-accent-400">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold">IT Tech Leader</h3>
+                            <p class="text-slate-400">Cognizant • MSD (Merck Sharp & Dohme)</p>
+                        </div>
+                        <span class="badge badge-accent">2021 - 2023</span>
+                    </div>
+                    <p class="text-slate-300 mb-4">Managed IT Support & Infrastructure team for global pharmaceutical client. Led team coordination, recruitment, and operational alignment.</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Awards & Recognition</p>
+                            <ul class="text-sm space-y-1">
+                                <li>🏆 End of Year Award (2022)</li>
+                                <li>⭐ Client Satisfaction 100%</li>
+                                <li>✅ SLA Met 100%</li>
+                                <li>📊 +50 recognitions</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Leadership Experience</p>
+                            <ul class="text-sm space-y-1">
+                                <li>✓ Team coordination</li>
+                                <li>✓ Recruitment & onboarding</li>
+                                <li>✓ Performance management</li>
+                                <li>✓ ITSM & SLA management</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- MSD IT Analyst -->
+                <div class="glass rounded-2xl p-8 border-l-4 border-warning-400">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold">IT Analyst</h3>
+                            <p class="text-slate-400">Merck Sharp & Dohme • Montes Claros, Brasil</p>
+                        </div>
+                        <span class="badge badge-warning">2020 - 2023</span>
+                    </div>
+                    <p class="text-slate-300 mb-4">Global Infrastructure & End-User Support specialist. Led critical migrations and system implementations.</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Major Projects</p>
+                            <ul class="text-sm space-y-1">
+                                <li>✓ Remedy → ServiceNow migration</li>
+                                <li>✓ Data Center management</li>
+                                <li>✓ Network infrastructure</li>
+                                <li>✓ IT asset management</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 mb-1">Impact</p>
+                            <ul class="text-sm space-y-1">
+                                <li>✓ Managed 500+ IT assets</li>
+                                <li>✓ Zero critical downtime</li>
+                                <li>✓ ITSM automation</li>
+                                <li>✓ Incident coordination</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Healthcare IT Manager -->
+                <div class="glass rounded-2xl p-8 border-l-4 border-slate-500">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold">IT Manager</h3>
+                            <p class="text-slate-400">Pró-Vida Hospital • Montes Claros, Brasil</p>
+                        </div>
+                        <span class="badge">2017 - 2020</span>
+                    </div>
+                    <p class="text-slate-300">Built and managed complete IT infrastructure for healthcare facility including networks, security, and user support.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CERTIFICATIONS -->
+    <section class="py-24 relative">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-black mb-12">
+                <span class="gradient-text">Certifications & Training</span>
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass rounded-2xl p-8">
+                    <h3 class="text-xl font-bold mb-4">Formal Certifications</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3">
+                            <span class="w-2 h-2 bg-success-400 rounded-full"></span>
+                            <span><strong>ITIL v4 Foundation</strong> — PeopleCert (2024)</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-2 h-2 bg-success-400 rounded-full"></span>
+                            <span><strong>GlobalEnglish Level 7</strong> — Advanced (C1)</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-2 h-2 bg-success-400 rounded-full"></span>
+                            <span><strong>Azure Fundamentals</strong> — Microsoft</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-2 h-2 bg-success-400 rounded-full"></span>
+                            <span><strong>21 CFR Part 11</strong> — Regulatory compliance</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glass rounded-2xl p-8">
+                    <h3 class="text-xl font-bold mb-4">Professional Development</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3">
+                            <span class="w-2 h-2 bg-accent-400 rounded-full"></span>
+                            <span><strong>GAMP 5</strong> — GxP validation (practitioner)</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-2 h-2 bg-accent-400 rounded-full"></span>
+                            <span><strong>Life Sciences Regulation</strong> — Cognizant Program</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-2 h-2 bg-accent-400 rounded-full"></span>
+                            <span><strong>ZOEF Framework</strong> — Zero Operational Errors</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-2 h-2 bg-accent-400 rounded-full"></span>
+                            <span><strong>Frontline Leaders Program</strong> — People leadership</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="py-24 relative">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-black mb-12">
+                <span class="gradient-text">What Colleagues Say</span>
+            </h2>
+            
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="glass rounded-2xl p-8">
+                    <div class="flex gap-1 mb-4">
+                        <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                    </div>
+                    <p class="text-lg font-medium mb-4">"Sempre disponível com senso de urgência e cordialidade. Muito engajado nos projetos."</p>
+                    <p class="text-slate-400"><strong>João Lucas Macedo</strong><br/>Network Analyst, Novo Nordisk</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8">
+                    <div class="flex gap-1 mb-4">
+                        <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                    </div>
+                    <p class="text-lg font-medium mb-4">"Muito prestativo, sempre disponível para esclarecimentos de GxP Compliance."</p>
+                    <p class="text-slate-400"><strong>Marciel Rocha Soares</strong><br/>Systems Analyst (GxP Focus), Novo Nordisk</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8">
+                    <div class="flex gap-1 mb-4">
+                        <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                    </div>
+                    <p class="text-lg font-medium mb-4">"Postura proativa, cordial e orientada a soluções. Muito competente."</p>
+                    <p class="text-slate-400"><strong>Lorena Lopes</strong><br/>Senior Process Analyst, Novo Nordisk</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8">
+                    <div class="flex gap-1 mb-4">
+                        <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                    </div>
+                    <p class="text-lg font-medium mb-4">"Busca implacável pela melhoria nos procedimentos. Impacto positivo garantido."</p>
+                    <p class="text-slate-400"><strong>Anonymous Colleague</strong><br/>Critical Operations, Novo Nordisk</p>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 lg:col-span-2">
+                    <div class="flex gap-1 mb-4">
+                        <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                    </div>
+                    <p class="text-lg font-medium mb-4">"Equilíbrio e previsibilidade nas entregas. Faz a diferença em projetos críticos."</p>
+                    <p class="text-slate-400"><strong>Infrastructure & Compliance Team</strong><br/>Novo Nordisk Montes Claros</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CASE STUDIES -->
+    <section class="py-24 relative">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-black mb-4">
+                <span class="gradient-text">8 Real Case Studies</span>
+            </h2>
+            <p class="text-slate-400 mb-12">Technical achievements @ 200 QNOW points each = 3,400 total points</p>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass rounded-2xl p-8 hover:border-accent-400/50 transition-all">
+                    <h3 class="text-lg font-bold mb-3">1. SCADA & Industrial Switches Modernization</h3>
+                    <p class="text-sm text-slate-400 mb-4">Modernização Validada de Infraestrutura SCADA e Switches Industriais</p>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Challenge:</strong> Replace critical equipment without production impact</p>
+                        <p><strong>Result:</strong> <span class="text-success-400">66% faster lead time</span> • 100% asset migration • Zero incidents</p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 hover:border-accent-400/50 transition-all">
+                    <h3 class="text-lg font-bold mb-3">2. PLC Replacement Governance</h3>
+                    <p class="text-sm text-slate-400 mb-4">Governança e Validação na Substituição de PLCs Críticos</p>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Challenge:</strong> Swap critical PLCs maintaining GxP compliance</p>
+                        <p><strong>Result:</strong> <span class="text-success-400">Audit-ready</span> • <span class="text-warning-400">88% faster response</span> • Zero deviations</p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 hover:border-accent-400/50 transition-all">
+                    <h3 class="text-lg font-bold mb-3">3. GxP Server Migration</h3>
+                    <p class="text-sm text-slate-400 mb-4">Governança de Mudança Crítica na Migração de Servidores</p>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Challenge:</strong> Migrate servers between buildings with zero downtime</p>
+                        <p><strong>Result:</strong> <span class="text-success-400">Zero downtime</span> • 100% documentation approved • <span class="text-warning-400">-50% doc time</span></p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 hover:border-accent-400/50 transition-all">
+                    <h3 class="text-lg font-bold mb-3">4. Veeam/SAN/Library Upgrade</h3>
+                    <p class="text-sm text-slate-400 mb-4">Upgrade de Infraestrutura Crítica</p>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Challenge:</strong> Update backup/storage maintaining GxP continuity</p>
+                        <p><strong>Result:</strong> <span class="text-success-400">100% continuity</span> • 0 data loss incidents • <span class="text-warning-400">-20% validation time</span></p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 hover:border-accent-400/50 transition-all">
+                    <h3 class="text-lg font-bold mb-3">5. Critical Network Server Validation</h3>
+                    <p class="text-sm text-slate-400 mb-4">Validação Completa de Servidores em Rede Produtiva</p>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Challenge:</strong> Add new hosts maintaining GxP data integrity</p>
+                        <p><strong>Result:</strong> <span class="text-success-400">100% Right-First-Time</span> • <span class="text-warning-400">+40h rework avoided</span> • Controlled deployment</p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 hover:border-accent-400/50 transition-all">
+                    <h3 class="text-lg font-bold mb-3">6. Oracle Aconex SaaS Governance</h3>
+                    <p class="text-sm text-slate-400 mb-4">Governança do SaaS Oracle Aconex</p>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Challenge:</strong> Implement unified document management with GAMP5</p>
+                        <p><strong>Result:</strong> <span class="text-success-400">100% GAMP5 compliant</span> • <span class="text-warning-400">-40% approval time</span> • Zero rework</p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 hover:border-accent-400/50 transition-all">
+                    <h3 class="text-lg font-bold mb-3">7. Data Center Implementation</h3>
+                    <p class="text-sm text-slate-400 mb-4">Governança dos Data Centers Expansão Fabril</p>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Challenge:</strong> Deploy 2 GxP data centers synchronizing multiple teams</p>
+                        <p><strong>Result:</strong> <span class="text-success-400">FAT/SAT first attempt</span> • <span class="text-warning-400">+200h rework avoided</span> • Aligned stakeholders</p>
+                    </div>
+                </div>
+                
+                <div class="glass rounded-2xl p-8 hover:border-accent-400/50 transition-all">
+                    <h3 class="text-lg font-bold mb-3">8. Windows Validation Automation Platform</h3>
+                    <p class="text-sm text-slate-400 mb-4">Plataforma Automatizada de Validação e Compliance</p>
+                    <div class="space-y-2 text-sm">
+                        <p><strong>Challenge:</strong> Manual Windows testing took 1 month per case</p>
+                        <p><strong>Result:</strong> <span class="text-success-400">30→3 days</span> • <span class="text-warning-400">90% faster</span> • 100% compliance coverage with ALCOA+</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FOOTER -->
+    <section class="py-24 relative">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-black mb-6">
+                <span class="gradient-text">Ready to Transform IT Validation?</span>
+            </h2>
+            <p class="text-xl text-slate-400 mb-8">
+                Let's discuss how to bring GxP innovation to your organization
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="mailto:raobarbalho@hotmail.com" class="bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-lg font-semibold transition-all">
+                    Get in Touch
+                </a>
+                <a href="https://linkedin.com/in/raoni-barbalho-9064b0a4/" target="_blank" class="glass px-8 py-4 rounded-lg font-semibold hover:bg-opacity-20 transition-all">
+                    LinkedIn Profile
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-white/5 py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="font-bold mb-4">Contact</h3>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li>📧 raobarbalho@hotmail.com</li>
+                        <li>📱 +55 (38) 99139-9293</li>
+                        <li>📍 Montes Claros, MG - Brasil</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-4">Languages</h3>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li>🇧🇷 Portuguese — Native</li>
+                        <li>🇺🇸 English — Advanced (C1)</li>
+                        <li>🇪🇸 Spanish — Basic</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-4">Links</h3>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="/" class="hover:text-accent-400">← Back to Hub</a></li>
+                        <li><a href="https://linkedin.com/in/raoni-barbalho-9064b0a4/" target="_blank" class="hover:text-accent-400">LinkedIn</a></li>
+                        <li><a href="mailto:raobarbalho@hotmail.com" class="hover:text-accent-400">Email</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/5 pt-8 text-center text-sm text-slate-500">
+                <p>© 2026 Raoni Barbalho | IT Validation & Compliance Specialist | Novo Nordisk</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

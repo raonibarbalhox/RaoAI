@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Board | RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030303;
+            --text: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 32px;
+            background: rgba(3,3,3,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--text); }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 32px 60px;
+        }
+        
+        /* Header */
+        .header {
+            margin-bottom: 48px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+        }
+        
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: rgba(99,102,241,0.2);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        /* Job Cards Grid */
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+        
+        .job-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .job-card:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+        
+        .job-header {
+            margin-bottom: 16px;
+        }
+        
+        .job-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        
+        .job-company {
+            color: var(--accent-light);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .job-meta {
+            display: flex;
+            gap: 12px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+        }
+        
+        .job-description {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 16px 0;
+        }
+        
+        .job-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        
+        .job-tag {
+            padding: 6px 12px;
+            background: rgba(99,102,241,0.15);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+        
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .salary {
+            font-weight: 700;
+            color: var(--success);
+        }
+        
+        .apply-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--accent), #818cf8);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99,102,241,0.3);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 24px;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .modal-close:hover {
+            color: var(--text);
+        }
+        
+        .modal-body p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 40px 32px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 60px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .container { padding: 100px 16px 60px; }
+            .header h1 { font-size: 1.8rem; }
+            .jobs-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-brand">💼 Job Board</div>
+        <div class="nav-links">
+            <a href="index.html">Hub</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="skill-assessment.html">Assessment</a>
+        </div>
+    </nav>
+    
+    <!-- Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>IT Validation Jobs</h1>
+            <p>Curated opportunities in GxP Compliance, ITSM, and Regulatory Systems</p>
+            
+            <!-- Filters -->
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterJobs('all')">All</button>
+                <button class="filter-btn" onclick="filterJobs('entry')">Entry Level</button>
+                <button class="filter-btn" onclick="filterJobs('mid')">Mid-Level</button>
+                <button class="filter-btn" onclick="filterJobs('senior')">Senior</button>
+                <button class="filter-btn" onclick="filterJobs('remote')">Remote</button>
+            </div>
+        </div>
+        
+        <!-- Jobs Grid -->
+        <div class="jobs-grid" id="jobsGrid">
+            <!-- Jobs will be generated here -->
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalTitle" style="font-size: 1.8rem; font-weight: 800; margin-bottom: 8px;"></h2>
+                    <p id="modalCompany" style="color: var(--accent-light); font-weight: 600;"></p>
+                </div>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <button class="apply-btn" onclick="applyJob()" style="width: 100%; padding: 16px; margin-top: 24px; font-size: 1rem;">Apply Now</button>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div>Job Board | RaoniX Platform 2026</div>
+    </footer>
+    
+    <script>
+        const jobs = [
+            {
+                id: 1,
+                title: 'Senior IT Validation Engineer',
+                company: 'Novo Nordisk',
+                level: 'senior',
+                location: 'Copenhagen, Denmark',
+                type: 'Full-time',
+                salary: '$110-140K',
+                description: 'Lead GxP validation projects for manufacturing systems',
+                details: 'Lead GxP validation projects for critical manufacturing systems. Oversee CSV from concept to closure, manage cross-functional teams, and ensure compliance with 21 CFR Part 11 and EU Annex 11.',
+                skills: ['GAMP 5', 'CSV', 'Risk Assessment', 'Leadership'],
+                remote: false
+            },
+            {
+                id: 2,
+                title: 'Validation Specialist',
+                company: 'Sanofi',
+                level: 'mid',
+                location: 'São Paulo, Brazil',
+                type: 'Full-time',
+                salary: '$60-80K',
+                description: 'Execute system validation protocols and testing',
+                details: 'Execute system validation protocols, prepare specifications, and conduct testing activities. Work with IT teams and quality assurance to ensure systems meet regulatory requirements.',
+                skills: ['CSV', 'Testing', 'Documentation', 'ITSM'],
+                remote: false
+            },
+            {
+                id: 3,
+                title: 'IT Systems Validator',
+                company: 'Merck',
+                level: 'entry',
+                location: 'Remote',
+                type: 'Full-time',
+                salary: '$50-65K',
+                description: 'Support validation projects and document systems',
+                details: 'Support validation project execution, prepare validation documentation, assist in testing activities, and help maintain validation records. Great opportunity to learn GxP principles.',
+                skills: ['GxP', 'Documentation', 'Testing', 'Learning'],
+                remote: true
+            },
+            {
+                id: 4,
+                title: 'Compliance Officer - IT Systems',
+                company: 'GSK',
+                level: 'senior',
+                location: 'London, UK',
+                type: 'Full-time',
+                salary: '$120-150K',
+                description: 'Oversee IT compliance and validation strategy',
+                details: 'Develop and oversee IT validation strategy, manage audit responses, lead compliance initiatives, and ensure systems meet all regulatory requirements.',
+                skills: ['Compliance', 'Strategy', 'Leadership', 'Audits'],
+                remote: false
+            },
+            {
+                id: 5,
+                title: 'Data Integrity Specialist',
+                company: 'Roche',
+                level: 'mid',
+                location: 'Basel, Switzerland',
+                type: 'Full-time',
+                salary: '$85-105K',
+                description: 'Manage 21 CFR Part 11 compliance',
+                details: 'Manage 21 CFR Part 11 compliance initiatives, conduct data integrity assessments, and implement controls. Ensure all systems maintain audit trails and electronic signatures.',
+                skills: ['21 CFR 11', 'Data Integrity', 'Risk Assessment'],
+                remote: false
+            },
+            {
+                id: 6,
+                title: 'ServiceNow Administrator',
+                company: 'Pfizer',
+                level: 'mid',
+                location: 'Remote',
+                type: 'Full-time',
+                salary: '$75-95K',
+                description: 'Manage ServiceNow configuration and optimization',
+                details: 'Administer ServiceNow platform, manage workflow configurations, optimize incident/change management processes, and provide technical support to users.',
+                skills: ['ServiceNow', 'ITSM', 'Configuration', 'Support'],
+                remote: true
+            },
+            {
+                id: 7,
+                title: 'Cloud Infrastructure Validator',
+                company: 'Lilly',
+                level: 'senior',
+                location: 'Indianapolis, USA',
+                type: 'Full-time',
+                salary: '$130-160K',
+                description: 'Validate cloud systems for manufacturing',
+                details: 'Lead validation of cloud-based manufacturing systems, manage Azure/AWS validation strategies, and ensure GxP compliance in cloud environments.',
+                skills: ['Cloud', 'AWS/Azure', 'CSV', 'Architecture'],
+                remote: false
+            },
+            {
+                id: 8,
+                title: 'Regulatory Systems Manager',
+                company: 'Amgen',
+                level: 'senior',
+                location: 'Remote',
+                type: 'Full-time',
+                salary: '$105-135K',
+                description: 'Manage regulatory systems and compliance',
+                details: 'Oversee regulatory systems (LIMS, ERP, MES), manage system validation, coordinate with regulatory affairs, and ensure FDA compliance.',
+                skills: ['LIMS', 'ERP', 'Compliance', 'Leadership'],
+                remote: true
+            },
+            {
+                id: 9,
+                title: 'Quality Systems Analyst',
+                company: 'Boehringer Ingelheim',
+                level: 'mid',
+                location: 'Vienna, Austria',
+                type: 'Full-time',
+                salary: '$70-90K',
+                description: 'Support quality systems validation',
+                details: 'Support quality management systems validation, prepare test cases, document system functionality, and coordinate validation activities with quality teams.',
+                skills: ['QMS', 'Testing', 'Documentation', 'Analysis'],
+                remote: false
+            },
+            {
+                id: 10,
+                title: 'IT Compliance Lead',
+                company: 'AstraZeneca',
+                level: 'senior',
+                location: 'Cambridge, UK',
+                type: 'Full-time',
+                salary: '$115-145K',
+                description: 'Lead IT compliance initiatives',
+                details: 'Lead IT compliance and validation programs, manage regulatory submissions, oversee audit responses, and develop validation strategies.',
+                skills: ['Compliance', 'Leadership', 'Strategy', 'Regulations'],
+                remote: false
+            },
+            {
+                id: 11,
+                title: 'Automation Test Engineer',
+                company: 'Eli Lilly',
+                level: 'entry',
+                location: 'Remote',
+                type: 'Full-time',
+                salary: '$55-70K',
+                description: 'Write and execute automated tests',
+                details: 'Develop and execute automated test scripts, prepare test documentation, and support system validation activities. Knowledge of Python/Selenium is a plus.',
+                skills: ['Automation', 'Testing', 'Scripting', 'Attention to Detail'],
+                remote: true
+            },
+            {
+                id: 12,
+                title: 'Manufacturing Systems Validator',
+                company: 'Novo Nordisk',
+                level: 'mid',
+                location: 'Kalundborg, Denmark',
+                type: 'Full-time',
+                salary: '$80-100K',
+                description: 'Validate manufacturing execution systems',
+                details: 'Validate manufacturing execution systems (MES), prepare specifications, conduct testing, and ensure compliance with regulatory requirements.',
+                skills: ['MES', 'CSV', 'Manufacturing', 'GxP'],
+                remote: false
+            },
+            {
+                id: 13,
+                title: 'Data & Analytics Validator',
+                company: 'Johnson & Johnson',
+                level: 'mid',
+                location: 'Remote',
+                type: 'Full-time',
+                salary: '$85-105K',
+                description: 'Validate analytics and BI systems',
+                details: 'Validate business intelligence and analytics systems, manage data integrity, and ensure compliance in reporting systems used for regulatory submissions.',
+                skills: ['Analytics', 'Data Integrity', 'SQL', 'Testing'],
+                remote: true
+            },
+            {
+                id: 14,
+                title: 'IT Risk & Compliance Officer',
+                company: 'Sanofi',
+                level: 'senior',
+                location: 'Paris, France',
+                type: 'Full-time',
+                salary: '$110-140K',
+                description: 'Manage IT risk and compliance programs',
+                details: 'Develop and manage IT risk and compliance programs, conduct assessments, lead remediation efforts, and manage regulatory relationships.',
+                skills: ['Risk Management', 'Compliance', 'Leadership', 'Audits'],
+                remote: false
+            },
+            {
+                id: 15,
+                title: 'Network Systems Validator',
+                company: 'Merck',
+                level: 'mid',
+                location: 'Rahway, USA',
+                type: 'Full-time',
+                salary: '$75-95K',
+                description: 'Validate network and security systems',
+                details: 'Validate network infrastructure, security systems, and ensure compliance with IT controls. Work with infrastructure teams on system implementations.',
+                skills: ['Networks', 'Security', 'Infrastructure', 'Testing'],
+                remote: false
+            }
+        ];
+        
+        let currentFilter = 'all';
+        let selectedJob = null;
+        
+        function renderJobs() {
+            const filtered = currentFilter === 'all' ? jobs : jobs.filter(job => {
+                if (currentFilter === 'entry') return job.level === 'entry';
+                if (currentFilter === 'mid') return job.level === 'mid';
+                if (currentFilter === 'senior') return job.level === 'senior';
+                if (currentFilter === 'remote') return job.remote;
+                return true;
+            });
+            
+            const html = filtered.map(job => `
+                <div class="job-card" onclick="openModal(${job.id})">
+                    <div class="job-header">
+                        <div class="job-title">${job.title}</div>
+                        <div class="job-company">${job.company}</div>
+                    </div>
+                    
+                    <div class="job-meta">
+                        <div class="meta-item">📍 ${job.location}</div>
+                        <div class="meta-item">⏱️ ${job.type}</div>
+                    </div>
+                    
+                    <div class="job-description">${job.description}</div>
+                    
+                    <div class="job-tags">
+                        ${job.skills.map(s => `<span class="job-tag">${s}</span>`).join('')}
+                    </div>
+                    
+                    <div class="job-footer">
+                        <span class="salary">${job.salary}</span>
+                        <button class="apply-btn" onclick="event.stopPropagation(); openModal(${job.id})">View</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('jobsGrid').innerHTML = html;
+        }
+        
+        function filterJobs(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderJobs();
+        }
+        
+        function openModal(jobId) {
+            selectedJob = jobs.find(j => j.id === jobId);
+            if (!selectedJob) return;
+            
+            document.getElementById('modalTitle').textContent = selectedJob.title;
+            document.getElementById('modalCompany').textContent = selectedJob.company + ' • ' + selectedJob.location;
+            
+            const details = `
+                <p><strong>Position Type:</strong> ${selectedJob.type}</p>
+                <p><strong>Salary Range:</strong> ${selectedJob.salary}</p>
+                <p><strong>Remote:</strong> ${selectedJob.remote ? '✓ Yes' : '✗ On-site'}</p>
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+                <p>${selectedJob.details}</p>
+                <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+                <p><strong>Required Skills:</strong></p>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+                    ${selectedJob.skills.map(s => `<span class="job-tag">${s}</span>`).join('')}
+                </div>
+            `;
+            
+            document.getElementById('modalBody').innerHTML = details;
+            document.getElementById('jobModal').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('jobModal').classList.remove('show');
+        }
+        
+        function applyJob() {
+            if (selectedJob) {
+                alert(`✓ Application submitted for ${selectedJob.title} at ${selectedJob.company}!\n\nYour application will be reviewed by HR. Check your email for updates.`);
+                closeModal();
+            }
+        }
+        
+        // Click outside modal to close
+        document.getElementById('jobModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('jobModal')) closeModal();
+        });
+        
+        // Initial render
+        renderJobs();
+    </script>
+</body>
+</html>

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raoni Barbalho | IT Professional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+                    colors: {
+                        dark: { 950: '#030303', 900: '#0a0a0a', 800: '#111111', 700: '#1a1a1a' },
+                        accent: { 500: '#0070f3', 400: '#3b9eff', 600: '#0058cc' },
+                        success: { 500: '#10b981', 400: '#34d399' },
+                        warning: { 500: '#f59e0b', 400: '#fbbf24' }
+                    },
+                    animation: {
+                        'gradient': 'gradient 8s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        gradient: { '0%, 100%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' } },
+                        float: { '0%, 100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-20px)' } },
+                        shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+                        glow: { '0%': { boxShadow: '0 0 20px rgba(0,112,243,0.3)' }, '100%': { boxShadow: '0 0 40px rgba(0,112,243,0.6)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        /* Apple-style Background */
+        body { 
+            background: 
+                radial-gradient(ellipse at 20% 0%, rgba(0,112,243,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(16,185,129,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0,112,243,0.05) 0%, transparent 70%),
+                #030303;
+            min-height: 100vh;
+        }
+        
+        /* Premium Glassmorphism - Apple Style */
+        .glass { 
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 
+                0 8px 32px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.1),
+                inset 0 -1px 0 rgba(255,255,255,0.05);
+        }
+        .glass:hover { 
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: 
+                0 12px 48px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.15),
+                0 0 0 1px rgba(0,112,243,0.1);
+        }
+        
+        /* Gradient Text - Azul (Confiança) */
+        .gradient-text { 
+            background: linear-gradient(135deg, #0070f3, #00bcd4, #3b9eff); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+        }
+        
+        /* Glow Effects */
+        .metric-glow { 
+            box-shadow: 
+                0 0 60px rgba(0,112,243,0.2),
+                0 0 100px rgba(0,112,243,0.1);
+        }
+        .card-3d { 
+            transform-style: preserve-3d; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .card-3d:hover { 
+            transform: translateY(-12px) rotateX(2deg) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #0070f3, #00bcd4); border-radius: 3px; }
+        
+        /* Print Styles */
+        @media print {
+            body { background: white !important; color: #1a1a1a !important; }
+            .glass { background: #f8f9fa !important; border: 1px solid #e5e7eb !important; box-shadow: none !important; backdrop-filter: none !important; }
+            .gradient-text { background: none !important; -webkit-text-fill-color: #0070f3 !important; color: #0070f3 !important; }
+            .no-print, .portfolio-controls { display: none !important; }
+            section { page-break-inside: avoid; }
+            .text-white { color: #1a1a1a !important; }
+            .text-slate-400, .text-slate-500 { color: #6b7280 !important; }
+        }
+        /* Controls */
+        .portfolio-controls { position: fixed; top: 20px; right: 20px; display: flex; gap: 8px; z-index: 100; }
+        .p-ctrl-btn { padding: 8px 16px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; cursor: pointer; font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .p-ctrl-btn:hover { background: rgba(255,255,255,0.1); border-color: #0070f3; }
+        .lang-btn { padding: 6px 10px; border: none; background: transparent; color: rgba(255,255,255,0.6); cursor: pointer; border-radius: 6px; font-size: 0.85rem; transition: all 0.2s; }
+        .lang-btn:hover { background: rgba(255,255,255,0.1); }
+        .lang-btn.active { background: #0070f3; color: #fff; }
+    </style>
+</head>
+<body class="bg-dark-950 text-white min-h-screen bg-grid">
+    <!-- Portfolio Controls -->
+    <div class="portfolio-controls">
+        <a href="index.html" class="p-ctrl-btn">← Hub</a>
+        <div class="p-ctrl-btn" style="padding:4px;gap:4px;">
+            <button class="lang-btn active" onclick="setLang('pt')">🇧🇷</button>
+            <button class="lang-btn" onclick="setLang('en')">🇺🇸</button>
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="min-h-screen flex items-center relative overflow-hidden">
+        <!-- Background Effects -->
+        <div class="absolute inset-0 bg-gradient-to-br from-accent-600/10 via-transparent to-success-500/5"></div>
+        <div class="absolute top-20 left-20 w-72 h-72 bg-accent-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute bottom-20 right-20 w-96 h-96 bg-success-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s"></div>
+        
+        <div class="container mx-auto px-6 py-20 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Left: Text Content -->
+                <div class="space-y-8">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 glass rounded-full text-sm">
+                        <span class="w-2 h-2 bg-success-500 rounded-full animate-pulse"></span>
+                        <span class="text-slate-400">Online</span>
+                    </div>
+                    
+                    <h1 class="text-5xl lg:text-7xl font-black leading-tight">
+                        <span class="text-white">Raoni</span><br>
+                        <span class="gradient-text">Barbalho</span>
+                    </h1>
+                    
+                    <p class="text-xl lg:text-2xl text-slate-400 font-light">
+                        <span class="text-white font-medium">IT Compliance & Validation</span> que <span class="text-accent-400">acelera entregas em </span> em ambientes farmacêuticos regulados (GxP).
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300">🏭 Pharma • Novo Nordisk</span>
+                        <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300">📋 IT Compliance</span>
+                        <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300">⚙️ ITSM & ServiceNow</span>
+                        <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300">🔒 21 CFR Part 11</span>
+                    </div>
+                    
+                    <div class="flex gap-4 pt-4">
+                        <a href="#cases" class="group px-8 py-4 bg-gradient-to-r from-accent-600 to-accent-500 rounded-2xl font-semibold text-white hover:shadow-lg hover:shadow-accent-500/30 transition-all duration-300 flex items-center gap-2">
+                            Ver Cases
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                        <a href="mailto:raobarbalho@hotmail.com" class="px-8 py-4 glass rounded-2xl font-semibold text-white hover:bg-white/10 transition-all duration-300">
+                            Contato
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Right: Profile Card -->
+                <div class="flex justify-center lg:justify-end">
+                    <div class="glass rounded-3xl p-8 card-3d metric-glow max-w-md w-full">
+                        <!-- Avatar -->
+                        <div class="flex justify-center mb-6">
+                            <div class="w-32 h-32 rounded-full bg-gradient-to-br from-accent-500 to-accent-400 flex items-center justify-center text-5xl font-black text-white shadow-lg shadow-accent-500/30">
+                                RB
+                            </div>
+                        </div>
+                        
+                        <!-- Top Performer Badge -->
+                        <div class="text-center mb-6">
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-accent-500/20 to-accent-400/10 rounded-full border border-accent-500/30 animate-glow">
+                                <span class="text-accent-400 font-bold">⭐ Top Performer</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2">Reconhecimento Corporativo • Lead Time 3.5x mais rápido</p>
+                        </div>
+                        
+                        <!-- Quick Stats -->
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div class="p-3 glass rounded-xl">
+                                <div class="text-2xl font-black text-white">7+</div>
+                                <div class="text-xs text-slate-500">Anos XP</div>
+                            </div>
+                            <div class="p-3 glass rounded-xl">
+                                <div class="text-2xl font-black text-success-400">12</div>
+                                <div class="text-xs text-slate-500">Projetos</div>
+                            </div>
+                            <div class="p-3 glass rounded-xl">
+                                <div class="text-2xl font-black text-accent-400">90%+</div>
+                                <div class="text-xs text-slate-500">Satisfação</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact -->
+                        <div class="mt-6 pt-6 border-t border-white/5 space-y-3">
+                            <div class="flex items-center gap-3 text-sm text-slate-400">
+                                <span>📍</span> Montes Claros, MG - Brasil
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-400">
+                                <span>📧</span> raobarbalho@hotmail.com
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-slate-400">
+                                <span>📱</span> +55 (38) 99139-9293
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- METRICS SECTION -->
+    <section id="metrics" class="py-24 relative">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl lg:text-5xl font-black mb-4">
+                    <span class="gradient-text">Resultados</span> Mensuráveis
+                </h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Impacto comprovado através de métricas reais e feedbacks de clientes internos</p>
+            </div>
+            
+            <!-- Bento Grid Metrics -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                <!-- Big Card: Lead Time -->
+                <div class="col-span-2 glass rounded-3xl p-8 card-3d hover:border-success-500/30 transition-all">
+                    <div class="flex items-start justify-between mb-4">
+                        <span class="text-5xl">⚡</span>
+                        <span class="px-3 py-1 bg-success-500/20 text-success-400 rounded-full text-sm font-medium">Performance</span>
+                    </div>
+                    <div class="text-6xl lg:text-7xl font-black text-success-400 mb-2">3.5x</div>
+                    <div class="text-xl font-semibold text-white mb-2">Mais Rápido que a Média</div>
+                    <div class="text-slate-400">Lead time de <span class="text-white font-semibold">5 dias</span> vs média de 17-20 dias dos pares</div>
+                </div>
+                
+                <!-- Satisfaction -->
+                <div class="glass rounded-3xl p-6 card-3d hover:border-accent-500/30 transition-all">
+                    <span class="text-4xl mb-4 block">⭐</span>
+                    <div class="text-4xl font-black text-accent-400 mb-1">90.9%</div>
+                    <div class="text-sm text-white font-medium">Satisfação</div>
+                    <div class="text-xs text-slate-500">Pesquisa Infraestrutura</div>
+                </div>
+                
+                <!-- Automation -->
+                <div class="glass rounded-3xl p-6 card-3d hover:border-warning-500/30 transition-all">
+                    <span class="text-4xl mb-4 block">🤖</span>
+                    <div class="text-4xl font-black text-warning-400 mb-1">-90%</div>
+                    <div class="text-sm text-white font-medium">Automação</div>
+                    <div class="text-xs text-slate-500">30 → 3 dias (casos complexos)</div>
+                </div>
+                
+                <!-- Recognition -->
+                <div class="glass rounded-3xl p-6 card-3d hover:border-warning-500/30 transition-all">
+                    <span class="text-4xl mb-4 block">🏆</span>
+                    <div class="text-4xl font-black text-warning-400 mb-1">Top 1%</div>
+                    <div class="text-sm text-white font-medium">Reconhecimento</div>
+                    <div class="text-xs text-slate-500">Sistema interno corporativo</div>
+                </div>
+                
+                <!-- Zero Incidents -->
+                <div class="glass rounded-3xl p-6 card-3d hover:border-success-500/30 transition-all">
+                    <span class="text-4xl mb-4 block">🛡️</span>
+                    <div class="text-4xl font-black text-success-400 mb-1">0</div>
+                    <div class="text-sm text-white font-medium">Incidentes</div>
+                    <div class="text-xs text-slate-500">Em migrações críticas</div>
+                </div>
+                
+                <!-- Hours Saved -->
+                <div class="glass rounded-3xl p-6 card-3d hover:border-accent-500/30 transition-all">
+                    <span class="text-4xl mb-4 block">⏱️</span>
+                    <div class="text-4xl font-black text-accent-400 mb-1">200+</div>
+                    <div class="text-sm text-white font-medium">Horas Salvas</div>
+                    <div class="text-xs text-slate-500">Projeto Data Center</div>
+                </div>
+                
+                <!-- Technical Cases -->
+                <div class="glass rounded-3xl p-6 card-3d hover:border-accent-500/30 transition-all">
+                    <span class="text-4xl mb-4 block">📊</span>
+                    <div class="text-4xl font-black text-accent-400 mb-1">8</div>
+                    <div class="text-sm text-white font-medium">Cases Técnicos</div>
+                    <div class="text-xs text-slate-500">@ 200 pts cada</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMELINE + SKILLS SECTION -->
+    <section id="timeline" class="py-24 relative">
+        <div class="container mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <!-- Timeline -->
+                <div>
+                    <h2 class="text-3xl lg:text-4xl font-black mb-8">
+                        <span class="gradient-text">Trajetória</span> Profissional
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Novo Nordisk -->
+                        <div class="glass rounded-2xl p-6 card-3d border-l-4 border-accent-500">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-white">IT Compliance Analyst</h3>
+                                <span class="px-3 py-1 bg-success-500/20 text-success-400 rounded-full text-xs">Atual</span>
+                            </div>
+                            <div class="text-accent-400 font-medium mb-2">Novo Nordisk • Quality Engineering</div>
+                            <div class="text-slate-500 text-sm mb-3">Abr 2023 - Presente</div>
+                            <p class="text-slate-400 text-sm">IT Governance, Validação GxP, ITRA/DRA, ServiceNow, QualityDocs. Responsável por documentação e compliance em projetos complexos: Warehouse, Data Center, Aseptic Production.</p>
+                        </div>
+                        
+                        <!-- Cognizant -->
+                        <div class="glass rounded-2xl p-6 card-3d border-l-4 border-warning-500/50">
+                            <h3 class="text-xl font-bold text-white">IT Tech Leader</h3>
+                            <div class="text-warning-400 font-medium mb-2">Cognizant • MSD Account</div>
+                            <div class="text-slate-500 text-sm mb-3">2021 - 2023</div>
+                            <p class="text-slate-400 text-sm">Liderança de equipe de Suporte e Infraestrutura. Gestão de ITSM, SLA, CSAT, KPIs. Prêmios: End of Year, Client Satisfaction, 100% SLA.</p>
+                        </div>
+                        
+                        <!-- MSD -->
+                        <div class="glass rounded-2xl p-6 card-3d border-l-4 border-slate-500/50">
+                            <h3 class="text-xl font-bold text-white">IT Analyst</h3>
+                            <div class="text-slate-400 font-medium mb-2">MSD (Merck) • Infrastructure</div>
+                            <div class="text-slate-500 text-sm mb-3">2020 - 2023</div>
+                            <p class="text-slate-400 text-sm">Global Infrastructure & End-User Support. Migrações: Remedy→ServiceNow, Nexthink, SAP Atlas.</p>
+                        </div>
+                        
+                        <!-- Hospital -->
+                        <div class="glass rounded-2xl p-6 card-3d border-l-4 border-slate-600/50">
+                            <h3 class="text-xl font-bold text-white">IT Manager</h3>
+                            <div class="text-slate-400 font-medium mb-2">Pró-Vida Hospital</div>
+                            <div class="text-slate-500 text-sm">2017 - 2020</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Skills -->
+                <div>
+                    <h2 class="text-3xl lg:text-4xl font-black mb-8">
+                        <span class="gradient-text">Competências</span>
+                    </h2>
+                    
+                    <!-- Hard Skills -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-accent-500 rounded-full"></span> Hard Skills
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">ServiceNow ITSM</span>
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">GxP Validation</span>
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">ITRA/DRA</span>
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">IT Compliance</span>
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">21 CFR Part 11</span>
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">QualityDocs</span>
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">ITIL v4</span>
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">Lean/Kaizen</span>
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">Risk Assessment</span>
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">Azure</span>
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">Nexthink</span>
+                            <span class="px-4 py-2 glass rounded-xl text-sm text-slate-300 hover:border-accent-500/50 transition-all cursor-default">SAP</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Soft Skills -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-success-500 rounded-full"></span> Soft Skills
+                        </h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="glass rounded-xl p-4 text-center card-3d">
+                                <span class="text-2xl mb-2 block">🎯</span>
+                                <span class="text-sm text-slate-300">Customer Success</span>
+                            </div>
+                            <div class="glass rounded-xl p-4 text-center card-3d">
+                                <span class="text-2xl mb-2 block">💬</span>
+                                <span class="text-sm text-slate-300">Comunicação</span>
+                            </div>
+                            <div class="glass rounded-xl p-4 text-center card-3d">
+                                <span class="text-2xl mb-2 block">🧠</span>
+                                <span class="text-sm text-slate-300">Problem Solving</span>
+                            </div>
+                            <div class="glass rounded-xl p-4 text-center card-3d">
+                                <span class="text-2xl mb-2 block">🤝</span>
+                                <span class="text-sm text-slate-300">Teamwork</span>
+                            </div>
+                            <div class="glass rounded-xl p-4 text-center card-3d">
+                                <span class="text-2xl mb-2 block">❤️</span>
+                                <span class="text-sm text-slate-300">Inteligência Emocional</span>
+                            </div>
+                            <div class="glass rounded-xl p-4 text-center card-3d">
+                                <span class="text-2xl mb-2 block">🔄</span>
+                                <span class="text-sm text-slate-300">Adaptabilidade</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Certifications -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-warning-500 rounded-full"></span> Certificações
+                        </h3>
+                        <div class="space-y-2">
+                            <div class="glass rounded-xl p-3 flex items-center gap-3">
+                                <span class="text-xl">📜</span>
+                                <div>
+                                    <div class="text-sm text-white">ITIL v4 Foundation</div>
+                                    <div class="text-xs text-slate-500">PeopleCert • In Progress</div>
+                                </div>
+                            </div>
+                            <div class="glass rounded-xl p-3 flex items-center gap-3">
+                                <span class="text-xl">🌐</span>
+                                <div>
+                                    <div class="text-sm text-white">GlobalEnglish Level 7</div>
+                                    <div class="text-xs text-slate-500">Advanced • Learnship</div>
+                                </div>
+                            </div>
+                            <div class="glass rounded-xl p-3 flex items-center gap-3">
+                                <span class="text-xl">💊</span>
+                                <div>
+                                    <div class="text-sm text-white">21 CFR Part 11 Expert</div>
+                                    <div class="text-xs text-slate-500">Cognizant Learning</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEEDBACKS SECTION -->
+    <section id="feedbacks" class="py-24 relative bg-gradient-to-b from-transparent via-accent-500/5 to-transparent">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl lg:text-5xl font-black mb-4">
+                    <span class="gradient-text">Feedbacks</span> de Clientes
+                </h2>
+                <p class="text-slate-400 text-lg">O que dizem os stakeholders e colegas sobre meu trabalho</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feedback 1: Kamilla -->
+                <div class="glass rounded-2xl p-6 card-3d">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white font-bold">KM</div>
+                        <div>
+                            <div class="font-semibold text-white">Kamilla (KMLP)</div>
+                            <div class="text-xs text-slate-500">Sr. Compliance Analyst</div>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm italic">"Demonstra senso de urgência, conhecimento sólido em IT/Compliance e excelente postura colaborativa. Fundamental no suporte a ITRAs e processos de validação."</p>
+                    <div class="flex gap-1 mt-4">⭐⭐⭐⭐⭐</div>
+                </div>
+                
+                <!-- Feedback 2: Luísa -->
+                <div class="glass rounded-2xl p-6 card-3d">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center text-white font-bold">LB</div>
+                        <div>
+                            <div class="font-semibold text-white">Luísa Brandão</div>
+                            <div class="text-xs text-slate-500">QA Analyst</div>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm italic">"Contexto técnico sólido e postura colaborativa. Sempre disponível para apoiar o time de QA com conhecimento prático e soluções eficientes."</p>
+                    <div class="flex gap-1 mt-4">⭐⭐⭐⭐⭐</div>
+                </div>
+                
+                <!-- Feedback 3: Gerre -->
+                <div class="glass rounded-2xl p-6 card-3d">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold">GR</div>
+                        <div>
+                            <div class="font-semibold text-white">Gerre Rabelo (GZRA)</div>
+                            <div class="text-xs text-slate-500">Sr. Infrastructure Analyst</div>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm italic">"Fundamental para aprovar o Script de Segurança. Liderou a documentação técnica e garantiu compliance em tempo recorde."</p>
+                    <div class="flex gap-1 mt-4">⭐⭐⭐⭐⭐</div>
+                </div>
+                
+                <!-- Feedback 4: Anonymous Infrastructure -->
+                <div class="glass rounded-2xl p-6 card-3d">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center text-white font-bold">TI</div>
+                        <div>
+                            <div class="font-semibold text-white">Time de Infraestrutura</div>
+                            <div class="text-xs text-slate-500">Pesquisa Anônima • 90.9%</div>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm italic">"Excelente suporte técnico. Sempre pronto para ajudar e compartilhar conhecimento. Resolve problemas de forma eficiente."</p>
+                    <div class="flex gap-1 mt-4">⭐⭐⭐⭐⭐</div>
+                </div>
+                
+                <!-- Feedback 5: QA/RM -->
+                <div class="glass rounded-2xl p-6 card-3d">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold">QA</div>
+                        <div>
+                            <div class="font-semibold text-white">QA & Release Management</div>
+                            <div class="text-xs text-slate-500">Coordenação Quality</div>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm italic">"Profissional comprometido com qualidade. Documentação impecável e conhecimento profundo de processos GxP."</p>
+                    <div class="flex gap-1 mt-4">⭐⭐⭐⭐⭐</div>
+                </div>
+                
+                <!-- Feedback 6: Project Manager -->
+                <div class="glass rounded-2xl p-6 card-3d">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-slate-500 to-gray-500 flex items-center justify-center text-white font-bold">PM</div>
+                        <div>
+                            <div class="font-semibold text-white">Gerente de Projetos</div>
+                            <div class="text-xs text-slate-500">Data Center Project</div>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm italic">"Contribuição excepcional no projeto de Data Center. Economizou 200+ horas de retrabalho com automações e templates."</p>
+                    <div class="flex gap-1 mt-4">⭐⭐⭐⭐⭐</div>
+                </div>
+            </div>
+            
+            <!-- Stats Bar -->
+            <div class="mt-12 glass rounded-2xl p-6 flex flex-wrap justify-center gap-8 lg:gap-16">
+                <div class="text-center">
+                    <div class="text-3xl font-black text-accent-400">15+</div>
+                    <div class="text-sm text-slate-400">Testemunhos</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-success-400">90.9%</div>
+                    <div class="text-sm text-slate-400">Satisfação Geral</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-warning-400">100%</div>
+                    <div class="text-sm text-slate-400">SLA Cognizant</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-pink-400">50+</div>
+                    <div class="text-sm text-slate-400">Reconhecimentos MSD</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CASES SECTION -->
+    <section id="cases" class="py-24 relative">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl lg:text-5xl font-black mb-4">
+                    <span class="gradient-text">Cases</span> de Sucesso
+                </h2>
+                <p class="text-slate-400 text-lg">Projetos de alto impacto entregues com excelência</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Case 1: Data Center -->
+                <div class="glass rounded-2xl p-6 card-3d hover:border-accent-500/30 transition-all">
+                    <div class="flex items-start justify-between mb-4">
+                        <span class="px-3 py-1 bg-accent-500/20 text-accent-400 rounded-full text-xs font-medium">Zero Incidentes</span>
+                        <span class="text-2xl">🏢</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Data Center Migration</h3>
+                    <p class="text-slate-400 text-sm mb-4">Liderou validação GxP e documentação completa da migração. Templates automatizados, 0 incidentes em produção, 200+ horas de retrabalho evitadas.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">ITRA</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">Automation</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">GxP</span>
+                    </div>
+                </div>
+                
+                <!-- Case 2: Security Script -->
+                <div class="glass rounded-2xl p-6 card-3d hover:border-success-500/30 transition-all">
+                    <div class="flex items-start justify-between mb-4">
+                        <span class="px-3 py-1 bg-success-500/20 text-success-400 rounded-full text-xs font-medium">Destaque</span>
+                        <span class="text-2xl">🔒</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Security Compliance Script</h3>
+                    <p class="text-slate-400 text-sm mb-4">Conduziu documentação técnica e aprovação do script de segurança. Garantiu compliance em tempo recorde, com apresentação direta para gerência sênior.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">Security</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">Compliance</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">Leadership</span>
+                    </div>
+                </div>
+                
+                <!-- Case 3: ITSM Optimization -->
+                <div class="glass rounded-2xl p-6 card-3d hover:border-warning-500/30 transition-all">
+                    <div class="flex items-start justify-between mb-4">
+                        <span class="px-3 py-1 bg-warning-500/20 text-warning-400 rounded-full text-xs font-medium">Alto Impacto</span>
+                        <span class="text-2xl">⚡</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Otimização de Entregas ITRA</h3>
+                    <p class="text-slate-400 text-sm mb-4">Lead time pessoal de 5 dias vs média de 17-20 dias dos pares (3.5x mais rápido). Análise de gargalos, automação e dashboards de monitoramento em tempo real.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">ServiceNow</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">Analytics</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">Process</span>
+                    </div>
+                </div>
+                
+                <!-- Case 4: Aseptic Production -->
+                <div class="glass rounded-2xl p-6 card-3d hover:border-pink-500/30 transition-all">
+                    <div class="flex items-start justify-between mb-4">
+                        <span class="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-xs font-medium">GxP Crítico</span>
+                        <span class="text-2xl">💉</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Aseptic Production Validation</h3>
+                    <p class="text-slate-400 text-sm mb-4">Validação de sistemas críticos na área de produção asséptica. Compliance FDA/ANVISA impecável, zero desvios em auditorias internas e externas.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">Pharma</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">FDA</span>
+                        <span class="px-2 py-1 bg-white/5 rounded text-xs text-slate-400">Validation</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- More Cases Badge -->
+            <div class="text-center mt-8">
+                <div class="inline-flex items-center gap-2 px-6 py-3 glass rounded-full">
+                    <span class="text-slate-400">+4 cases técnicos + 4 cases de processo</span>
+                    <span class="text-accent-400 font-bold">= 12 Total</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FOOTER -->
+    <footer class="py-12 border-t border-white/5">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-left">
+                    <div class="text-2xl font-black gradient-text mb-2">Raoni Barbalho</div>
+                    <div class="text-slate-500 text-sm">Quality Engineering Specialist • Novo Nordisk</div>
+                </div>
+                <div class="flex gap-4">
+                    <a href="mailto:raobarbalho@hotmail.com" class="w-12 h-12 glass rounded-xl flex items-center justify-center hover:bg-white/10 transition-all" title="Email">📧</a>
+                    <a href="https://linkedin.com/in/raoni-barbalho-9064b0a4" target="_blank" class="w-12 h-12 glass rounded-xl flex items-center justify-center hover:bg-white/10 transition-all" title="LinkedIn">💼</a>
+                    <a href="tel:+5538991399293" class="w-12 h-12 glass rounded-xl flex items-center justify-center hover:bg-white/10 transition-all" title="Phone">📱</a>
+                </div>
+            </div>
+            <div class="text-center mt-8 text-slate-600 text-xs">
+                © 2026 Raoni Barbalho • IT Compliance & Quality Specialist • Top Performer
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Counter animation
+        function animateCounter(el, target, duration = 2000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) { el.textContent = target.toLocaleString(); clearInterval(timer); }
+                else { el.textContent = Math.floor(start).toLocaleString(); }
+            }, 16);
+        }
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                    const counters = entry.target.querySelectorAll('[data-counter]');
+                    counters.forEach(c => animateCounter(c, parseInt(c.dataset.counter)));
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+        // Language Toggle
+        let currentLang = localStorage.getItem('lang') || 'pt';
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+            document.querySelectorAll('[data-pt][data-en]').forEach(el => { el.textContent = el.getAttribute(`data-${lang}`); });
+        }
+        setLang(currentLang);
+    </script>
+</body>
+</html>

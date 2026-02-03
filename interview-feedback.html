@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Feedback — RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        :root {
+            --bg-primary: #030303;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --accent: #6366f1;
+            --success: #10b981;
+            --warn: #f59e0b;
+        }
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+        }
+        body { background: var(--bg-primary); color: var(--text-primary); }
+        .card { background: var(--bg-secondary); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .form-input, .form-textarea { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: var(--bg-secondary); color: var(--text-primary); font-family: 'Inter'; }
+        .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--accent); background: rgba(99, 102, 241, 0.05); }
+        .btn-primary { background: var(--accent); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+        .rating-scale { display: flex; gap: 0.5rem; margin: 0.5rem 0; }
+        .rating-btn { width: 40px; height: 40px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.1); background: transparent; color: var(--text-primary); cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .rating-btn:hover { border-color: var(--accent); }
+        .rating-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+        .feedback-box { background: rgba(99, 102, 241, 0.05); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1rem; }
+        .score-container { text-align: center; }
+        .score-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; margin: 0 auto; background: linear-gradient(135deg, #6366f1, #10b981); color: white; }
+        .performance-bar { height: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; margin: 0.5rem 0; }
+        .performance-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #10b981); transition: width 0.3s; }
+        .header { background: rgba(99, 102, 241, 0.05); border-bottom: 1px solid rgba(99, 102, 241, 0.2); padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--bg-primary); border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        [data-theme="light"] .form-input,
+        [data-theme="light"] .form-textarea { background: #f1f5f9; border-color: rgba(0, 0, 0, 0.1); color: #0f172a; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="text-2xl font-bold">🏠</a>
+            <h1 class="text-xl font-bold">Interview Feedback</h1>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-white/10">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- View Toggle -->
+        <div class="flex gap-2 mb-6">
+            <button onclick="switchView('form')" id="btnForm" class="px-4 py-2 rounded-lg font-semibold bg-accent text-white">📝 Feedback Form</button>
+            <button onclick="switchView('history')" id="btnHistory" class="px-4 py-2 rounded-lg font-semibold hover:bg-white/10">📋 History</button>
+        </div>
+
+        <!-- Form View -->
+        <div id="formView">
+            <div class="card mb-6">
+                <h2 class="text-lg font-bold mb-4">Interview Details</h2>
+                
+                <div class="form-group mb-4">
+                    <label class="block font-semibold mb-2">Interview Position</label>
+                    <input type="text" id="position" class="form-input" placeholder="e.g., Senior IT Validation Specialist" value="Senior IT Validation Specialist">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="block font-semibold mb-2">Company</label>
+                    <input type="text" id="company" class="form-input" placeholder="e.g., Novo Nordisk" value="Novo Nordisk">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="block font-semibold mb-2">Interview Round</label>
+                    <select id="round" class="form-input">
+                        <option value="phone">Phone Screen</option>
+                        <option value="technical" selected>Technical</option>
+                        <option value="behavioral">Behavioral</option>
+                        <option value="final">Final Round</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="block font-semibold mb-2">Interview Date</label>
+                    <input type="date" id="date" class="form-input" value="">
+                </div>
+            </div>
+
+            <!-- Scoring Section -->
+            <div class="card mb-6">
+                <h2 class="text-lg font-bold mb-6">Rate Your Performance (1-10)</h2>
+
+                <div class="mb-6">
+                    <label class="block font-semibold mb-2">🎯 Technical Knowledge</label>
+                    <div class="rating-scale" id="technical"></div>
+                    <p class="text-sm text-gray-400">Understanding of GxP, GAMP 5, 21 CFR Part 11</p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block font-semibold mb-2">💬 Communication</label>
+                    <div class="rating-scale" id="communication"></div>
+                    <p class="text-sm text-gray-400">Clarity, structure, listening skills</p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block font-semibold mb-2">🤝 Problem Solving</label>
+                    <div class="rating-scale" id="problemSolving"></div>
+                    <p class="text-sm text-gray-400">Approach to challenges, critical thinking</p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block font-semibold mb-2">😊 Cultural Fit</label>
+                    <div class="rating-scale" id="culturalFit"></div>
+                    <p class="text-sm text-gray-400">Alignment with company values, team dynamics</p>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block font-semibold mb-2">📊 Overall Performance</label>
+                    <div class="rating-scale" id="overall"></div>
+                    <p class="text-sm text-gray-400">General impression, likelihood to move forward</p>
+                </div>
+            </div>
+
+            <!-- Feedback -->
+            <div class="card mb-6">
+                <h2 class="text-lg font-bold mb-4">Feedback & Notes</h2>
+                
+                <div class="form-group mb-4">
+                    <label class="block font-semibold mb-2">What went well?</label>
+                    <textarea id="wellDone" class="form-textarea" rows="3" placeholder="e.g., Strong technical knowledge, great communication..."></textarea>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="block font-semibold mb-2">Areas for improvement</label>
+                    <textarea id="improvements" class="form-textarea" rows="3" placeholder="e.g., Could explain architectural choices better..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="block font-semibold mb-2">Next Steps & Recommendations</label>
+                    <textarea id="nextSteps" class="form-textarea" rows="3" placeholder="e.g., Follow up on CSVphase knowledge..."></textarea>
+                </div>
+            </div>
+
+            <button onclick="saveFeedback()" class="btn-primary w-full py-3 text-lg font-bold">💾 Save Feedback</button>
+        </div>
+
+        <!-- History View -->
+        <div id="historyView" class="hidden">
+            <div id="feedbackHistory"></div>
+        </div>
+    </div>
+
+    <!-- Modal for AI Analysis -->
+    <div id="analysisModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">📊 AI Analysis</h2>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">×</button>
+            </div>
+            <div id="analysisContent"></div>
+            <button onclick="closeModal()" class="btn-primary w-full mt-4">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let feedbacks = JSON.parse(localStorage.getItem('interviewFeedbacks')) || [];
+
+        // Initialize rating scales
+        document.addEventListener('DOMContentLoaded', () => {
+            initRatingScales();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+            applyTheme();
+        });
+
+        function initRatingScales() {
+            const categories = ['technical', 'communication', 'problemSolving', 'culturalFit', 'overall'];
+            categories.forEach(cat => {
+                const container = document.getElementById(cat);
+                for (let i = 1; i <= 10; i++) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+                    btn.className = 'rating-btn';
+                    btn.onclick = () => selectRating(container, i);
+                    container.appendChild(btn);
+                }
+            });
+        }
+
+        function selectRating(container, value) {
+            container.querySelectorAll('.rating-btn').forEach(btn => btn.classList.remove('active'));
+            container.querySelectorAll('.rating-btn')[value - 1].classList.add('active');
+        }
+
+        function getRatings() {
+            return {
+                technical: getSelectedValue('technical'),
+                communication: getSelectedValue('communication'),
+                problemSolving: getSelectedValue('problemSolving'),
+                culturalFit: getSelectedValue('culturalFit'),
+                overall: getSelectedValue('overall')
+            };
+        }
+
+        function getSelectedValue(category) {
+            const container = document.getElementById(category);
+            const active = container.querySelector('.rating-btn.active');
+            return active ? parseInt(active.textContent) : 0;
+        }
+
+        function saveFeedback() {
+            const feedback = {
+                id: Date.now(),
+                position: document.getElementById('position').value,
+                company: document.getElementById('company').value,
+                round: document.getElementById('round').value,
+                date: document.getElementById('date').value,
+                ratings: getRatings(),
+                wellDone: document.getElementById('wellDone').value,
+                improvements: document.getElementById('improvements').value,
+                nextSteps: document.getElementById('nextSteps').value,
+                createdAt: new Date().toISOString()
+            };
+
+            feedbacks.push(feedback);
+            localStorage.setItem('interviewFeedbacks', JSON.stringify(feedbacks));
+
+            alert('✅ Feedback saved! AI analysis will help you improve.');
+            resetForm();
+            renderHistory();
+        }
+
+        function resetForm() {
+            document.getElementById('position').value = 'Senior IT Validation Specialist';
+            document.getElementById('company').value = 'Novo Nordisk';
+            document.getElementById('round').value = 'technical';
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('wellDone').value = '';
+            document.getElementById('improvements').value = '';
+            document.getElementById('nextSteps').value = '';
+            document.querySelectorAll('.rating-btn').forEach(btn => btn.classList.remove('active'));
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('feedbackHistory');
+            container.innerHTML = feedbacks.map((fb, idx) => {
+                const avgScore = Object.values(fb.ratings).reduce((a, b) => a + b, 0) / 5;
+                const scoreColor = avgScore >= 8 ? '#10b981' : avgScore >= 6 ? '#f59e0b' : '#ef4444';
+                
+                return `
+                    <div class="card mb-4">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-bold">${fb.position}</h3>
+                                <p class="text-sm text-gray-400">${fb.company} • ${fb.round}</p>
+                                <p class="text-xs text-gray-500">${new Date(fb.date).toLocaleDateString()}</p>
+                            </div>
+                            <div class="score-circle" style="width: 60px; height: 60px; background: ${scoreColor}; opacity: 0.8; color: white;">
+                                ${Math.round(avgScore * 10) / 10}
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
+                            <div>🎯 Technical: ${fb.ratings.technical}</div>
+                            <div>💬 Communication: ${fb.ratings.communication}</div>
+                            <div>🤝 Problem Solving: ${fb.ratings.problemSolving}</div>
+                            <div>😊 Cultural Fit: ${fb.ratings.culturalFit}</div>
+                        </div>
+
+                        ${fb.wellDone ? `<div class="feedback-box mb-2"><strong>✓ Well Done:</strong> ${fb.wellDone}</div>` : ''}
+                        ${fb.improvements ? `<div class="feedback-box mb-2"><strong>📍 Improvements:</strong> ${fb.improvements}</div>` : ''}
+
+                        <button onclick="analyzeInterview(${idx})" class="btn-primary text-sm">Analyze with AI →</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function analyzeInterview(idx) {
+            const fb = feedbacks[idx];
+            const avgScore = Object.values(fb.ratings).reduce((a, b) => a + b, 0) / 5;
+            
+            const analysis = `
+                <h3 class="font-bold mb-3">Interview Analysis for ${fb.position}</h3>
+                
+                <div class="mb-4">
+                    <div class="text-2xl font-bold" style="color: ${avgScore >= 8 ? '#10b981' : avgScore >= 6 ? '#f59e0b' : '#ef4444'};">
+                        Score: ${Math.round(avgScore * 10) / 10}/10
+                    </div>
+                </div>
+
+                <div class="space-y-3 mb-4">
+                    <div>
+                        <div class="font-semibold">🎯 Technical Knowledge: ${fb.ratings.technical}/10</div>
+                        <div class="performance-bar">
+                            <div class="performance-fill" style="width: ${fb.ratings.technical * 10}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="font-semibold">💬 Communication: ${fb.ratings.communication}/10</div>
+                        <div class="performance-bar">
+                            <div class="performance-fill" style="width: ${fb.ratings.communication * 10}%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feedback-box mb-4">
+                    <strong>💡 AI Recommendation:</strong>
+                    <p>${generateRecommendation(fb)}</p>
+                </div>
+
+                <div class="feedback-box">
+                    <strong>📋 Next Interview Tips:</strong>
+                    <ul class="list-disc ml-4 mt-2 text-sm">
+                        <li>Focus on explaining your thought process step-by-step</li>
+                        <li>Prepare real examples from ITRA project work</li>
+                        <li>Practice discussing trade-offs in validation approaches</li>
+                        <li>Highlight your impact (73% cycle reduction)</li>
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('analysisContent').innerHTML = analysis;
+            document.getElementById('analysisModal').classList.add('active');
+        }
+
+        function generateRecommendation(fb) {
+            const avgScore = Object.values(fb.ratings).reduce((a, b) => a + b, 0) / 5;
+            
+            if (avgScore >= 8) {
+                return `Excellent performance! You demonstrated strong technical knowledge and communication skills. Expected outcome: High probability of moving to next round (80-90%).`;
+            } else if (avgScore >= 6) {
+                return `Good overall performance with room for improvement. Focus on technical depth in next interviews. Expected outcome: Medium probability of moving forward (50-70%).`;
+            } else {
+                return `Opportunity for growth. Consider deeper study of core GxP concepts and practice articulating complex ideas. Expected outcome: Prepare for potential follow-up technical screening (30-50%).`;
+            }
+        }
+
+        function switchView(view) {
+            document.getElementById('formView').classList.toggle('hidden', view !== 'form');
+            document.getElementById('historyView').classList.toggle('hidden', view !== 'history');
+            document.getElementById('btnForm').classList.toggle('bg-accent', view === 'form');
+            document.getElementById('btnHistory').classList.toggle('bg-accent', view === 'history');
+
+            if (view === 'history') {
+                renderHistory();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('analysisModal').classList.remove('active');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
+
+        function applyTheme() {
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+        }
+    </script>
+</body>
+</html>

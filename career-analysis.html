@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Analysis | Raoni Barbalho</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0f1a;
+      --card: rgba(255,255,255,0.03);
+      --border: rgba(255,255,255,0.08);
+      --text: #f0f4ff;
+      --muted: rgba(240,244,255,0.6);
+      --accent: #4cc9f0;
+      --success: #10b981;
+      --warn: #fbbf24;
+      --danger: #f87171;
+    }
+    /* Light Mode */
+    [data-theme="light"] {
+      --bg: #f0f4f8;
+      --card: rgba(255,255,255,0.9);
+      --border: rgba(0,0,0,0.1);
+      --text: #0f172a;
+      --muted: rgba(15,23,42,0.6);
+    }
+    [data-theme="light"] body { background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%); }
+    [data-theme="light"] .glass { box-shadow: 0 4px 24px rgba(0,0,0,0.05); }
+    [data-theme="light"] .insight.positive { background:rgba(16,185,129,0.08); }
+    [data-theme="light"] .insight.warning { background:rgba(251,191,36,0.08); }
+    [data-theme="light"] .insight.negative { background:rgba(248,113,113,0.08); }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; transition:all 0.3s; }
+    .container { max-width:1400px; margin:0 auto; padding:24px; }
+    .header { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:24px; margin-bottom:24px; backdrop-filter:blur(20px); }
+    .header h1 { font-size:2rem; margin-bottom:8px; }
+    .header h1 span { color:var(--accent); }
+    .header p { color:var(--muted); }
+    .nav { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+    .nav a { padding:12px 20px; background:var(--card); border:1px solid var(--border); border-radius:12px; color:var(--muted); text-decoration:none; transition:all 0.3s; }
+    .nav a:hover, .nav a.active { background:var(--accent); color:#000; border-color:var(--accent); }
+    .glass { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:20px; backdrop-filter:blur(16px); }
+    .glass h2 { font-size:1.2rem; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+    .grid { display:grid; gap:20px; }
+    .grid-2 { grid-template-columns:repeat(auto-fit, minmax(400px, 1fr)); }
+    .grid-3 { grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); }
+    .grid-4 { grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); }
+    .kpi { text-align:center; padding:20px; }
+    .kpi .value { font-size:2.5rem; font-weight:700; }
+    .kpi .label { color:var(--muted); font-size:0.8rem; text-transform:uppercase; margin-top:4px; }
+    .kpi.success .value { color:var(--success); }
+    .kpi.warn .value { color:var(--warn); }
+    .kpi.danger .value { color:var(--danger); }
+    .chart-container { height:300px; position:relative; }
+    .insight { padding:16px; border-radius:12px; margin-bottom:12px; }
+    .insight.positive { background:rgba(16,185,129,0.1); border-left:4px solid var(--success); }
+    .insight.warning { background:rgba(251,191,36,0.1); border-left:4px solid var(--warn); }
+    .insight.negative { background:rgba(248,113,113,0.1); border-left:4px solid var(--danger); }
+    .insight h4 { margin-bottom:8px; }
+    .insight p { color:var(--muted); font-size:0.9rem; line-height:1.6; }
+    .lang-toggle { position:fixed; top:20px; right:20px; display:flex; gap:4px; background:var(--card); padding:4px; border-radius:8px; border:1px solid var(--border); z-index:100; backdrop-filter:blur(10px); }
+    .lang-btn { padding:8px 16px; border:none; background:transparent; color:var(--muted); cursor:pointer; border-radius:6px; font-family:inherit; font-size:0.85rem; transition:all 0.2s; }
+    .lang-btn:hover { background:rgba(76,201,240,0.1); }
+    .lang-btn.active { background:var(--accent); color:#000; }
+    /* Theme Toggle */
+    .theme-toggle { position:fixed; top:20px; right:140px; background:var(--card); padding:8px 16px; border-radius:8px; border:1px solid var(--border); cursor:pointer; color:var(--text); font-size:1.2rem; z-index:100; backdrop-filter:blur(10px); transition:all 0.2s; }
+    .theme-toggle:hover { transform:scale(1.05); }
+    /* Progress Bar */
+    .progress-bar { height:8px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden; margin-top:8px; }
+    .progress-fill { height:100%; background:linear-gradient(90deg, var(--accent), var(--success)); border-radius:4px; transition:width 0.5s ease; }
+    /* Badges */
+    .badge { display:inline-block; padding:4px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; text-transform:uppercase; }
+    .badge-success { background:rgba(16,185,129,0.2); color:var(--success); }
+    .badge-warn { background:rgba(251,191,36,0.2); color:var(--warn); }
+    .badge-accent { background:rgba(76,201,240,0.2); color:var(--accent); }
+    /* Hover effects */
+    .glass { transition:all 0.3s; }
+    .glass:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(76,201,240,0.1); }
+    /* Engagement Score Ring */
+    .score-ring { width:120px; height:120px; margin:0 auto; position:relative; }
+    .score-ring svg { transform:rotate(-90deg); }
+    .score-ring .value { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:1.8rem; font-weight:700; }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('pt')">🇧🇷 PT</button>
+    <button class="lang-btn" onclick="setLang('en')">🇺🇸 EN</button>
+  </div>
+  <div class="container">
+    <header class="header">
+      <h1>🎯 <span data-pt="Análise de Carreira" data-en="Career Analysis">Análise de Carreira</span></h1>
+      <p data-pt="Insights baseados em dados, feedbacks e métricas reais de performance" data-en="Insights based on data, feedback and real performance metrics">Insights baseados em dados, feedbacks e métricas reais de performance</p>
+    </header>
+    <nav class="nav">
+      <a href="index.html">← Hub</a>
+      <a href="#overview" class="active" data-pt="Visão Geral" data-en="Overview">Visão Geral</a>
+      <a href="#strengths" data-pt="Pontos Fortes" data-en="Strengths">Pontos Fortes</a>
+      <a href="#growth" data-pt="Áreas de Melhoria" data-en="Growth Areas">Áreas de Melhoria</a>
+      <a href="#roadmap" data-pt="Roadmap" data-en="Roadmap">Roadmap</a>
+    </nav>
+    <div class="grid grid-4">
+      <div class="glass"><div class="kpi success"><div class="value">3.5x</div><div class="label" data-pt="Mais Rápido" data-en="Faster">Mais Rápido</div></div></div>
+      <div class="glass"><div class="kpi success"><div class="value">90.9%</div><div class="label" data-pt="Satisfação" data-en="Satisfaction">Satisfação</div></div></div>
+      <div class="glass"><div class="kpi"><div class="value">7+</div><div class="label" data-pt="Anos XP" data-en="Years XP">Anos XP</div></div></div>
+      <div class="glass"><div class="kpi warn"><div class="value">3.4K</div><div class="label" data-pt="Pts QNOW" data-en="QNOW Pts">Pts QNOW</div></div></div>
+    </div>
+    <section id="strengths">
+      <h2 style="font-size:1.4rem; margin-bottom:20px;">💪 <span data-pt="Pontos Fortes Comprovados" data-en="Proven Strengths">Pontos Fortes Comprovados</span></h2>
+      <div class="grid grid-2">
+        <div class="glass">
+          <div class="insight positive"><h4>🚀 <span data-pt="Entrega Rápida & Qualidade" data-en="Fast Delivery & Quality">Entrega Rápida & Qualidade</span></h4><p data-pt="3.5x mais rápido que a média em tarefas de alta prioridade. Lead time 72% menor que SLA." data-en="3.5x faster than average on high-priority tasks. 72% lower lead time than SLA.">3.5x mais rápido que a média em tarefas de alta prioridade. Lead time 72% menor que SLA.</p></div>
+          <div class="insight positive"><h4>📊 <span data-pt="Data-Driven Mindset" data-en="Data-Driven Mindset">Data-Driven Mindset</span></h4><p data-pt="Dashboards executivos e automação de reports que reduziram tempo de decisão em 40%." data-en="Executive dashboards and report automation that reduced decision time by 40%.">Dashboards executivos e automação de reports que reduziram tempo de decisão em 40%.</p></div>
+        </div>
+        <div class="glass">
+          <div class="insight positive"><h4>🤝 <span data-pt="Stakeholder Management" data-en="Stakeholder Management">Stakeholder Management</span></h4><p data-pt="Score de satisfação de 90.9% em surveys. Comunicação efetiva com times globais (DK, US, BR)." data-en="90.9% satisfaction score. Effective communication with global teams (DK, US, BR).">Score de satisfação de 90.9% em surveys. Comunicação efetiva com times globais (DK, US, BR).</p></div>
+          <div class="insight positive"><h4>💡 <span data-pt="Inovação & Automação" data-en="Innovation & Automation">Inovação & Automação</span></h4><p data-pt="Ferramentas internas que economizaram +200 horas/ano com Power Automate e Python." data-en="Internal tools saving +200 hours/year with Power Automate and Python.">Ferramentas internas que economizaram +200 horas/ano com Power Automate e Python.</p></div>
+        </div>
+      </div>
+    </section>
+    <section id="growth" style="margin-top:32px;">
+      <h2 style="font-size:1.4rem; margin-bottom:20px;">🌱 <span data-pt="Áreas de Desenvolvimento" data-en="Development Areas">Áreas de Desenvolvimento</span></h2>
+      <div class="grid grid-2">
+        <div class="glass">
+          <div class="insight warning"><h4>📢 <span data-pt="Visibilidade de Impacto" data-en="Impact Visibility">Visibilidade de Impacto</span></h4><p data-pt="Foco na entrega sem comunicar valor. Ação: Documentar impactos em números." data-en="Focus on delivery without communicating value. Action: Document impacts in numbers.">Foco na entrega sem comunicar valor. Ação: Documentar impactos em números.</p></div>
+          <div class="insight warning"><h4>📈 <span data-pt="Networking Interno" data-en="Internal Networking">Networking Interno</span></h4><p data-pt="Foco excessivo em técnico. Ação: 1 coffee chat/semana com stakeholders-chave." data-en="Excessive technical focus. Action: 1 coffee chat/week with key stakeholders.">Foco excessivo em técnico. Ação: 1 coffee chat/semana com stakeholders-chave.</p></div>
+        </div>
+        <div class="glass">
+          <div class="insight warning"><h4>🎤 <span data-pt="Apresentações Executivas" data-en="Executive Presentations">Apresentações Executivas</span></h4><p data-pt="Confortável com dados, precisa melhorar storytelling C-level." data-en="Comfortable with data, needs to improve C-level storytelling.">Confortável com dados, precisa melhorar storytelling C-level.</p></div>
+          <div class="insight negative"><h4>⚠️ <span data-pt="Delegação" data-en="Delegation">Delegação</span></h4><p data-pt="Tendência a assumir demais. Ação: Identificar tarefas delegáveis." data-en="Tendency to take on too much. Action: Identify delegable tasks.">Tendência a assumir demais. Ação: Identificar tarefas delegáveis.</p></div>
+        </div>
+      </div>
+    </section>
+    <section id="roadmap" style="margin-top:32px;">
+      <div class="grid grid-2">
+        <div class="glass"><h2>📈 <span data-pt="Radar de Competências" data-en="Skills Radar">Radar de Competências</span></h2><div class="chart-container"><canvas id="radarChart"></canvas></div></div>
+        <div class="glass">
+          <h2>🗺️ <span data-pt="Roadmap 2025" data-en="Roadmap 2025">Roadmap 2025</span></h2>
+          <div style="padding:10px 0;">
+            <div class="insight positive" style="margin-bottom:16px;"><h4>Q1: <span data-pt="Fundação" data-en="Foundation">Fundação</span></h4><p>✅ Certificação Cloud • ✅ Dashboard executivo • ⏳ Portfolio online</p></div>
+            <div class="insight warning" style="margin-bottom:16px;"><h4>Q2: <span data-pt="Expansão" data-en="Expansion">Expansão</span></h4><p>📌 Liderar projeto cross-functional • 📌 Mentoria de júnior • 📌 Apresentar em All Hands</p></div>
+            <div class="insight" style="background:rgba(76,201,240,0.1); border-left:4px solid var(--accent);"><h4>Q3-Q4: <span data-pt="Consolidação" data-en="Consolidation">Consolidação</span></h4><p>🎯 Promoção Sr. Analyst • 🎯 Product ownership • 🎯 Network global</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Engagement & Performance Section -->
+    <section id="engagement" style="margin-top:32px;">
+      <h2 style="font-size:1.4rem; margin-bottom:20px;">📊 <span data-pt="Engajamento & Performance" data-en="Engagement & Performance">Engajamento & Performance</span></h2>
+      <div class="grid grid-3">
+        <div class="glass" style="text-align:center;">
+          <h2 style="justify-content:center;">🎯 <span data-pt="Score Geral" data-en="Overall Score">Score Geral</span></h2>
+          <div class="score-ring">
+            <svg width="120" height="120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="url(#gradient)" stroke-width="10" stroke-dasharray="283" stroke-dashoffset="28" stroke-linecap="round"/>
+              <defs><linearGradient id="gradient"><stop offset="0%" stop-color="#4cc9f0"/><stop offset="100%" stop-color="#10b981"/></linearGradient></defs>
+            </svg>
+            <div class="value" style="color:var(--success);">90%</div>
+          </div>
+          <p style="color:var(--muted);margin-top:12px;font-size:0.85rem;" data-pt="Top 10% do time" data-en="Top 10% of team">Top 10% do time</p>
+        </div>
+        <div class="glass">
+          <h2>⚡ <span data-pt="Métricas Chave" data-en="Key Metrics">Métricas Chave</span></h2>
+          <div style="margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span data-pt="Entregas no Prazo" data-en="On-time Delivery">Entregas no Prazo</span><span style="color:var(--success);">95%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:95%;"></div></div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span data-pt="Qualidade" data-en="Quality">Qualidade</span><span style="color:var(--success);">92%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:92%;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span data-pt="Colaboração" data-en="Collaboration">Colaboração</span><span style="color:var(--warn);">85%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width:85%;background:linear-gradient(90deg, var(--warn), var(--success));"></div></div>
+          </div>
+        </div>
+        <div class="glass">
+          <h2>🏆 <span data-pt="Conquistas" data-en="Achievements">Conquistas</span></h2>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="badge badge-success">🚀 Fast Learner</span>
+            <span class="badge badge-accent">💡 Innovator</span>
+            <span class="badge badge-success">🎯 Goal Crusher</span>
+            <span class="badge badge-warn">🔥 Streak: 12 weeks</span>
+            <span class="badge badge-accent">📊 Data Champion</span>
+            <span class="badge badge-success">🤝 Team Player</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    // Theme Toggle
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      document.querySelector('.theme-toggle').textContent = next === 'light' ? '☀️' : '🌙';
+      localStorage.setItem('theme', next);
+      updateChartColors();
+    }
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.querySelector('.theme-toggle').textContent = savedTheme === 'light' ? '☀️' : '🌙';
+    }
+
+    // Language Toggle
+    let currentLang = localStorage.getItem('lang') || 'pt';
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+      document.querySelectorAll('[data-pt][data-en]').forEach(el => { el.textContent = el.getAttribute(`data-${lang}`); });
+    }
+    // Init language
+    setLang(currentLang);
+
+    // Chart with dynamic colors
+    let radarChart;
+    function updateChartColors() {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const textColor = isLight ? '#0f172a' : '#f0f4ff';
+      const gridColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+      if (radarChart) {
+        radarChart.options.scales.r.pointLabels.color = textColor;
+        radarChart.options.scales.r.ticks.color = textColor;
+        radarChart.options.scales.r.grid.color = gridColor;
+        radarChart.options.plugins.legend.labels.color = textColor;
+        radarChart.update();
+      }
+    }
+    radarChart = new Chart(document.getElementById('radarChart'), {
+      type: 'radar',
+      data: {
+        labels: ['Technical', 'Communication', 'Leadership', 'Problem Solving', 'Collaboration', 'Innovation'],
+        datasets: [{ label: 'Current', data: [92, 85, 75, 90, 88, 94], backgroundColor: 'rgba(76, 201, 240, 0.2)', borderColor: '#4cc9f0', pointBackgroundColor: '#4cc9f0' }, { label: 'Target', data: [95, 92, 88, 92, 90, 95], backgroundColor: 'rgba(16, 185, 129, 0.1)', borderColor: '#10b981', pointBackgroundColor: '#10b981', borderDash: [5, 5] }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, scales: { r: { beginAtZero: true, max: 100, ticks: { stepSize: 20, color: '#666' }, grid: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { color: '#f0f4ff' } } }, plugins: { legend: { labels: { color: '#f0f4ff' } } } }
+    });
+    updateChartColors();
+  </script>
+</body>
+</html>

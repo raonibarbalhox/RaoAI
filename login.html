@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | ProPulse Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #030303;
+      --card: rgba(255,255,255,0.03);
+      --border: rgba(255,255,255,0.08);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.6);
+      --accent: #4cc9f0;
+      --success: #10b981;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { 
+      font-family:'Inter',sans-serif; 
+      background: var(--bg); 
+      color: var(--text); 
+      min-height:100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bg-gradient {
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(76,201,240,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(16,185,129,0.1) 0%, transparent 50%);
+      z-index: -1;
+    }
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .logo h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .logo p {
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(76,201,240,0.1);
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(76,201,240,0.3);
+    }
+    .btn-google {
+      background: rgba(255,255,255,0.1);
+      color: var(--text);
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .btn-google:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .footer-links {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .footer-links a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .alert-error {
+      background: rgba(248,113,113,0.1);
+      border: 1px solid rgba(248,113,113,0.3);
+      color: #f87171;
+    }
+    .alert-success {
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: var(--success);
+    }
+    .loading {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .tabs {
+      display: flex;
+      margin-bottom: 24px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 4px;
+    }
+    .tab {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 8px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      background: var(--accent);
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gradient"></div>
+  
+  <div class="login-container">
+    <div class="logo">
+      <h1>🚀 ProPulse</h1>
+      <p data-pt="Plataforma de Crescimento Profissional" data-en="Professional Growth Platform">Plataforma de Crescimento Profissional</p>
+    </div>
+
+    <div class="card">
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('login')" data-pt="Entrar" data-en="Sign In">Entrar</button>
+        <button class="tab" onclick="showTab('signup')" data-pt="Criar Conta" data-en="Sign Up">Criar Conta</button>
+      </div>
+
+      <div id="alert" class="alert"></div>
+
+      <!-- Google Login -->
+      <button class="btn btn-google" onclick="signInWithGoogle()">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        <span data-pt="Continuar com Google" data-en="Continue with Google">Continuar com Google</span>
+      </button>
+
+      <div class="divider" data-pt="ou" data-en="or">ou</div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label data-pt="E-mail" data-en="Email">E-mail</label>
+          <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label data-pt="Senha" data-en="Password">Senha</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <span class="loading" id="loginLoading"></span>
+          <span data-pt="Entrar" data-en="Sign In">Entrar</span>
+        </button>
+      </form>
+
+      <!-- Signup Form (hidden by default) -->
+      <form id="signupForm" style="display:none;" onsubmit="handleSignup(event)">
+        <div class="form-group">
+          <label data-pt="Nome completo" data-en="Full name">Nome completo</label>
+          <input type="text" id="signupName" placeholder="Seu nome" required>
+        </div>
+        <div class="form-group">
+          <label data-pt="E-mail" data-en="Email">E-mail</label>
+          <input type="email" id="signupEmail" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label data-pt="Senha" data-en="Password">Senha</label>
+          <input type="password" id="signupPassword" placeholder="Mínimo 6 caracteres" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <span class="loading" id="signupLoading"></span>
+          <span data-pt="Criar conta" data-en="Create account">Criar conta</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="footer-links">
+      <a href="index.html" data-pt="← Voltar ao Hub" data-en="← Back to Hub">← Voltar ao Hub</a>
+    </div>
+  </div>
+
+  <script>
+    // Supabase Config
+    const SUPABASE_URL = 'https://sjhhnzmqafkbodjakzdz.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_x6zS8GIZfTo_hvqjcBLcWA_qhEJMtFa';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Check if already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Tab switching
+    function showTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`.tab[onclick="showTab('${tab}')"]`).classList.add('active');
+      document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('signupForm').style.display = tab === 'signup' ? 'block' : 'none';
+      hideAlert();
+    }
+
+    // Alert functions
+    function showAlert(message, type) {
+      const alert = document.getElementById('alert');
+      alert.textContent = message;
+      alert.className = `alert alert-${type}`;
+      alert.style.display = 'block';
+    }
+    function hideAlert() {
+      document.getElementById('alert').style.display = 'none';
+    }
+
+    // Google Sign In
+    async function signInWithGoogle() {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + '/index.html' }
+      });
+      if (error) showAlert(error.message, 'error');
+    }
+
+    // Email Login
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      document.getElementById('loginLoading').style.display = 'block';
+      
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      document.getElementById('loginLoading').style.display = 'none';
+      
+      if (error) {
+        showAlert(error.message, 'error');
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+
+    // Email Signup
+    async function handleSignup(e) {
+      e.preventDefault();
+      const name = document.getElementById('signupName').value;
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      
+      document.getElementById('signupLoading').style.display = 'block';
+      
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: name } }
+      });
+      
+      document.getElementById('signupLoading').style.display = 'none';
+      
+      if (error) {
+        showAlert(error.message, 'error');
+      } else {
+        showAlert('Conta criada! Verifique seu e-mail para confirmar.', 'success');
+      }
+    }
+
+    // Language
+    let currentLang = localStorage.getItem('lang') || 'pt';
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      document.querySelectorAll('[data-pt][data-en]').forEach(el => {
+        el.textContent = el.getAttribute(`data-${lang}`);
+      });
+    }
+    setLang(currentLang);
+  </script>
+</body>
+</html>

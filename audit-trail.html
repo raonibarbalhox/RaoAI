@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Trail Analyzer | RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #030303; color: #ffffff; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: rgba(10, 10, 10, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.1); z-index: 100; }
+        .main-content { margin-left: 250px; padding: 2rem; }
+        .log-entry { font-family: 'Courier New', monospace; font-size: 0.8rem; }
+        .action-create { color: #10b981; }
+        .action-update { color: #f59e0b; }
+        .action-delete { color: #ef4444; }
+        .action-login { color: #0070f3; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="p-6">
+            <h1 class="text-2xl font-black mb-8" style="background: linear-gradient(135deg, #fff, #0070f3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">RaoniX</h1>
+            <nav class="space-y-2">
+                <a href="/index.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🏠 Hub</a>
+                <a href="/gxp-dashboard.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">✅ GxP Dashboard</a>
+                <a href="/csv-tracker.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">📋 CSV Tracker</a>
+                <a href="/capa-system.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🔧 CAPA System</a>
+                <a href="#" class="block px-4 py-2 rounded-lg bg-white/10">🔍 Audit Trail</a>
+            </nav>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="mb-8">
+            <h1 class="text-4xl font-black mb-2">Audit Trail Analyzer</h1>
+            <p class="text-slate-400">21 CFR Part 11 Compliance • ALCOA+ Data Integrity</p>
+        </div>
+        
+        <!-- Filters -->
+        <div class="glass rounded-2xl p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <input type="text" placeholder="User ID" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white">
+                <select class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white">
+                    <option>All Systems</option>
+                    <option>SAP QM</option>
+                    <option>LIMS</option>
+                    <option>MES</option>
+                    <option>SCADA</option>
+                </select>
+                <select class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white">
+                    <option>All Actions</option>
+                    <option>CREATE</option>
+                    <option>UPDATE</option>
+                    <option>DELETE</option>
+                    <option>LOGIN</option>
+                    <option>LOGOUT</option>
+                </select>
+                <input type="date" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white">
+                <button class="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 font-semibold">🔍 Search</button>
+            </div>
+        </div>
+        
+        <!-- ALCOA+ Compliance Summary -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="glass rounded-xl p-4">
+                <div class="text-sm text-slate-400 mb-1">Attributable</div>
+                <div class="text-2xl font-bold text-green-400">✅ 100%</div>
+                <div class="text-xs text-slate-500">All actions have user ID</div>
+            </div>
+            <div class="glass rounded-xl p-4">
+                <div class="text-sm text-slate-400 mb-1">Legible</div>
+                <div class="text-2xl font-bold text-green-400">✅ 100%</div>
+                <div class="text-xs text-slate-500">No corrupted entries</div>
+            </div>
+            <div class="glass rounded-xl p-4">
+                <div class="text-sm text-slate-400 mb-1">Contemporaneous</div>
+                <div class="text-2xl font-bold text-orange-400">⚠️ 98.2%</div>
+                <div class="text-xs text-slate-500">3 backdated entries</div>
+            </div>
+            <div class="glass rounded-xl p-4">
+                <div class="text-sm text-slate-400 mb-1">Original</div>
+                <div class="text-2xl font-bold text-green-400">✅ 100%</div>
+                <div class="text-xs text-slate-500">Immutable records</div>
+            </div>
+        </div>
+        
+        <!-- Audit Log Table -->
+        <div class="glass rounded-2xl overflow-hidden">
+            <div class="p-4 border-b border-white/10">
+                <h3 class="font-bold">Recent Audit Log Entries (Last 24h)</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-white/5">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-semibold">Timestamp</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold">User</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold">System</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold">Action</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold">Object</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold">IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody class="log-entry">
+                        <tr class="border-b border-white/5 hover:bg-white/3">
+                            <td class="px-4 py-3">2026-02-01 18:45:32</td>
+                            <td class="px-4 py-3">raoni.barbosa@novonordisk.com</td>
+                            <td class="px-4 py-3">SAP QM</td>
+                            <td class="px-4 py-3"><span class="action-update">UPDATE</span></td>
+                            <td class="px-4 py-3">Batch Record BR-2026-0234</td>
+                            <td class="px-4 py-3">10.20.15.45</td>
+                        </tr>
+                        <tr class="border-b border-white/5 hover:bg-white/3">
+                            <td class="px-4 py-3">2026-02-01 18:42:18</td>
+                            <td class="px-4 py-3">carolina.lima@novonordisk.com</td>
+                            <td class="px-4 py-3">MES</td>
+                            <td class="px-4 py-3"><span class="action-create">CREATE</span></td>
+                            <td class="px-4 py-3">Production Order PO-567890</td>
+                            <td class="px-4 py-3">10.20.15.67</td>
+                        </tr>
+                        <tr class="border-b border-white/5 hover:bg-white/3">
+                            <td class="px-4 py-3">2026-02-01 18:38:05</td>
+                            <td class="px-4 py-3">pedro.santos@novonordisk.com</td>
+                            <td class="px-4 py-3">LIMS</td>
+                            <td class="px-4 py-3"><span class="action-update">UPDATE</span></td>
+                            <td class="px-4 py-3">Sample Result SR-2026-1234</td>
+                            <td class="px-4 py-3">10.20.15.89</td>
+                        </tr>
+                        <tr class="border-b border-white/5 hover:bg-white/3">
+                            <td class="px-4 py-3">2026-02-01 18:35:42</td>
+                            <td class="px-4 py-3">ana.costa@novonordisk.com</td>
+                            <td class="px-4 py-3">SCADA</td>
+                            <td class="px-4 py-3"><span class="action-login">LOGIN</span></td>
+                            <td class="px-4 py-3">System Access</td>
+                            <td class="px-4 py-3">10.20.15.12</td>
+                        </tr>
+                        <tr class="border-b border-white/5 hover:bg-white/3 bg-red-500/5">
+                            <td class="px-4 py-3">2026-02-01 18:30:15</td>
+                            <td class="px-4 py-3">system.admin@novonordisk.com</td>
+                            <td class="px-4 py-3">SAP QM</td>
+                            <td class="px-4 py-3"><span class="action-delete">DELETE</span></td>
+                            <td class="px-4 py-3">User Account usr_temp_001</td>
+                            <td class="px-4 py-3">10.20.15.2</td>
+                        </tr>
+                        <tr class="border-b border-white/5 hover:bg-white/3">
+                            <td class="px-4 py-3">2026-02-01 18:28:03</td>
+                            <td class="px-4 py-3">raoni.barbosa@novonordisk.com</td>
+                            <td class="px-4 py-3">LIMS</td>
+                            <td class="px-4 py-3"><span class="action-create">CREATE</span></td>
+                            <td class="px-4 py-3">Test Protocol TP-2026-089</td>
+                            <td class="px-4 py-3">10.20.15.45</td>
+                        </tr>
+                        <tr class="border-b border-white/5 hover:bg-white/3">
+                            <td class="px-4 py-3">2026-02-01 18:25:50</td>
+                            <td class="px-4 py-3">carolina.lima@novonordisk.com</td>
+                            <td class="px-4 py-3">MES</td>
+                            <td class="px-4 py-3"><span class="action-update">UPDATE</span></td>
+                            <td class="px-4 py-3">Equipment Status EQ-FF-001</td>
+                            <td class="px-4 py-3">10.20.15.67</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 border-t border-white/10 flex items-center justify-between">
+                <div class="text-sm text-slate-400">Showing 7 of 2,456 entries</div>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10">Previous</button>
+                    <button class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

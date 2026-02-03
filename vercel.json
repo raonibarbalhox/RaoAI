@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    { "source": "/stocks", "destination": "/stocks.html" },
+    { "source": "/portfolio", "destination": "/portfolio.html" },
+    { "source": "/cv", "destination": "/cv.html" },
+    { "source": "/career", "destination": "/career-analysis.html" },
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/effects", "destination": "/effects/demo.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+      ]
+    }
+  ]
+}

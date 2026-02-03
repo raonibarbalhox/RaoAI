@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITRA Analytics Mini — RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        :root {
+            --bg-primary: #030303;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --accent: #6366f1;
+            --success: #10b981;
+            --warn: #f59e0b;
+        }
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+        }
+        body { background: var(--bg-primary); color: var(--text-primary); }
+        .card { background: var(--bg-secondary); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .kpi { text-align: center; }
+        .kpi-value { font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #6366f1, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .kpi-label { font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.5rem; }
+        .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .metric-row:last-child { border-bottom: none; }
+        .metric-label { color: var(--text-secondary); }
+        .metric-value { font-weight: 600; color: var(--accent); }
+        .status-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .status-on-track { background: rgba(16, 185, 129, 0.1); color: #34d399; }
+        .status-at-risk { background: rgba(245, 158, 11, 0.1); color: #fcd34d; }
+        .status-critical { background: rgba(239, 68, 68, 0.1); color: #fca5a5; }
+        .header { background: rgba(99, 102, 241, 0.05); border-bottom: 1px solid rgba(99, 102, 241, 0.2); padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        [data-theme="light"] .card { background: #f1f5f9; border-color: rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="text-2xl font-bold">🏠</a>
+            <h1 class="text-xl font-bold">ITRA Analytics Mini</h1>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-white/10">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Executive Summary -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">Executive Summary</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="card kpi">
+                    <div class="kpi-value">48</div>
+                    <div class="kpi-label">ITRA Released</div>
+                </div>
+                <div class="card kpi">
+                    <div class="kpi-value">16.2d</div>
+                    <div class="kpi-label">Avg Lead Time</div>
+                </div>
+                <div class="card kpi">
+                    <div class="kpi-value">73%</div>
+                    <div class="kpi-label">On-Time Delivery</div>
+                </div>
+                <div class="card kpi">
+                    <div class="kpi-value">2.1v</div>
+                    <div class="kpi-label">Avg Versions</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <!-- Lead Time Distribution -->
+            <div class="card">
+                <h3 class="font-bold mb-4">Lead Time Distribution (days)</h3>
+                <canvas id="leadTimeChart"></canvas>
+            </div>
+
+            <!-- Status Distribution -->
+            <div class="card">
+                <h3 class="font-bold mb-4">Status Distribution</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Phase Analysis -->
+        <div class="card mb-6">
+            <h3 class="font-bold mb-4">📊 Phase Breakdown (Avg Days)</h3>
+            <div id="phaseBreakdown" class="space-y-3"></div>
+        </div>
+
+        <!-- Top Bottlenecks -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="card">
+                <h3 class="font-bold mb-4">🔴 Top Bottlenecks</h3>
+                <div id="bottlenecks" class="space-y-3"></div>
+            </div>
+
+            <div class="card">
+                <h3 class="font-bold mb-4">✅ High Performers</h3>
+                <div id="performers" class="space-y-3"></div>
+            </div>
+        </div>
+
+        <!-- Trends -->
+        <div class="card mb-8">
+            <h3 class="font-bold mb-4">📈 Monthly Trend</h3>
+            <canvas id="trendChart"></canvas>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="card">
+            <h3 class="font-bold mb-4">💡 Recommendations</h3>
+            <div class="space-y-3">
+                <div class="flex gap-3">
+                    <span>1.</span>
+                    <span><strong>QA Phase Optimization:</strong> Average 4.8 days. Consider parallel testing or resource allocation increase.</span>
+                </div>
+                <div class="flex gap-3">
+                    <span>2.</span>
+                    <span><strong>Rework Reduction:</strong> 2.1 avg versions indicates rework. Implement stricter requirements review.</span>
+                </div>
+                <div class="flex gap-3">
+                    <span>3.</span>
+                    <span><strong>GIS Approval SLA:</strong> Currently 3.2 days. Set target SLA of 2 days for 90% of requests.</span>
+                </div>
+                <div class="flex gap-3">
+                    <span>4.</span>
+                    <span><strong>Awaiting Time Analysis:</strong> 42% of total cycle is spent "awaiting". Implement notification system.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample ITRA data
+        const itraData = {
+            totalReleased: 48,
+            avgLeadTime: 16.2,
+            onTimeDelivery: 73,
+            avgVersions: 2.1,
+            leadTimeDist: { '0-5d': 8, '5-10d': 15, '10-15d': 14, '15-20d': 7, '20+d': 4 },
+            statusDist: { 'Released': 48, 'Awaiting GIS': 5, 'In QA': 3, 'In Development': 2 },
+            phases: {
+                'Planning': { avg: 1.2, min: 0.5, max: 2.1, status: 'on-track' },
+                'Requirements': { avg: 1.8, min: 0.8, max: 3.5, status: 'on-track' },
+                'Design': { avg: 2.1, min: 1.0, max: 4.2, status: 'on-track' },
+                'Development': { avg: 3.4, min: 1.5, max: 6.8, status: 'on-track' },
+                'QA/Testing': { avg: 4.8, min: 2.0, max: 8.5, status: 'at-risk' },
+                'GIS Approval': { avg: 3.2, min: 1.0, max: 5.2, status: 'at-risk' }
+            },
+            bottlenecks: [
+                { name: 'QA Testing Phase', days: 4.8, impact: 'High', reason: 'Resource constraint' },
+                { name: 'GIS Approval Waiting', days: 3.2, impact: 'High', reason: 'Stakeholder availability' },
+                { name: 'Requirements Review', days: 1.8, impact: 'Medium', reason: 'Clarity issues' }
+            ],
+            performers: [
+                { name: 'Planning Phase', days: 1.2, score: 'A+' },
+                { name: 'Design Review', days: 2.1, score: 'A' },
+                { name: 'Development Cycle', days: 3.4, score: 'A-' }
+            ]
+        };
+
+        // Initialize charts
+        document.addEventListener('DOMContentLoaded', () => {
+            initLeadTimeChart();
+            initStatusChart();
+            initTrendChart();
+            renderPhaseBreakdown();
+            renderBottlenecks();
+            renderPerformers();
+            applyTheme();
+        });
+
+        function initLeadTimeChart() {
+            const ctx = document.getElementById('leadTimeChart');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(itraData.leadTimeDist),
+                    datasets: [{
+                        label: 'ITRA Count',
+                        data: Object.values(itraData.leadTimeDist),
+                        backgroundColor: 'rgba(99, 102, 241, 0.5)',
+                        borderColor: '#6366f1',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        function initStatusChart() {
+            const ctx = document.getElementById('statusChart');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(itraData.statusDist),
+                    datasets: [{
+                        data: Object.values(itraData.statusDist),
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.5)',
+                            'rgba(245, 158, 11, 0.5)',
+                            'rgba(99, 102, 241, 0.5)',
+                            'rgba(239, 68, 68, 0.5)'
+                        ],
+                        borderColor: ['#10b981', '#f59e0b', '#6366f1', '#ef4444'],
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+
+        function initTrendChart() {
+            const ctx = document.getElementById('trendChart');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Lead Time (avg days)',
+                        data: [18.5, 17.2, 16.8, 15.9, 16.2, 16.2],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        function renderPhaseBreakdown() {
+            const container = document.getElementById('phaseBreakdown');
+            container.innerHTML = Object.entries(itraData.phases).map(([phase, data]) => `
+                <div class="metric-row">
+                    <div>
+                        <div class="metric-label">${phase}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">Min: ${data.min}d | Max: ${data.max}d</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 150px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                            <div style="width: ${(data.avg / 10) * 100}%; height: 100%; background: linear-gradient(90deg, #6366f1, #10b981);"></div>
+                        </div>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <span class="metric-value">${data.avg}d</span>
+                            <span class="status-badge ${data.status === 'on-track' ? 'status-on-track' : 'status-at-risk'}">${data.status}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderBottlenecks() {
+            const container = document.getElementById('bottlenecks');
+            container.innerHTML = itraData.bottlenecks.map(b => `
+                <div style="padding: 1rem; background: rgba(239, 68, 68, 0.05); border-left: 3px solid #ef4444; border-radius: 6px;">
+                    <div style="font-weight: 600;">${b.name}</div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.25rem;">${b.reason}</div>
+                    <div style="display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.875rem;">
+                        <span>⏱️ ${b.days}d avg</span>
+                        <span class="status-badge status-critical">${b.impact}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPerformers() {
+            const container = document.getElementById('performers');
+            container.innerHTML = itraData.performers.map(p => `
+                <div style="padding: 1rem; background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; border-radius: 6px;">
+                    <div style="font-weight: 600;">${p.name}</div>
+                    <div style="display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.875rem;">
+                        <span>⏱️ ${p.days}d avg</span>
+                        <span class="status-badge status-on-track">${p.score}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            location.reload();
+        }
+
+        function applyTheme() {
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+        }
+    </script>
+</body>
+</html>

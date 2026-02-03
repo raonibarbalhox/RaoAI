@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Prep Assistant | RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #030303; color: #ffffff; min-height: 100vh; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: rgba(10, 10, 10, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.1); z-index: 100; overflow-y: auto; }
+        .main-content { margin-left: 250px; padding: 2rem; }
+        .card { padding: 1.5rem; border-radius: 1rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .prep-section { margin-bottom: 1.5rem; }
+        .prep-item { display: flex; gap: 1rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.02); border-radius: 0.75rem; border-left: 3px solid #0070f3; }
+        .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        .badge-urgent { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .badge-important { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .badge-info { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        input, select, textarea { width: 100%; padding: 0.75rem; border-radius: 0.75rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: #0070f3; color: white; }
+        .btn-primary:hover { background: #0051cc; }
+        .btn-secondary { background: rgba(255, 255, 255, 0.1); }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="p-6">
+            <h1 class="text-2xl font-black mb-8" style="background: linear-gradient(135deg, #fff, #0070f3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">RaoniX</h1>
+            <nav class="space-y-2 text-sm">
+                <a href="/index.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🏠 Hub</a>
+                <a href="/gamp-translator.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">📚 GAMP Translator</a>
+                <a href="/checklist-manager.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">✓ Checklist Manager</a>
+                <a href="/csv-protocol.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🧪 CSV Protocol</a>
+                <a href="#" class="block px-4 py-2 rounded-lg bg-white/10">📋 Meeting Prep</a>
+            </nav>
+            <hr class="my-4 border-white/10">
+            <div class="text-xs text-slate-400 space-y-2">
+                <div class="font-semibold">📅 REUNIÕES</div>
+                <div class="px-3 py-2 rounded hover:bg-white/5 cursor-pointer transition">QA Standup</div>
+                <div class="px-3 py-2 rounded hover:bg-white/5 cursor-pointer transition">CSV Review</div>
+                <div class="px-3 py-2 rounded hover:bg-white/5 cursor-pointer transition">1-on-1 Lead</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="mb-8">
+            <h1 class="text-4xl font-black mb-2">📋 Meeting Prep Assistant</h1>
+            <p class="text-slate-400">Prepara você para reuniões com insights e contexto • Resume dados relevantes • Sugere tópicos</p>
+        </div>
+
+        <!-- Meeting Info Form -->
+        <div class="glass rounded-2xl p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">Informações da Reunião</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-semibold mb-2 block">Tipo de Reunião</label>
+                    <select id="meetingType">
+                        <option>QA Standup</option>
+                        <option>CSV Review</option>
+                        <option>1-on-1 com Lead</option>
+                        <option>Checkpoint de Projeto</option>
+                        <option>Auditing Prep</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold mb-2 block">Duração (minutos)</label>
+                    <select id="duration">
+                        <option>15</option>
+                        <option>30</option>
+                        <option selected>60</option>
+                        <option>90</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4">
+                <label class="text-sm font-semibold mb-2 block">Participantes/Contexto</label>
+                <textarea id="context" placeholder="Ex: Diretor QA, Tech Lead, Pessoal de Validação" rows="2"></textarea>
+            </div>
+            <button onclick="generatePrep()" class="w-full btn btn-primary mt-4">🚀 Gerar Prep Material</button>
+        </div>
+
+        <!-- Generated Prep Material -->
+        <div id="prepMaterial" class="hidden">
+            <!-- Executive Summary -->
+            <div class="prep-section">
+                <h2 class="text-2xl font-bold mb-4">📌 Executive Summary (2 min)</h2>
+                <div class="card">
+                    <p class="text-sm leading-relaxed mb-4">
+                        🎯 <strong>Status:</strong> 3 projetos em progresso, 1 blocado em auditoria
+                    </p>
+                    <p class="text-sm leading-relaxed mb-4">
+                        ✅ <strong>Wins da Semana:</strong> SAP IQ concluído, LIMS OQ 75% pronto
+                    </p>
+                    <p class="text-sm leading-relaxed">
+                        ⚠️ <strong>Risks:</strong> Delay em aprovação RM para CSV, necessário escalonamento
+                    </p>
+                </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="prep-section">
+                <h2 class="text-2xl font-bold mb-4">📊 Métricas de Progresso</h2>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="card text-center">
+                        <div class="text-3xl font-bold text-blue-400">6</div>
+                        <div class="text-xs text-slate-400 mt-1">Checklists Ativas</div>
+                    </div>
+                    <div class="card text-center">
+                        <div class="text-3xl font-bold text-green-400">78%</div>
+                        <div class="text-xs text-slate-400 mt-1">CSV Overall</div>
+                    </div>
+                    <div class="card text-center">
+                        <div class="text-3xl font-bold text-orange-400">12</div>
+                        <div class="text-xs text-slate-400 mt-1">Findings Abertos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Talking Points -->
+            <div class="prep-section">
+                <h2 class="text-2xl font-bold mb-4">💬 Tópicos de Discussão (10 min)</h2>
+                <div class="space-y-2">
+                    <div class="prep-item">
+                        <span class="badge badge-urgent">URGENTE</span>
+                        <div>
+                            <div class="font-semibold text-sm">Finding Crítico: Auditoria Part 11</div>
+                            <div class="text-xs text-slate-400 mt-1">Assinaturas eletrônicas não estão vinculadas a timestamp. Impacta PQ.</div>
+                        </div>
+                    </div>
+                    <div class="prep-item">
+                        <span class="badge badge-important">IMPORTANTE</span>
+                        <div>
+                            <div class="font-semibold text-sm">Bloqueio: Aprovação RM para CSV</div>
+                            <div class="text-xs text-slate-400 mt-1">Aguardando assinatura RM há 5 dias. Sugerir escalação para VP?</div>
+                        </div>
+                    </div>
+                    <div class="prep-item">
+                        <span class="badge badge-info">INFO</span>
+                        <div>
+                            <div class="font-semibold text-sm">Progress Update: SAP IQ Finalizado</div>
+                            <div class="text-xs text-slate-400 mt-1">Hardware + SO + Patches validados. Relatório em anexo.</div>
+                        </div>
+                    </div>
+                    <div class="prep-item">
+                        <span class="badge badge-info">INFO</span>
+                        <div>
+                            <div class="font-semibold text-sm">LIMS OQ - Timeline: Próximas 2 Semanas</div>
+                            <div class="text-xs text-slate-400 mt-1">Performance tests em andamento. Feedback do fornecedor esperado quinta.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions to Ask -->
+            <div class="prep-section">
+                <h2 class="text-2xl font-bold mb-4">❓ Perguntas para Fazer (5 min)</h2>
+                <div class="space-y-2">
+                    <div class="card">
+                        <div class="text-sm">
+                            <strong>Ao Diretor QA:</strong> "Qual é a prioridade: resolver o finding de assinaturas eletrônicas ou continuar com OQ?"
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="text-sm">
+                            <strong>Ao Tech Lead:</strong> "Que recursos você precisa para desbloquear a aprovação RM?"
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="text-sm">
+                            <strong>Ao Grupo:</strong> "Como estamos contra o deadline de Go-Live (3 semanas)?"
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Items from Last Meeting -->
+            <div class="prep-section">
+                <h2 class="text-2xl font-bold mb-4">✓ Ações da Última Reunião</h2>
+                <div class="space-y-2">
+                    <div class="card">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" checked disabled>
+                            <span class="text-sm"><strong>John Silva:</strong> Finalizar SAP IQ Checklist</span>
+                        </label>
+                    </div>
+                    <div class="card">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" disabled>
+                            <span class="text-sm"><strong>Maria Costa:</strong> Escalar bloqueio RM (ainda não fez)</span>
+                        </label>
+                    </div>
+                    <div class="card">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" checked disabled>
+                            <span class="text-sm"><strong>Time:</strong> Revisar GAMP 5 CAT 4 checklist</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Docs to Review Before -->
+            <div class="prep-section">
+                <h2 class="text-2xl font-bold mb-4">📄 Documentos para Revisar (Antes da Reunião)</h2>
+                <div class="space-y-2">
+                    <div class="card hover:bg-white/10 cursor-pointer transition">
+                        <div class="text-sm font-semibold">📋 SAP IQ Validation Report</div>
+                        <div class="text-xs text-slate-400 mt-1">Gerado: 2026-01-15 | Status: ✅ Assinado</div>
+                    </div>
+                    <div class="card hover:bg-white/10 cursor-pointer transition">
+                        <div class="text-sm font-semibold">🔍 21 CFR Part 11 Findings Summary</div>
+                        <div class="text-xs text-slate-400 mt-1">3 críticos, 5 maiores, 2 menores | Pendente RM</div>
+                    </div>
+                    <div class="card hover:bg-white/10 cursor-pointer transition">
+                        <div class="text-sm font-semibold">📊 LIMS OQ Progress Dashboard</div>
+                        <div class="text-xs text-slate-400 mt-1">Atualizado: Ontem às 17h | 78% concluído</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Options -->
+            <div class="mt-8 p-4 glass rounded-xl flex gap-3">
+                <button class="btn btn-secondary flex-1">📥 Exportar para PDF</button>
+                <button class="btn btn-secondary flex-1">📧 Enviar por E-mail</button>
+                <button class="btn btn-primary flex-1">💾 Salvar no Hub</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generatePrep() {
+            document.getElementById('prepMaterial').classList.remove('hidden');
+            document.getElementById('prepMaterial').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

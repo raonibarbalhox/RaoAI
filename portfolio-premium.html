@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raoni Barbalho | Premium Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030303;
+            --text: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --success: #10b981;
+            --nn-blue: #0052cc;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        
+        /* 3D Canvas */
+        #canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        
+        /* Overlay Dark */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(3,3,3,0.4) 0%, rgba(3,3,3,0.95) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            background: rgba(3,3,3,0.7);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .nav-brand {
+            font-size: 1.3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .nav-links a:hover {
+            color: var(--text);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Main Content */
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 48px;
+        }
+        
+        .hero-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin-bottom: 40px;
+            border: 4px solid transparent;
+            background: linear-gradient(var(--bg), var(--bg)) padding-box,
+                        linear-gradient(135deg, var(--accent), var(--success)) border-box;
+            box-shadow: 0 0 80px rgba(99,102,241,0.4);
+            animation: photoFloat 6s ease-in-out infinite;
+            overflow: hidden;
+        }
+        
+        .hero-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        @keyframes photoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(99,102,241,0.1);
+            border: 1px solid rgba(99,102,241,0.3);
+            border-radius: 100px;
+            font-size: 0.9rem;
+            color: var(--accent-light);
+            margin-bottom: 24px;
+            animation: slideInDown 1s ease backwards;
+        }
+        
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .hero h1 {
+            font-size: clamp(3.5rem, 12vw, 8rem);
+            font-weight: 900;
+            letter-spacing: -3px;
+            line-height: 1;
+            margin-bottom: 24px;
+            animation: slideInUp 1s ease 0.2s backwards;
+            word-spacing: 9999px;
+        }
+        
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            line-height: 1.8;
+            margin-bottom: 48px;
+            animation: slideInUp 1s ease 0.4s backwards;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            animation: slideInUp 1s ease 0.6s backwards;
+        }
+        
+        .btn {
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(99,102,241,0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: var(--accent);
+        }
+        
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        .scroll-indicator span {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+        }
+        
+        .scroll-indicator .arrow {
+            width: 24px;
+            height: 24px;
+            border-right: 2px solid var(--text-muted);
+            border-bottom: 2px solid var(--text-muted);
+            transform: rotate(45deg);
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(12px); }
+        }
+        
+        /* Sections */
+        section {
+            position: relative;
+            padding: 140px 48px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent-light);
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Showcase Grid */
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+        }
+        
+        .showcase-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .showcase-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(99,102,241,0.1));
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: 1;
+        }
+        
+        .showcase-card:hover {
+            transform: translateY(-12px);
+            border-color: var(--accent);
+            box-shadow: 0 40px 80px rgba(99,102,241,0.2);
+        }
+        
+        .showcase-card:hover::before {
+            opacity: 1;
+        }
+        
+        .showcase-image {
+            height: 280px;
+            background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(16,185,129,0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            position: relative;
+        }
+        
+        .showcase-content {
+            padding: 32px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .showcase-content h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        
+        .showcase-content p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .tag {
+            padding: 6px 12px;
+            background: rgba(99,102,241,0.15);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 60px 48px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 24px;
+        }
+        
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--text);
+        }
+        
+        @media (max-width: 768px) {
+            nav { padding: 16px 24px; }
+            .nav-links { gap: 20px; }
+            .hero { padding: 100px 24px; }
+            section { padding: 100px 24px; }
+            .showcase-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Canvas Background -->
+    <canvas id="canvas"></canvas>
+    <div class="overlay"></div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-brand">RB</div>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#projects">Projects</a>
+            <a href="#tools">Tools</a>
+            <a href="#contact">Contact</a>
+            <a href="index.html" style="padding: 10px 20px; background: linear-gradient(135deg, var(--accent), var(--success)); border-radius: 8px; color: white;">Hub</a>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-photo">
+                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwwUAxUTAwsHBg8TDA0OEQ8SEBEaFR0YGRgaHRkdISYgISUnJCUkJCUlJCT/2wBDAQICAgICAwUDAwwUAxUTAwsHBg8TDA0OEQ8SEBEaFR0YGRgaHRkdISYgISUnJCUkJCUlJCT/wAARCAB4AHgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZ3eHmCg4SFhoeIiYqSk5SVmJmaoqOkpaanqKmqsrO0tba2uLm6wsPExcbHyMnK0tPU1dbW2Nna4uPk5ebn6Onq8vP09fb2+Pn6/8QAHwEAAwEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlbaWmJmaoqOkpaanqKmqsrO0tba2uLm6wsPExcbHyMnK0tPU1dbW2Nna4uPk5ebn6Onq8vP09fb2+Pn6/9oADAMBAAIRAxEAPwD9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/9k=" alt="Raoni Barbalho">
+            </div>
+            
+            <div class="hero-badge">
+                <span class="dot"></span>
+                <span>Global Opportunities Welcome</span>
+            </div>
+            
+            <h1>Raoni <span>Barbalho</span></h1>
+            <p>Senior IT Validation & Compliance Engineer | 7+ Years in Regulated Pharma | Building Premium Digital Experiences</p>
+            
+            <div class="hero-cta">
+                <a href="#projects" class="btn btn-primary">Explore Work</a>
+                <a href="cv-hub.html" class="btn btn-secondary">Get CV</a>
+            </div>
+            
+            <div class="scroll-indicator">
+                <span>Scroll to explore</span>
+                <div class="arrow"></div>
+            </div>
+        </section>
+        
+        <!-- Projects Section -->
+        <section id="projects">
+            <div class="section-label">Featured Projects</div>
+            <h2 class="section-title">Award-Winning Work</h2>
+            <div class="showcase-grid">
+                <div class="showcase-card">
+                    <div class="showcase-image">🏭</div>
+                    <div class="showcase-content">
+                        <h3>Data Center Migration</h3>
+                        <p>Led GxP-compliant infrastructure migration for Novo Nordisk, ensuring zero audit findings and 99.9% uptime.</p>
+                        <div class="tag-list">
+                            <span class="tag">GAMP 5</span>
+                            <span class="tag">21 CFR 11</span>
+                            <span class="tag">IQ/OQ/PQ</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="showcase-card">
+                    <div class="showcase-image">⚡</div>
+                    <div class="showcase-content">
+                        <h3>ITRA Process Optimization</h3>
+                        <p>Reduced validation document cycle time by 73% through automation and workflow redesign in ServiceNow.</p>
+                        <div class="tag-list">
+                            <span class="tag">ServiceNow</span>
+                            <span class="tag">Automation</span>
+                            <span class="tag">Analytics</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="showcase-card">
+                    <div class="showcase-image">🐍</div>
+                    <div class="showcase-content">
+                        <h3>Validation Scripts</h3>
+                        <p>Developed Python/PowerShell tools for automated compliance checks, data analysis, and report generation.</p>
+                        <div class="tag-list">
+                            <span class="tag">Python</span>
+                            <span class="tag">PowerShell</span>
+                            <span class="tag">Pandas</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="showcase-card">
+                    <div class="showcase-image">📊</div>
+                    <div class="showcase-content">
+                        <h3>RaoniX Analytics Platform</h3>
+                        <p>Built premium web platform with interactive dashboards, CV builder, and career analytics tools.</p>
+                        <div class="tag-list">
+                            <span class="tag">React</span>
+                            <span class="tag">Three.js</span>
+                            <span class="tag">Chart.js</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="showcase-card">
+                    <div class="showcase-image">🎓</div>
+                    <div class="showcase-content">
+                        <h3>Interview Prep Engine</h3>
+                        <p>Created adaptive interview preparation tool with 40+ questions and STAR method guidance system.</p>
+                        <div class="tag-list">
+                            <span class="tag">Vue.js</span>
+                            <span class="tag">AI Prompts</span>
+                            <span class="tag">LocalStorage</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="showcase-card">
+                    <div class="showcase-image">🌐</div>
+                    <div class="showcase-content">
+                        <h3>Professional Network Hub</h3>
+                        <p>Developed networking platform connecting 100+ validation professionals with resources and events.</p>
+                        <div class="tag-list">
+                            <span class="tag">Community</span>
+                            <span class="tag">Events</span>
+                            <span class="tag">Resources</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Tools Section -->
+        <section id="tools">
+            <div class="section-label">Utilities</div>
+            <h2 class="section-title">Power Tools</h2>
+            <div class="showcase-grid">
+                <div class="showcase-card">
+                    <div class="showcase-image">🧮</div>
+                    <div class="showcase-content">
+                        <h3>GxP Calculator</h3>
+                        <p>Calculate validation timelines, risk scores, and compliance requirements for pharma projects.</p>
+                        <div class="tag-list">
+                            <span class="tag">Utility</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="showcase-card">
+                    <div class="showcase-image">📋</div>
+                    <div class="showcase-content">
+                        <h3>CSV Timeline Generator</h3>
+                        <p>Generate automated Computer System Validation timelines with phases and milestones.</p>
+                        <div class="tag-list">
+                            <span class="tag">Generator</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="showcase-card">
+                    <div class="showcase-image">📈</div>
+                    <div class="showcase-content">
+                        <h3>Salary Insights</h3>
+                        <p>Compare IT Validation salaries across regions and experience levels with real market data.</p>
+                        <div class="tag-list">
+                            <span class="tag">Analytics</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact">
+            <div class="section-label">Get in Touch</div>
+            <h2 class="section-title">Let's Connect</h2>
+            <div style="text-align: center; padding: 60px 0;">
+                <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 40px;">Open to international opportunities in IT Validation & Compliance</p>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <a href="mailto:raobarbalho@hotmail.com" class="btn btn-primary">📧 Email</a>
+                    <a href="https://linkedin.com/in/raoni-barbalho-9064b0a4" target="_blank" class="btn btn-secondary">💼 LinkedIn</a>
+                    <a href="https://github.com/raonibarbalhox" target="_blank" class="btn btn-secondary">🐙 GitHub</a>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div>© 2026 Raoni Barbalho. Crafted with precision.</div>
+        <div class="footer-links">
+            <a href="portfolio-3d.html">Portfolio</a>
+            <a href="cv-hub.html">CV</a>
+            <a href="interview-prep.html">Interview</a>
+            <a href="network-hub.html">Network</a>
+        </div>
+    </footer>
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Advanced 3D Background with 20K Particles
+        const canvas = document.getElementById('canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setClearColor(0x000000, 0);
+        
+        // 20K Particles
+        const particlesCount = 20000;
+        const positions = new Float32Array(particlesCount * 3);
+        const colors = new Float32Array(particlesCount * 3);
+        
+        for (let i = 0; i < particlesCount * 3; i += 3) {
+            positions[i] = (Math.random() - 0.5) * 30;
+            positions[i + 1] = (Math.random() - 0.5) * 30;
+            positions[i + 2] = (Math.random() - 0.5) * 30;
+            
+            const hue = Math.random() * 0.3 + 0.5; // Blue-Purple
+            const color = new THREE.Color().setHSL(hue, 0.8, 0.6);
+            colors[i] = color.r;
+            colors[i + 1] = color.g;
+            colors[i + 2] = color.b;
+        }
+        
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        
+        const material = new THREE.PointsMaterial({
+            size: 0.08,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending,
+            sizeAttenuation: true
+        });
+        
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+        
+        // Add Lines for Network Effect
+        const linePositions = new Float32Array(particlesCount * 3);
+        for (let i = 0; i < particlesCount * 3; i++) {
+            linePositions[i] = positions[i];
+        }
+        
+        const lineGeometry = new THREE.BufferGeometry();
+        lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+        
+        camera.position.z = 12;
+        
+        let mouseX = 0;
+        let mouseY = 0;
+        let scrollY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+        
+        window.addEventListener('scroll', () => {
+            scrollY = window.scrollY * 0.005;
+        });
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotate based on mouse and scroll
+            particles.rotation.x += 0.00015 + mouseY * 0.0001;
+            particles.rotation.y += 0.0002 + mouseX * 0.0001;
+            particles.rotation.z += scrollY * 0.0001;
+            
+            // Camera movement
+            camera.position.y = -scrollY * 3;
+            
+            // Subtle zoom
+            camera.position.z = 12 + Math.sin(Date.now() * 0.0001) * 2;
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Responsive
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // Intersection Observer for scroll animations
+        const cards = document.querySelectorAll('.showcase-card');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = `slideInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards`;
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.animationDelay = (index * 0.1) + 's';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

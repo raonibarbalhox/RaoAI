@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowChart Generator | Text to Diagram</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: rgba(255,255,255,0.03);
+            --border: rgba(255,255,255,0.08);
+            --text: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --bg-card: rgba(255,255,255,0.9);
+            --border: rgba(0,0,0,0.1);
+            --text: #0f172a;
+            --text-muted: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text);
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .logo-text span { color: var(--accent); }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+        }
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent);
+        }
+        .btn-icon {
+            padding: 10px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            cursor: pointer;
+        }
+        .btn-icon:hover {
+            border-color: var(--accent);
+        }
+        
+        /* Main Layout */
+        .main-container {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            height: calc(100vh - 73px);
+        }
+        
+        /* Sidebar - Input Panel */
+        .input-panel {
+            padding: 24px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+        .panel-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        
+        /* Text Input */
+        .text-input-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        #textInput {
+            flex: 1;
+            min-height: 300px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            resize: none;
+        }
+        #textInput:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+        }
+        #textInput::placeholder {
+            color: var(--text-muted);
+        }
+        
+        /* Templates */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .template-btn {
+            padding: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .template-btn:hover {
+            border-color: var(--accent);
+            background: rgba(99,102,241,0.1);
+        }
+        .template-btn .icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+        
+        /* Canvas Panel */
+        .canvas-panel {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg);
+            position: relative;
+        }
+        
+        /* Canvas Toolbar */
+        .canvas-toolbar {
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+        }
+        .toolbar-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .zoom-display {
+            padding: 6px 12px;
+            background: var(--bg);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        /* Canvas Area */
+        .canvas-area {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        /* Style Selector */
+        .style-selector {
+            display: flex;
+            gap: 8px;
+        }
+        .style-btn {
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .style-btn.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(99,102,241,0.1);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        .empty-state h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        
+        /* Mobile */
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+            .input-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <a href="index.html" class="logo">
+            <div class="logo-icon">📊</div>
+            <div class="logo-text">Flow<span>Chart</span></div>
+        </a>
+        <div class="header-actions">
+            <button class="btn-icon" onclick="toggleTheme()" title="Toggle Theme">🌙</button>
+            <button class="btn btn-secondary" onclick="clearAll()">🗑️ Clear</button>
+            <button class="btn btn-primary" onclick="exportPNG()">📥 Export PNG</button>
+        </div>
+    </header>
+    
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        <!-- INPUT PANEL -->
+        <div class="input-panel">
+            <div>
+                <div class="panel-title">📝 Describe your diagram</div>
+                <div class="text-input-wrapper">
+                    <textarea id="textInput" placeholder="Simple syntax:
+Start -> Process -> Decision
+If yes -> Action A
+If no -> Action B
+
+Or use Mermaid syntax:
+flowchart TD
+    A[Start] --> B{Decision}
+    B -->|Yes| C[Action A]
+    B -->|No| D[Action B]
+    
+    subgraph Group1 [My Group]
+        C --> E[(Database)]
+    end"></textarea>
+                </div>
+            </div>
+            
+            <div>
+                <div class="panel-title">⚡ Quick Templates</div>
+                <div class="templates-grid">
+                    <button class="template-btn" onclick="loadTemplate('approval')">
+                        <div class="icon">✅</div>
+                        <div>Approval Flow</div>
+                    </button>
+                    <button class="template-btn" onclick="loadTemplate('network')">
+                        <div class="icon">🌐</div>
+                        <div>Network Arch</div>
+                    </button>
+                    <button class="template-btn" onclick="loadTemplate('change')">
+                        <div class="icon">🔄</div>
+                        <div>Change Request</div>
+                    </button>
+                    <button class="template-btn" onclick="loadTemplate('validation')">
+                        <div class="icon">🔬</div>
+                        <div>GxP Validation</div>
+                    </button>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" style="width:100%;" onclick="generateDiagram()">
+                🚀 Generate Diagram
+            </button>
+        </div>
+        
+        <!-- CANVAS PANEL -->
+        <div class="canvas-panel">
+            <div class="canvas-toolbar">
+                <div class="toolbar-group">
+                    <div class="panel-title" style="margin:0;">Style:</div>
+                    <div class="style-selector">
+                        <button class="style-btn active" data-style="modern">Modern</button>
+                        <button class="style-btn" data-style="classic">Classic</button>
+                        <button class="style-btn" data-style="minimal">Minimal</button>
+                    </div>
+                </div>
+                <div class="toolbar-group">
+                    <button class="btn-icon" onclick="zoomOut()">➖</button>
+                    <div class="zoom-display" id="zoomDisplay">100%</div>
+                    <button class="btn-icon" onclick="zoomIn()">➕</button>
+                    <button class="btn-icon" onclick="resetView()">🎯</button>
+                </div>
+            </div>
+            
+            <div class="canvas-area" id="canvasArea">
+                <canvas id="canvas"></canvas>
+                <div class="empty-state" id="emptyState">
+                    <div class="icon">📊</div>
+                    <h3>No diagram yet</h3>
+                    <p>Type your flow description and click Generate</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CANVAS ENGINE -->
+    <script>
+        // ========== CONFIGURATION ==========
+        const CONFIG = {
+            nodeWidth: 180,
+            nodeHeight: 60,
+            decisionSize: 80,
+            startEndWidth: 140,
+            startEndHeight: 50,
+            horizontalGap: 100,
+            verticalGap: 80,
+            arrowSize: 10,
+            fontSize: 14,
+            fontFamily: 'Inter, sans-serif'
+        };
+        
+        const STYLES = {
+            modern: {
+                colors: {
+                    start: { fill: '#10b981', stroke: '#059669', text: '#ffffff' },
+                    end: { fill: '#ef4444', stroke: '#dc2626', text: '#ffffff' },
+                    process: { fill: '#6366f1', stroke: '#4f46e5', text: '#ffffff' },
+                    decision: { fill: '#f59e0b', stroke: '#d97706', text: '#ffffff' },
+                    database: { fill: '#0ea5e9', stroke: '#0284c7', text: '#ffffff' },
+                    arrow: '#64748b',
+                    arrowText: '#94a3b8',
+                    subgraph: { fill: 'rgba(99,102,241,0.08)', stroke: 'rgba(99,102,241,0.3)' }
+                },
+                shadow: true,
+                rounded: 12
+            },
+            classic: {
+                colors: {
+                    start: { fill: '#22c55e', stroke: '#16a34a', text: '#ffffff' },
+                    end: { fill: '#ef4444', stroke: '#dc2626', text: '#ffffff' },
+                    process: { fill: '#3b82f6', stroke: '#2563eb', text: '#ffffff' },
+                    decision: { fill: '#eab308', stroke: '#ca8a04', text: '#000000' },
+                    database: { fill: '#06b6d4', stroke: '#0891b2', text: '#ffffff' },
+                    arrow: '#374151',
+                    arrowText: '#6b7280',
+                    subgraph: { fill: 'rgba(59,130,246,0.08)', stroke: 'rgba(59,130,246,0.3)' }
+                },
+                shadow: false,
+                rounded: 4
+            },
+            minimal: {
+                colors: {
+                    start: { fill: '#f1f5f9', stroke: '#10b981', text: '#0f172a' },
+                    end: { fill: '#f1f5f9', stroke: '#ef4444', text: '#0f172a' },
+                    process: { fill: '#f1f5f9', stroke: '#6366f1', text: '#0f172a' },
+                    decision: { fill: '#f1f5f9', stroke: '#f59e0b', text: '#0f172a' },
+                    database: { fill: '#f1f5f9', stroke: '#0ea5e9', text: '#0f172a' },
+                    arrow: '#94a3b8',
+                    arrowText: '#64748b',
+                    subgraph: { fill: 'rgba(0,0,0,0.02)', stroke: 'rgba(0,0,0,0.1)' }
+                },
+                shadow: false,
+                rounded: 8
+            }
+        };
+        
+        // ========== STATE ==========
+        let nodes = [];
+        let connections = [];
+        let subgraphs = [];
+        let diagramDirection = 'TD';
+        let zoom = 1;
+        let panX = 0, panY = 0;
+        let isDragging = false;
+        let lastX, lastY;
+        let currentStyle = 'modern';
+        
+        // ========== CANVAS SETUP ==========
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const canvasArea = document.getElementById('canvasArea');
+        
+        function resizeCanvas() {
+            canvas.width = canvasArea.clientWidth;
+            canvas.height = canvasArea.clientHeight;
+            render();
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        // ========== DRAWING FUNCTIONS ==========
+        function drawRoundedRect(x, y, w, h, r, fill, stroke) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+            
+            if (fill) {
+                ctx.fillStyle = fill;
+                ctx.fill();
+            }
+            if (stroke) {
+                ctx.strokeStyle = stroke;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+        
+        function drawDiamond(cx, cy, size, fill, stroke) {
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - size);
+            ctx.lineTo(cx + size, cy);
+            ctx.lineTo(cx, cy + size);
+            ctx.lineTo(cx - size, cy);
+            ctx.closePath();
+            
+            if (fill) {
+                ctx.fillStyle = fill;
+                ctx.fill();
+            }
+            if (stroke) {
+                ctx.strokeStyle = stroke;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+        
+        function drawStartEnd(x, y, w, h, fill, stroke) {
+            const r = h / 2;
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.arc(x + w - r, y + r, r, -Math.PI/2, Math.PI/2);
+            ctx.lineTo(x + r, y + h);
+            ctx.arc(x + r, y + r, r, Math.PI/2, -Math.PI/2);
+            ctx.closePath();
+            
+            if (fill) {
+                ctx.fillStyle = fill;
+                ctx.fill();
+            }
+            if (stroke) {
+                ctx.strokeStyle = stroke;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+        
+        function drawCylinder(x, y, w, h, fill, stroke) {
+            const ellipseH = h * 0.2;
+            
+            ctx.beginPath();
+            // Top ellipse
+            ctx.ellipse(x + w/2, y + ellipseH/2, w/2, ellipseH/2, 0, 0, Math.PI * 2);
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
+            
+            // Body
+            ctx.beginPath();
+            ctx.moveTo(x, y + ellipseH/2);
+            ctx.lineTo(x, y + h - ellipseH/2);
+            ctx.ellipse(x + w/2, y + h - ellipseH/2, w/2, ellipseH/2, 0, Math.PI, 0, true);
+            ctx.lineTo(x + w, y + ellipseH/2);
+            ctx.ellipse(x + w/2, y + ellipseH/2, w/2, ellipseH/2, 0, 0, Math.PI, true);
+            ctx.closePath();
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
+        }
+        
+        function drawSubgraph(sg) {
+            if (!sg || sg.nodes.length === 0) return;
+            
+            const style = STYLES[currentStyle];
+            const sgNodes = nodes.filter(n => sg.nodes.includes(n.id));
+            if (sgNodes.length === 0) return;
+            
+            // Find bounds
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            sgNodes.forEach(n => {
+                minX = Math.min(minX, n.x - CONFIG.nodeWidth/2);
+                minY = Math.min(minY, n.y - CONFIG.nodeHeight/2);
+                maxX = Math.max(maxX, n.x + CONFIG.nodeWidth/2);
+                maxY = Math.max(maxY, n.y + CONFIG.nodeHeight/2);
+            });
+            
+            const padding = 30;
+            const x = (minX - padding) * zoom + panX;
+            const y = (minY - padding - 20) * zoom + panY;
+            const w = (maxX - minX + padding * 2) * zoom;
+            const h = (maxY - minY + padding * 2 + 20) * zoom;
+            
+            // Draw background
+            ctx.fillStyle = style.colors.subgraph.fill;
+            ctx.strokeStyle = style.colors.subgraph.stroke;
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            drawRoundedRect(x, y, w, h, 12 * zoom, style.colors.subgraph.fill, style.colors.subgraph.stroke);
+            ctx.setLineDash([]);
+            
+            // Draw title
+            ctx.font = `bold ${12 * zoom}px ${CONFIG.fontFamily}`;
+            ctx.fillStyle = style.colors.subgraph.stroke;
+            ctx.textAlign = 'left';
+            ctx.fillText(sg.title, x + 12 * zoom, y + 16 * zoom);
+        }
+        
+        function drawArrow(fromX, fromY, toX, toY, label = '') {
+            const style = STYLES[currentStyle];
+            const headSize = CONFIG.arrowSize;
+            
+            // Calculate angle
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+            
+            // Draw line
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX - headSize * Math.cos(angle), toY - headSize * Math.sin(angle));
+            ctx.strokeStyle = style.colors.arrow;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw arrowhead
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(
+                toX - headSize * Math.cos(angle - Math.PI/6),
+                toY - headSize * Math.sin(angle - Math.PI/6)
+            );
+            ctx.lineTo(
+                toX - headSize * Math.cos(angle + Math.PI/6),
+                toY - headSize * Math.sin(angle + Math.PI/6)
+            );
+            ctx.closePath();
+            ctx.fillStyle = style.colors.arrow;
+            ctx.fill();
+            
+            // Draw label if exists
+            if (label) {
+                const midX = (fromX + toX) / 2;
+                const midY = (fromY + toY) / 2;
+                ctx.font = `12px ${CONFIG.fontFamily}`;
+                ctx.fillStyle = style.colors.arrowText;
+                ctx.textAlign = 'center';
+                ctx.fillText(label, midX, midY - 8);
+            }
+        }
+        
+        function drawText(text, x, y, color, maxWidth = 160) {
+            ctx.font = `${CONFIG.fontSize}px ${CONFIG.fontFamily}`;
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Word wrap
+            const words = text.split(' ');
+            let line = '';
+            const lines = [];
+            
+            for (let word of words) {
+                const testLine = line + (line ? ' ' : '') + word;
+                if (ctx.measureText(testLine).width > maxWidth) {
+                    if (line) lines.push(line);
+                    line = word;
+                } else {
+                    line = testLine;
+                }
+            }
+            if (line) lines.push(line);
+            
+            const lineHeight = CONFIG.fontSize * 1.2;
+            const startY = y - (lines.length - 1) * lineHeight / 2;
+            
+            lines.forEach((l, i) => {
+                ctx.fillText(l, x, startY + i * lineHeight);
+            });
+        }
+        
+        function drawNode(node) {
+            const style = STYLES[currentStyle];
+            const colors = style.colors[node.type] || style.colors.process;
+            
+            // Apply zoom and pan
+            const x = node.x * zoom + panX;
+            const y = node.y * zoom + panY;
+            
+            ctx.save();
+            
+            // Shadow
+            if (style.shadow) {
+                ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetY = 4;
+            }
+            
+            // Draw shape based on type
+            switch (node.type) {
+                case 'start':
+                case 'end':
+                    drawStartEnd(
+                        x - CONFIG.startEndWidth/2, 
+                        y - CONFIG.startEndHeight/2,
+                        CONFIG.startEndWidth * zoom,
+                        CONFIG.startEndHeight * zoom,
+                        colors.fill, 
+                        colors.stroke
+                    );
+                    break;
+                    
+                case 'decision':
+                    drawDiamond(x, y, CONFIG.decisionSize/2 * zoom, colors.fill, colors.stroke);
+                    break;
+                
+                case 'database':
+                    drawCylinder(
+                        x - CONFIG.nodeWidth/2 * zoom * 0.7,
+                        y - CONFIG.nodeHeight/2 * zoom * 1.2,
+                        CONFIG.nodeWidth * zoom * 0.7,
+                        CONFIG.nodeHeight * zoom * 1.2,
+                        colors.fill,
+                        colors.stroke
+                    );
+                    break;
+                    
+                default: // process
+                    drawRoundedRect(
+                        x - CONFIG.nodeWidth/2 * zoom,
+                        y - CONFIG.nodeHeight/2 * zoom,
+                        CONFIG.nodeWidth * zoom,
+                        CONFIG.nodeHeight * zoom,
+                        style.rounded * zoom,
+                        colors.fill,
+                        colors.stroke
+                    );
+            }
+            
+            ctx.restore();
+            
+            // Draw text
+            drawText(node.label, x, y, colors.text, CONFIG.nodeWidth - 20);
+        }
+        
+        // ========== RENDER ==========
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (nodes.length === 0) return;
+            
+            // Draw subgraphs first (background)
+            subgraphs.forEach(drawSubgraph);
+            
+            // Draw connections
+            connections.forEach(conn => {
+                const from = nodes.find(n => n.id === conn.from);
+                const to = nodes.find(n => n.id === conn.to);
+                if (from && to) {
+                    drawArrow(
+                        from.x * zoom + panX,
+                        from.y * zoom + panY + getNodeHeight(from)/2,
+                        to.x * zoom + panX,
+                        to.y * zoom + panY - getNodeHeight(to)/2,
+                        conn.label
+                    );
+                }
+            });
+            
+            // Draw nodes
+            nodes.forEach(drawNode);
+        }
+        
+        function getNodeHeight(node) {
+            switch(node.type) {
+                case 'start':
+                case 'end':
+                    return CONFIG.startEndHeight/2 * zoom;
+                case 'decision':
+                    return CONFIG.decisionSize/2 * zoom;
+                case 'database':
+                    return CONFIG.nodeHeight/2 * zoom * 1.2;
+                default:
+                    return CONFIG.nodeHeight/2 * zoom;
+            }
+        }
+        
+        // ========== THEME ==========
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('flowchart-theme', next);
+        }
+        
+        const savedTheme = localStorage.getItem('flowchart-theme');
+        if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+        
+        // ========== STYLE SELECTOR ==========
+        document.querySelectorAll('.style-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentStyle = btn.dataset.style;
+                render();
+            });
+        });
+        
+        // ========== ZOOM & PAN ==========
+        function zoomIn() {
+            zoom = Math.min(zoom + 0.1, 2);
+            updateZoomDisplay();
+            render();
+        }
+        
+        function zoomOut() {
+            zoom = Math.max(zoom - 0.1, 0.3);
+            updateZoomDisplay();
+            render();
+        }
+        
+        function resetView() {
+            zoom = 1;
+            panX = canvas.width / 4;
+            panY = 50;
+            updateZoomDisplay();
+            render();
+        }
+        
+        function updateZoomDisplay() {
+            document.getElementById('zoomDisplay').textContent = Math.round(zoom * 100) + '%';
+        }
+        
+        // Mouse pan
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            canvas.style.cursor = 'grabbing';
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            panX += e.clientX - lastX;
+            panY += e.clientY - lastY;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            render();
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            canvas.style.cursor = 'grab';
+        });
+        
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+            canvas.style.cursor = 'grab';
+        });
+        
+        // Mouse wheel zoom
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) zoomIn();
+            else zoomOut();
+        });
+        
+        canvas.style.cursor = 'grab';
+        
+        // ========== TEXT PARSER ==========
+        function parseText(text) {
+            // Detect if it's Mermaid syntax
+            const isMermaid = /^\s*(flowchart|graph)\s+(TB|TD|BT|LR|RL)/im.test(text);
+            
+            if (isMermaid) {
+                return parseMermaid(text);
+            }
+            return parseSimpleText(text);
+        }
+        
+        // ========== MERMAID PARSER ==========
+        function parseMermaid(text) {
+            const lines = text.trim().split('\n').filter(l => l.trim() && !l.trim().startsWith('%%'));
+            const parsedNodes = [];
+            const parsedConnections = [];
+            const subgraphs = [];
+            let nodeId = 0;
+            const nodeMap = new Map(); // mermaid id -> internal id
+            let currentSubgraph = null;
+            let direction = 'TD'; // default top-down
+            
+            // Helper to get or create node
+            function getOrCreateNode(mermaidId, label = null, shape = 'process') {
+                mermaidId = mermaidId.trim();
+                if (nodeMap.has(mermaidId)) {
+                    return nodeMap.get(mermaidId);
+                }
+                
+                const id = `node_${nodeId++}`;
+                const nodeLabel = label || mermaidId;
+                const type = detectMermaidNodeType(mermaidId, nodeLabel, shape);
+                
+                const node = {
+                    id,
+                    mermaidId,
+                    label: nodeLabel,
+                    type,
+                    subgraph: currentSubgraph
+                };
+                
+                parsedNodes.push(node);
+                nodeMap.set(mermaidId, id);
+                return id;
+            }
+            
+            // Detect node type from mermaid shape or label
+            function detectMermaidNodeType(mermaidId, label, shape) {
+                const lower = label.toLowerCase();
+                if (lower.includes('start') || lower.includes('begin') || lower.includes('início')) return 'start';
+                if (lower.includes('end') || lower.includes('finish') || lower.includes('fim') || lower.includes('stop')) return 'end';
+                if (shape === 'diamond' || lower.includes('?') || mermaidId.includes('?')) return 'decision';
+                if (shape === 'database' || lower.includes('database') || lower.includes('db')) return 'database';
+                if (shape === 'cylinder') return 'database';
+                return 'process';
+            }
+            
+            // Parse node definition: A[Label] or A{Decision} or A[(Database)] or A((Circle))
+            function parseNodeDef(str) {
+                str = str.trim();
+                
+                // Database: A[(Label)]
+                let match = str.match(/^(\w+)\s*\[\((.*?)\)\]$/);
+                if (match) return { id: match[1], label: match[2], shape: 'database' };
+                
+                // Diamond: A{Label}
+                match = str.match(/^(\w+)\s*\{(.*?)\}$/);
+                if (match) return { id: match[1], label: match[2], shape: 'diamond' };
+                
+                // Circle: A((Label))
+                match = str.match(/^(\w+)\s*\(\((.*?)\)\)$/);
+                if (match) return { id: match[1], label: match[2], shape: 'circle' };
+                
+                // Rounded: A(Label)
+                match = str.match(/^(\w+)\s*\((.*?)\)$/);
+                if (match) return { id: match[1], label: match[2], shape: 'rounded' };
+                
+                // Rectangle: A[Label]
+                match = str.match(/^(\w+)\s*\[(.*?)\]$/);
+                if (match) return { id: match[1], label: match[2], shape: 'process' };
+                
+                // Plain ID
+                return { id: str, label: str, shape: 'process' };
+            }
+            
+            // Parse each line
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+                
+                // Direction: flowchart TD / graph LR
+                let match = line.match(/^(flowchart|graph)\s+(TB|TD|BT|LR|RL)/i);
+                if (match) {
+                    direction = match[2].toUpperCase();
+                    return;
+                }
+                
+                // Subgraph start: subgraph Name [Title]
+                match = line.match(/^subgraph\s+(\w+)\s*(?:\[(.*?)\])?$/i);
+                if (match) {
+                    const sgId = match[1];
+                    const sgTitle = match[2] || match[1];
+                    currentSubgraph = { id: sgId, title: sgTitle, nodes: [] };
+                    subgraphs.push(currentSubgraph);
+                    return;
+                }
+                
+                // Subgraph end
+                if (line.toLowerCase() === 'end') {
+                    currentSubgraph = null;
+                    return;
+                }
+                
+                // Connection patterns:
+                // A --> B (arrow)
+                // A --> |label| B (arrow with label)
+                // A --- B (line no arrow)
+                // A -.-> B (dotted)
+                // A ==> B (thick)
+                
+                // Arrow with label: A -->|label| B or A -- label --> B
+                match = line.match(/^(.+?)\s*(-{1,2}|-\.+->?|={2,}>?|-->)\s*\|(.+?)\|\s*(.+)$/);
+                if (match) {
+                    const fromDef = parseNodeDef(match[1]);
+                    const connectionType = match[2];
+                    const label = match[3].trim();
+                    const toDef = parseNodeDef(match[4]);
+                    
+                    const fromId = getOrCreateNode(fromDef.id, fromDef.label, fromDef.shape);
+                    const toId = getOrCreateNode(toDef.id, toDef.label, toDef.shape);
+                    
+                    if (currentSubgraph) {
+                        if (!currentSubgraph.nodes.includes(fromId)) currentSubgraph.nodes.push(fromId);
+                        if (!currentSubgraph.nodes.includes(toId)) currentSubgraph.nodes.push(toId);
+                    }
+                    
+                    parsedConnections.push({ from: fromId, to: toId, label, type: connectionType });
+                    return;
+                }
+                
+                // Arrow without label: A --> B
+                match = line.match(/^(.+?)\s*(-{1,2}|-\.+->?|={2,}>?|-->)\s*(.+)$/);
+                if (match) {
+                    const fromDef = parseNodeDef(match[1]);
+                    const connectionType = match[2];
+                    const toDef = parseNodeDef(match[3]);
+                    
+                    const fromId = getOrCreateNode(fromDef.id, fromDef.label, fromDef.shape);
+                    const toId = getOrCreateNode(toDef.id, toDef.label, toDef.shape);
+                    
+                    if (currentSubgraph) {
+                        if (!currentSubgraph.nodes.includes(fromId)) currentSubgraph.nodes.push(fromId);
+                        if (!currentSubgraph.nodes.includes(toId)) currentSubgraph.nodes.push(toId);
+                    }
+                    
+                    parsedConnections.push({ from: fromId, to: toId, type: connectionType });
+                    return;
+                }
+                
+                // Single node definition
+                const nodeDef = parseNodeDef(line);
+                if (nodeDef.id) {
+                    const nid = getOrCreateNode(nodeDef.id, nodeDef.label, nodeDef.shape);
+                    if (currentSubgraph && !currentSubgraph.nodes.includes(nid)) {
+                        currentSubgraph.nodes.push(nid);
+                    }
+                }
+            });
+            
+            // Store metadata
+            return { 
+                nodes: parsedNodes, 
+                connections: parsedConnections, 
+                subgraphs,
+                direction 
+            };
+        }
+        
+        // ========== SIMPLE TEXT PARSER (Original) ==========
+        function parseSimpleText(text) {
+            const lines = text.trim().split('\n').filter(l => l.trim());
+            const parsedNodes = [];
+            const parsedConnections = [];
+            let nodeId = 0;
+            const nodeMap = new Map();
+            
+            // Helper to get or create node
+            function getOrCreateNode(label) {
+                label = label.trim();
+                if (nodeMap.has(label.toLowerCase())) {
+                    return nodeMap.get(label.toLowerCase());
+                }
+                
+                const id = `node_${nodeId++}`;
+                const type = detectNodeType(label);
+                
+                parsedNodes.push({
+                    id,
+                    label: cleanLabel(label),
+                    type
+                });
+                
+                nodeMap.set(label.toLowerCase(), id);
+                return id;
+            }
+            
+            // Detect node type from label
+            function detectNodeType(label) {
+                const lower = label.toLowerCase();
+                if (lower.includes('start') || lower.includes('begin') || lower.includes('início')) return 'start';
+                if (lower.includes('end') || lower.includes('finish') || lower.includes('fim') || lower.includes('stop')) return 'end';
+                if (lower.includes('?') || lower.includes('if ') || lower.includes('decision') || lower.includes('valid') || lower.includes('check')) return 'decision';
+                return 'process';
+            }
+            
+            // Clean label
+            function cleanLabel(label) {
+                return label
+                    .replace(/^(if|else|then|go to|goto)\s+/i, '')
+                    .replace(/\s*->\s*$/, '')
+                    .replace(/^\*\s*/, '')
+                    .replace(/^•\s*/, '')
+                    .trim();
+            }
+            
+            // Parse each line
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+                
+                // Pattern 1: A -> B -> C (chain)
+                if (line.includes('->')) {
+                    const parts = line.split('->').map(p => p.trim()).filter(p => p);
+                    for (let i = 0; i < parts.length - 1; i++) {
+                        const fromId = getOrCreateNode(parts[i]);
+                        const toId = getOrCreateNode(parts[i + 1]);
+                        parsedConnections.push({ from: fromId, to: toId });
+                    }
+                }
+                // Pattern 2: "If yes -> Action" or "If no -> Action"
+                else if (/^if\s+(yes|no|true|false|valid|invalid|sim|não)/i.test(line)) {
+                    const match = line.match(/^if\s+(yes|no|true|false|valid|invalid|sim|não)\s*[-:>]+\s*(.+)/i);
+                    if (match) {
+                        const condition = match[1].toLowerCase();
+                        const target = match[2].trim();
+                        
+                        // Find last decision node
+                        const lastDecision = [...parsedNodes].reverse().find(n => n.type === 'decision');
+                        if (lastDecision) {
+                            const toId = getOrCreateNode(target);
+                            const isYes = ['yes', 'true', 'valid', 'sim'].includes(condition);
+                            parsedConnections.push({ 
+                                from: lastDecision.id, 
+                                to: toId, 
+                                label: isYes ? 'Yes' : 'No' 
+                            });
+                        }
+                    }
+                }
+                // Pattern 3: Natural language with commas
+                else if (line.includes(',')) {
+                    const parts = line.split(',').map(p => p.trim()).filter(p => p);
+                    for (let i = 0; i < parts.length - 1; i++) {
+                        const fromId = getOrCreateNode(parts[i]);
+                        const toId = getOrCreateNode(parts[i + 1]);
+                        parsedConnections.push({ from: fromId, to: toId });
+                    }
+                }
+                // Pattern 4: Single node (just add it)
+                else {
+                    getOrCreateNode(line);
+                }
+            });
+            
+            return { nodes: parsedNodes, connections: parsedConnections, subgraphs: [], direction: 'TD' };
+        }
+        
+        // ========== LAYOUT ENGINE ==========
+        function layoutNodes(parsedNodes, parsedConnections, direction = 'TD') {
+            if (parsedNodes.length === 0) return;
+            
+            // Build adjacency list
+            const outgoing = new Map();
+            const incoming = new Map();
+            
+            parsedNodes.forEach(n => {
+                outgoing.set(n.id, []);
+                incoming.set(n.id, []);
+            });
+            
+            parsedConnections.forEach(c => {
+                outgoing.get(c.from)?.push(c.to);
+                incoming.get(c.to)?.push(c.from);
+            });
+            
+            // Find root nodes (no incoming)
+            let roots = parsedNodes.filter(n => incoming.get(n.id).length === 0);
+            if (roots.length === 0) roots = [parsedNodes[0]];
+            
+            // BFS to assign levels
+            const levels = new Map();
+            const visited = new Set();
+            let queue = roots.map(r => ({ id: r.id, level: 0 }));
+            
+            while (queue.length > 0) {
+                const { id, level } = queue.shift();
+                if (visited.has(id)) continue;
+                visited.add(id);
+                levels.set(id, level);
+                
+                outgoing.get(id)?.forEach(childId => {
+                    if (!visited.has(childId)) {
+                        queue.push({ id: childId, level: level + 1 });
+                    }
+                });
+            }
+            
+            // Add unvisited nodes
+            parsedNodes.forEach(n => {
+                if (!levels.has(n.id)) levels.set(n.id, 0);
+            });
+            
+            // Group by level
+            const levelGroups = new Map();
+            parsedNodes.forEach(n => {
+                const level = levels.get(n.id);
+                if (!levelGroups.has(level)) levelGroups.set(level, []);
+                levelGroups.get(level).push(n);
+            });
+            
+            // Assign positions
+            const startX = 200;
+            const startY = 80;
+            
+            levelGroups.forEach((nodesInLevel, level) => {
+                const totalWidth = nodesInLevel.length * (CONFIG.nodeWidth + CONFIG.horizontalGap);
+                const offsetX = -totalWidth / 2 + CONFIG.nodeWidth / 2;
+                
+                nodesInLevel.forEach((node, index) => {
+                    node.x = startX + offsetX + index * (CONFIG.nodeWidth + CONFIG.horizontalGap);
+                    node.y = startY + level * (CONFIG.nodeHeight + CONFIG.verticalGap);
+                });
+            });
+            
+            return parsedNodes;
+        }
+        
+        // ========== GENERATE DIAGRAM ==========
+        function generateDiagram() {
+            const text = document.getElementById('textInput').value;
+            if (!text.trim()) {
+                alert('Please enter a flow description');
+                return;
+            }
+            
+            const result = parseText(text);
+            const parsedNodes = result.nodes;
+            const parsedConnections = result.connections;
+            
+            if (parsedNodes.length === 0) {
+                alert('Could not parse any nodes from the text');
+                return;
+            }
+            
+            layoutNodes(parsedNodes, parsedConnections, result.direction);
+            
+            nodes = parsedNodes;
+            connections = parsedConnections;
+            subgraphs = result.subgraphs || [];
+            diagramDirection = result.direction || 'TD';
+            
+            document.getElementById('emptyState').style.display = 'none';
+            resetView();
+        }
+        
+        // ========== TEMPLATES ==========
+        const TEMPLATES = {
+            approval: `flowchart TD
+    A[Start] --> B[Request Submitted]
+    B --> C{Manager Review}
+    C -->|Approved| D[Notify Requester]
+    C -->|Rejected| E[Send Rejection]
+    D --> F[End]
+    E --> F`,
+            
+            network: `flowchart TD
+    LB[Load Balancer] --> ClusterA
+    LB --> ClusterB
+    
+    subgraph ClusterA [Region: US-East]
+        WS1[Web Server 01] --> DBA[(Database A)]
+        WS2[Web Server 02] --> DBA
+    end
+    
+    subgraph ClusterB [Region: EU-West]
+        WS3[Web Server 03] --> DBB[(Database B)]
+        WS4[Web Server 04] --> DBB
+    end
+    
+    DBA --> SYNC[DB Replication]
+    DBB --> SYNC`,
+            
+            change: `flowchart TD
+    A[Change Request] --> B[Impact Analysis]
+    B --> C{High Risk?}
+    C -->|Yes| D[CAB Review]
+    C -->|No| E[Standard Change]
+    D --> F{Approved?}
+    F -->|Yes| G[Schedule Implementation]
+    F -->|No| H[Revise Request]
+    E --> G
+    G --> I[Implement]
+    I --> J{Success?}
+    J -->|Yes| K[Close Request]
+    J -->|No| L[Rollback]
+    L --> H
+    H --> B
+    K --> M[End]`,
+            
+            validation: `flowchart TD
+    A[System Assessment] --> B{GxP System?}
+    B -->|Yes| C[Full CSV]
+    B -->|No| D[Standard QA]
+    
+    subgraph CSV [Computer System Validation]
+        C --> E[IQ Protocol]
+        E --> F[OQ Protocol]
+        F --> G[PQ Protocol]
+        G --> H[Validation Report]
+    end
+    
+    D --> I[Functional Testing]
+    I --> J[Documentation]
+    H --> J
+    J --> K{QA Review}
+    K -->|Approved| L[Release]
+    K -->|Issues| M[Remediation]
+    M --> K
+    L --> N[End]`
+        };
+        
+        function loadTemplate(type) {
+            if (TEMPLATES[type]) {
+                document.getElementById('textInput').value = TEMPLATES[type];
+            }
+        }
+        
+        function clearAll() { 
+            document.getElementById('textInput').value = '';
+            nodes = [];
+            connections = [];
+            subgraphs = [];
+            document.getElementById('emptyState').style.display = 'block';
+            render();
+        }
+        
+        // ========== EXPORT PNG ==========
+        function exportPNG() {
+            if (nodes.length === 0) {
+                alert('Generate a diagram first');
+                return;
+            }
+            
+            // Create temporary canvas with white background
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            // Calculate bounds
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            nodes.forEach(node => {
+                const halfW = CONFIG.nodeWidth / 2 + 20;
+                const halfH = CONFIG.nodeHeight / 2 + 20;
+                minX = Math.min(minX, node.x - halfW);
+                minY = Math.min(minY, node.y - halfH);
+                maxX = Math.max(maxX, node.x + halfW);
+                maxY = Math.max(maxY, node.y + halfH);
+            });
+            
+            const padding = 40;
+            const width = maxX - minX + padding * 2;
+            const height = maxY - minY + padding * 2;
+            
+            tempCanvas.width = width;
+            tempCanvas.height = height;
+            
+            // White background
+            tempCtx.fillStyle = '#ffffff';
+            tempCtx.fillRect(0, 0, width, height);
+            
+            // Save current state
+            const savedZoom = zoom;
+            const savedPanX = panX;
+            const savedPanY = panY;
+            
+            // Set export state
+            zoom = 1;
+            panX = -minX + padding;
+            panY = -minY + padding;
+            
+            // Draw to temp canvas
+            const savedCtx = ctx;
+            ctx = tempCtx;
+            render();
+            ctx = savedCtx;
+            
+            // Restore state
+            zoom = savedZoom;
+            panX = savedPanX;
+            panY = savedPanY;
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = 'flowchart_' + new Date().toISOString().slice(0,10) + '.png';
+            link.href = tempCanvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // ========== KEYBOARD SHORTCUTS ==========
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+Enter to generate
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                generateDiagram();
+            }
+            // Ctrl+S to export
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                exportPNG();
+            }
+            // Escape to clear
+            if (e.key === 'Escape') {
+                clearAll();
+            }
+        });
+        
+        // ========== AUTO-RESIZE TEXTAREA ==========
+        const textInput = document.getElementById('textInput');
+        textInput.addEventListener('input', () => {
+            // Auto-grow
+            textInput.style.height = 'auto';
+            textInput.style.height = Math.max(300, textInput.scrollHeight) + 'px';
+        });
+        
+        // ========== INIT ==========
+        console.log('FlowChart Generator Ready!');
+        console.log('Shortcuts: Ctrl+Enter=Generate, Ctrl+S=Export, Esc=Clear');
+    </script>
+</body>
+</html>

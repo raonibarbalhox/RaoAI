@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raoni Barbalho | IT Validation & Compliance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --accent-dark: #4f46e5;
+            --nn-blue: #00588c;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --dark-900: #0f0f23;
+            --dark-800: #1a1a2e;
+            --dark-700: #252540;
+            --dark-600: #3d3d5c;
+            --glass-bg: rgba(255,255,255,0.03);
+            --glass-border: rgba(255,255,255,0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --bg-main: #0f0f23;
+        }
+        
+        /* Light Theme */
+        [data-theme="light"] {
+            --dark-900: #f8fafc;
+            --dark-800: #f1f5f9;
+            --dark-700: #e2e8f0;
+            --dark-600: #cbd5e1;
+            --glass-bg: rgba(255,255,255,0.8);
+            --glass-border: rgba(0,0,0,0.1);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --bg-main: #f8fafc;
+        }
+        [data-theme="light"] .bg-gradient {
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% -20%, rgba(99,102,241,0.08), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(16,185,129,0.05), transparent),
+                var(--bg-main);
+        }
+        [data-theme="light"] .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+        }
+        [data-theme="light"] .hero::before {
+            background: linear-gradient(90deg, var(--accent), var(--success), var(--accent));
+        }
+        [data-theme="light"] .hero-content h1 {
+            background: linear-gradient(135deg, #0f172a 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+        }
+        [data-theme="light"] .metric {
+            background: rgba(16,185,129,0.15);
+            color: #059669;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--dark-900);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Background Effects */
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% -20%, rgba(99,102,241,0.15), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(16,185,129,0.1), transparent),
+                var(--dark-900);
+        }
+        
+        .grid-pattern {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        
+        /* Header Hero */
+        .hero {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 32px;
+            align-items: center;
+            padding: 48px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--success), var(--accent));
+            background-size: 200% 100%;
+            animation: gradient-shift 3s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 20px 60px rgba(99,102,241,0.3);
+            overflow: hidden;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .avatar-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            color: white;
+        }
+        
+        .hero-content h1 {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-content .title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--accent-light);
+            margin-bottom: 16px;
+        }
+        
+        .contact-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .contact-row a {
+            color: var(--accent-light);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .contact-row a:hover { color: var(--accent); }
+        
+        /* Summary Card */
+        .summary-card {
+            background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(16,185,129,0.05));
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 28px 32px;
+            margin-bottom: 32px;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        
+        .summary-card strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .summary-card .highlight {
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+        
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 32px;
+        }
+        
+        /* Section Cards */
+        .section-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-light);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--glass-border), transparent);
+        }
+        
+        /* Experience Items */
+        .exp-item {
+            position: relative;
+            padding-left: 24px;
+            padding-bottom: 28px;
+            border-left: 2px solid var(--dark-600);
+        }
+        
+        .exp-item:last-child { padding-bottom: 0; }
+        
+        .exp-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--accent);
+        }
+        
+        .exp-item.current::before {
+            background: var(--success);
+            box-shadow: 0 0 12px var(--success);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 12px var(--success); }
+            50% { box-shadow: 0 0 24px var(--success); }
+        }
+        
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        
+        .exp-role {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .exp-company {
+            font-size: 14px;
+            color: var(--accent-light);
+            font-weight: 500;
+        }
+        
+        .exp-period {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--dark-700);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        
+        .exp-achievements {
+            list-style: none;
+            margin-top: 12px;
+        }
+        
+        .exp-achievements li {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .exp-achievements li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+        
+        .metric {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.05));
+            color: var(--success);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        /* Controls */
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .ctrl-btn {
+            padding: 12px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            font-size: 13px;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+        
+        .ctrl-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        
+        .ctrl-btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        
+        .ctrl-btn.edit-active {
+            background: var(--warning);
+            border-color: var(--warning);
+        }
+        
+        /* Language Toggle */
+        .lang-toggle { display: flex; gap: 4px; padding: 4px; }
+        .lang-btn { padding: 6px 10px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
+        .lang-btn.active { background: var(--accent); color: white; }
+        
+        /* Edit Mode */
+        body.edit-mode [contenteditable="true"] {
+            outline: 2px dashed var(--accent);
+            outline-offset: 4px;
+            background: rgba(99,102,241,0.1);
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+        body.edit-mode [contenteditable="true"]:focus {
+            outline-color: var(--success);
+            background: rgba(16,185,129,0.1);
+        }
+        .edit-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            background: var(--warning);
+            color: #000;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            display: none;
+            z-index: 200;
+        }
+        body.edit-mode .edit-hint { display: block; }
+        
+        /* Editable Blocks System */
+        .editable-list {
+            position: relative;
+        }
+        .editable-item {
+            position: relative;
+            transition: all 0.2s;
+        }
+        body.edit-mode .editable-item:hover {
+            background: rgba(99,102,241,0.1);
+            border-radius: 8px;
+        }
+        body.edit-mode .editable-item::after {
+            content: '×';
+            position: absolute;
+            top: 50%;
+            right: -24px;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        body.edit-mode .editable-item:hover::after {
+            opacity: 1;
+        }
+        .add-item-btn {
+            display: none;
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            background: rgba(99,102,241,0.1);
+            border: 2px dashed var(--accent);
+            border-radius: 8px;
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .add-item-btn:hover {
+            background: rgba(99,102,241,0.2);
+        }
+        body.edit-mode .add-item-btn {
+            display: block;
+        }
+        
+        /* Skill Tag Editing */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .skill-tag {
+            padding: 6px 12px;
+            background: var(--dark-600);
+            border-radius: 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: default;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .skill-tag.primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            font-weight: 600;
+            color: white;
+        }
+        .skill-tag.secondary {
+            background: linear-gradient(135deg, var(--success), #059669);
+            font-weight: 600;
+            color: white;
+        }
+        body.edit-mode .skill-tag {
+            cursor: pointer;
+        }
+        body.edit-mode .skill-tag:hover {
+            transform: scale(1.05);
+        }
+        body.edit-mode .skill-tag.dragging {
+            opacity: 0.5;
+            transform: scale(1.1);
+        }
+        body.edit-mode .skill-tag.drag-over {
+            border: 2px solid var(--success);
+            transform: scale(1.08);
+        }
+        body.edit-mode .skill-tag::after {
+            content: '×';
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 16px;
+            height: 16px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+        body.edit-mode .skill-tag:hover::after {
+            display: flex;
+        }
+        
+        /* Certification Item Editing */
+        .cert-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        body.edit-mode .cert-item:hover {
+            background: rgba(99,102,241,0.1);
+        }
+        
+        /* Print Styles - Mantém o tema escolhido */
+        @media print {
+            .bg-gradient, .grid-pattern, .controls, .edit-hint { display: none !important; }
+            body { 
+                background: var(--dark-900) !important; 
+                color: var(--text-primary) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .container { padding: 20px !important; }
+            .hero, .section-card, .summary-card {
+                background: var(--glass-bg) !important;
+                border: 1px solid var(--glass-border) !important;
+                box-shadow: none !important;
+                backdrop-filter: none !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .hero::before { display: none; }
+            .avatar { 
+                background: linear-gradient(135deg, var(--accent), var(--success)) !important;
+                -webkit-print-color-adjust: exact !important;
+            }
+            .metric { 
+                background: rgba(16,185,129,0.2) !important;
+                -webkit-print-color-adjust: exact !important;
+            }
+            @page { margin: 8mm; size: A4; }
+            /* Força 2 páginas se necessário */
+            .main-grid { page-break-inside: auto; }
+            .section-card { page-break-inside: avoid; }
+        }
+        
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .main-grid { grid-template-columns: 1fr; }
+            .hero { grid-template-columns: 1fr; text-align: center; gap: 20px; padding: 32px 24px; }
+            .avatar { margin: 0 auto; width: 100px; height: 100px; font-size: 32px; }
+            .contact-row { flex-wrap: wrap; justify-content: center; }
+        }
+        @media (max-width: 600px) {
+            .container { padding: 16px; }
+            .hero { padding: 24px 16px; border-radius: 16px; }
+            .hero-content h1 { font-size: 28px; }
+            .section-card { padding: 16px; border-radius: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="grid-pattern"></div>
+    
+    <div class="controls">
+        <a href="cv-hub.html" class="ctrl-btn">← Hub</a>
+        <button class="ctrl-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+        <div class="ctrl-btn lang-toggle">
+            <button class="lang-btn" onclick="setLang('pt')">🇧🇷</button>
+            <button class="lang-btn active" onclick="setLang('en')">🇺🇸</button>
+        </div>
+        <button class="ctrl-btn" id="editBtn" onclick="toggleEdit()" title="Edit Mode">✏️</button>
+        <button class="ctrl-btn" id="resetBtn" onclick="resetCVData()" title="Reset Data" style="display:none;">🔄</button>
+        <button class="ctrl-btn primary" onclick="window.print()">🖨️</button>
+    </div>
+    
+    <div class="edit-hint" data-pt="✏️ Modo Edição — Clique para editar, arraste skills para reordenar, use + para adicionar." data-en="✏️ Edit Mode — Click to edit, drag skills to reorder, use + to add.">✏️ Edit Mode — Click to edit, drag skills to reorder, use + to add.</div>
+
+    <div class="container">
+        <!-- HERO -->
+        <header class="hero">
+            <div class="avatar" id="avatarContainer">
+                <img src="images/raoni.jpg" alt="Raoni Barbalho" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'avatar-fallback\'>RB</div>';">
+            </div>
+            <div class="hero-content">
+                <h1>Raoni Barbalho</h1>
+                <div class="title" data-pt="Especialista Sênior em Validação de TI & Compliance" data-en="Senior IT Validation & Compliance Specialist">Senior IT Validation & Compliance Specialist</div>
+                <div class="contact-row">
+                    <span>📧 raobarbalho@hotmail.com</span>
+                    <span>📱 +55 38 99139-9293</span>
+                    <span data-pt="📍 Brasil → Aberto a Relocação" data-en="📍 Brazil → Open to Relocation">📍 Brazil → Open to Relocation</span>
+                    <a href="https://linkedin.com/in/raoni-barbalho-9064b0a4">LinkedIn ↗</a>
+                    <a href="https://raonix.vercel.app">Portfolio ↗</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- SUMMARY -->
+        <div class="summary-card" data-pt="<strong>Profissional de Validação de TI & Compliance</strong> com <span class='highlight'>7+ anos</span> em ambientes farmacêuticos regulados. Experiente em <span class='highlight'>GAMP 5</span>, <span class='highlight'>21 CFR Part 11</span> e <span class='highlight'>EU Annex 11</span>. Atualmente na <strong>Novo Nordisk</strong>, entregando documentação de validação <span class='highlight'>consistentemente acima da média</span> mantendo <span class='highlight'>documentação audit-ready</span>. Utilizando <span class='highlight'>Python/PowerShell</span> para automatizar e melhorar processos de validação." data-en="<strong>IT Validation & Compliance professional</strong> with <span class='highlight'>7+ years</span> in regulated pharmaceutical environments. Experienced in <span class='highlight'>GAMP 5</span>, <span class='highlight'>21 CFR Part 11</span>, and <span class='highlight'>EU Annex 11</span>. Currently at <strong>Novo Nordisk</strong>, consistently delivering validation documents <span class='highlight'>ahead of schedule</span> while maintaining <span class='highlight'>audit-ready documentation</span>. Leveraging <span class='highlight'>Python/PowerShell</span> to automate and improve validation processes.">
+            <strong>IT Validation & Compliance professional</strong> with <span class="highlight">7+ years</span> in 
+            regulated pharmaceutical environments. Experienced in <span class="highlight">GAMP 5</span>, 
+            <span class="highlight">21 CFR Part 11</span>, and <span class="highlight">EU Annex 11</span>. 
+            Currently at <strong>Novo Nordisk</strong>, consistently delivering validation documents 
+            <span class="highlight">ahead of schedule</span> while maintaining 
+            <span class="highlight">audit-ready documentation</span>. Leveraging 
+            <span class="highlight">Python/PowerShell</span> to automate and improve validation processes.
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-grid">
+            <!-- LEFT: Experience -->
+            <main>
+                <div class="section-card">
+                    <h2 class="section-title" data-pt="Experiência Profissional" data-en="Professional Experience">Professional Experience</h2>
+                    
+                    <div class="exp-item current">
+                        <div class="exp-header">
+                            <div>
+                                <div class="exp-role" data-pt="Analista de Validação de TI & Compliance" data-en="IT Validation & Compliance Analyst">IT Validation & Compliance Analyst</div>
+                                <div class="exp-company">Novo Nordisk • Quality Engineering</div>
+                            </div>
+                            <span class="exp-period" data-pt="Abr 2023 — Presente" data-en="Apr 2023 — Present">Apr 2023 — Present</span>
+                        </div>
+                        <ul class="exp-achievements">
+                            <li data-pt="Liderar atividades de CSV para sistemas GxP críticos em produção asséptica, armazém e data center" data-en="Lead CSV activities for critical GxP systems in aseptic production, warehouse, and data center">Lead CSV activities for critical GxP systems in aseptic production, warehouse, and data center</li>
+                            <li data-pt="Entregar documentos de validação <span class='metric'>acima da média do time</span> (5 dias vs 17+)" data-en="Consistently deliver validation documents <span class='metric'>ahead of team average</span> (5 days vs 17+)">Consistently deliver validation documents <span class="metric">ahead of team average</span> (5 days vs 17+)</li>
+                            <li data-pt="Criar scripts Python/PowerShell para análise de dados e verificações de compliance" data-en="Create Python/PowerShell scripts for data analysis and compliance checks">Create Python/PowerShell scripts for data analysis and compliance checks</li>
+                            <li data-pt="Apoiar auditorias mantendo <span class='metric'>documentação audit-ready</span> (FDA/ANVISA)" data-en="Support audits maintaining <span class='metric'>audit-ready documentation</span> (FDA/ANVISA)">Support audits maintaining <span class="metric">audit-ready documentation</span> (FDA/ANVISA)</li>
+                            <li data-pt="Gerenciar ITRAs no ServiceNow com <span class='metric'>alta satisfação de stakeholders</span>" data-en="Manage ITRAs in ServiceNow with <span class='metric'>high stakeholder satisfaction</span>">Manage ITRAs in ServiceNow with <span class="metric">high stakeholder satisfaction</span></li>
+                            <li data-pt="Liderar migração de Data Center: <span class='metric'>compliance completo</span>, transição suave" data-en="Lead Data Center migration: <span class='metric'>complete compliance</span>, smooth transition">Lead Data Center migration: <span class="metric">complete compliance</span>, smooth transition</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="exp-item">
+                        <div class="exp-header">
+                            <div>
+                                <div class="exp-role" data-pt="Líder Técnico de TI" data-en="IT Technical Leader">IT Technical Leader</div>
+                                <div class="exp-company">Cognizant • Client: MSD/Merck</div>
+                            </div>
+                            <span class="exp-period">2021 — 2023</span>
+                        </div>
+                        <ul class="exp-achievements">
+                            <li data-pt="Coordenar equipe de Suporte & Infraestrutura atendendo cliente farmacêutico global" data-en="Coordinated Support & Infrastructure team serving global pharmaceutical client">Coordinated Support & Infrastructure team serving global pharmaceutical client</li>
+                            <li data-pt="Gerenciar ITSM ServiceNow, SLAs, KPIs garantindo excelência operacional" data-en="Managed ITSM ServiceNow, SLAs, KPIs ensuring operational excellence">Managed ITSM ServiceNow, SLAs, KPIs ensuring operational excellence</li>
+                            <li data-pt="Reconhecido com <span class='metric'>3 prêmios em 2022</span>: End of Year, Client Satisfaction, 100% SLA" data-en="Recognized with <span class='metric'>3 awards in 2022</span>: End of Year, Client Satisfaction, 100% SLA">Recognized with <span class="metric">3 awards in 2022</span>: End of Year, Client Satisfaction, 100% SLA</li>
+                            <li data-pt="Alcançar <span class='metric'>100% satisfação do cliente</span> com 50+ reconhecimentos positivos" data-en="Achieved <span class='metric'>100% client satisfaction</span> with 50+ positive recognitions">Achieved <span class="metric">100% client satisfaction</span> with 50+ positive recognitions</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="exp-item">
+                        <div class="exp-header">
+                            <div>
+                                <div class="exp-role" data-pt="Analista de TI" data-en="IT Analyst">IT Analyst</div>
+                                <div class="exp-company">MSD (Merck Sharp & Dohme)</div>
+                            </div>
+                            <span class="exp-period" data-pt="Out 2020 — Set 2023" data-en="Oct 2020 — Sep 2023">Oct 2020 — Sep 2023</span>
+                        </div>
+                        <ul class="exp-achievements">
+                            <li data-pt="Equipe global de Infraestrutura e Suporte ao Usuário Final" data-en="Global Infrastructure and End-User Support team">Global Infrastructure and End-User Support team</li>
+                            <li data-pt="Gestão de redes/ativos/data center em ambiente GxP" data-en="Network/assets/data center management in GxP environment">Network/assets/data center management in GxP environment</li>
+                            <li data-pt="Projetos-chave: Migração Remedy→ServiceNow, Nexthink, SAP Atlas" data-en="Key projects: Remedy→ServiceNow migration, Nexthink, SAP Atlas">Key projects: Remedy→ServiceNow migration, Nexthink, SAP Atlas</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="exp-item">
+                        <div class="exp-header">
+                            <div>
+                                <div class="exp-role">IT Manager</div>
+                                <div class="exp-company">Pró-Vida Hospital</div>
+                            </div>
+                            <span class="exp-period">2017 — 2020</span>
+                        </div>
+                        <ul class="exp-achievements">
+                            <li>Complete IT management for healthcare facility</li>
+                            <li>Networks, infrastructure, security, and user support</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- KEY ACHIEVEMENTS -->
+                <div class="section-card">
+                    <h2 class="section-title">Key Achievements</h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div style="padding: 16px; background: rgba(16,185,129,0.1); border-radius: 12px; border: 1px solid rgba(16,185,129,0.2);">
+                            <div class="stat-value" style="font-size: 24px; font-weight: 800; color: var(--success);">5 days</div>
+                            <div class="stat-label" style="font-size: 12px; color: var(--text-secondary);">Avg. ITRA completion (vs 17+ team)</div>
+                        </div>
+                        <div style="padding: 16px; background: rgba(99,102,241,0.1); border-radius: 12px; border: 1px solid rgba(99,102,241,0.2);">
+                            <div class="stat-value" style="font-size: 24px; font-weight: 800; color: var(--accent-light);">7+</div>
+                            <div class="stat-label" style="font-size: 12px; color: var(--text-secondary);">Years in regulated pharma</div>
+                        </div>
+                        <div style="padding: 16px; background: rgba(245,158,11,0.1); border-radius: 12px; border: 1px solid rgba(245,158,11,0.2);">
+                            <div class="stat-value" style="font-size: 24px; font-weight: 800; color: var(--warning);">100%</div>
+                            <div class="stat-label" style="font-size: 12px; color: var(--text-secondary);">Audit-ready documentation</div>
+                        </div>
+                        <div style="padding: 16px; background: rgba(0,88,140,0.1); border-radius: 12px; border: 1px solid rgba(0,88,140,0.2);">
+                            <div class="stat-value" style="font-size: 24px; font-weight: 800; color: #4da6d9;">2022</div>
+                            <div class="stat-label" style="font-size: 12px; color: var(--text-secondary);">End of Year Award Winner</div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <!-- RIGHT: Sidebar -->
+            <aside>
+                <!-- EDUCATION (First for academic focus) -->
+                <div class="section-card">
+                    <h2 class="section-title">Education</h2>
+                    <div class="editable-list" id="eduContainer"></div>
+                    <button class="add-item-btn" onclick="openModal('edu')">+ Add Education</button>
+                </div>
+                
+                <!-- CORE SKILLS -->
+                <div class="section-card">
+                    <h2 class="section-title">Core Skills</h2>
+                    <div class="skills-container editable-list" id="skillsContainer"></div>
+                    <button class="add-item-btn" onclick="openModal('skill')">+ Add Skill</button>
+                </div>
+                
+                <!-- CERTIFICATIONS -->
+                <div class="section-card">
+                    <h2 class="section-title">Certifications</h2>
+                    <div class="editable-list" id="certsContainer"></div>
+                    <button class="add-item-btn" onclick="openModal('cert')">+ Add Certification</button>
+                </div>
+                
+                <!-- LANGUAGES -->
+                <div class="section-card">
+                    <h2 class="section-title">Languages</h2>
+                    <div class="editable-list" id="langContainer"></div>
+                    <button class="add-item-btn" onclick="openModal('lang')">+ Add Language</button>
+                </div>
+                
+                <!-- AWARDS -->
+                <div class="section-card" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(16,185,129,0.05)); border-color: rgba(245,158,11,0.2);">
+                    <h2 class="section-title" style="color: var(--warning);">Awards</h2>
+                    <div class="editable-list" id="awardsContainer"></div>
+                    <button class="add-item-btn" onclick="openModal('award')">+ Add Award</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+    
+    <!-- ADD ITEM MODAL -->
+    <div id="addModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:1000; padding:20px; backdrop-filter:blur(8px);">
+        <div style="max-width:400px; margin:80px auto; background:var(--dark-700); border-radius:20px; padding:24px; border:1px solid var(--dark-600);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 id="modalTitle" style="font-size:16px; font-weight:700;">Add Item</h3>
+                <button onclick="closeModal()" style="background:none; border:none; font-size:24px; color:var(--text-muted); cursor:pointer;">×</button>
+            </div>
+            <form id="addForm" onsubmit="submitForm(event)">
+                <div id="formFields"></div>
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button type="button" onclick="closeModal()" style="flex:1; padding:12px; border-radius:12px; border:1px solid var(--dark-600); background:transparent; color:var(--text-secondary); cursor:pointer;">Cancel</button>
+                    <button type="submit" style="flex:1; padding:12px; border-radius:12px; border:none; background:linear-gradient(135deg, var(--accent), var(--accent-dark)); color:white; font-weight:600; cursor:pointer;">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // =====================
+        // DATA STORE
+        // =====================
+        const defaultData = {
+            skills: [
+                { name: 'GAMP 5', type: 'primary' },
+                { name: 'CSV', type: 'primary' },
+                { name: '21 CFR Part 11', type: 'primary' },
+                { name: 'EU Annex 11', type: 'primary' },
+                { name: 'Python', type: 'secondary' },
+                { name: 'PowerShell', type: 'secondary' },
+                { name: 'Data Integrity', type: 'default' },
+                { name: 'ServiceNow', type: 'default' },
+                { name: 'Risk Assessment', type: 'default' },
+                { name: 'GxP', type: 'default' },
+                { name: 'ITIL v4', type: 'default' },
+                { name: 'Agile', type: 'default' }
+            ],
+            certs: [
+                { name: 'ITIL v4 Foundation', issuer: 'PeopleCert • 2024', icon: '🎓' },
+                { name: '21 CFR Part 11 Specialist', issuer: 'Cognizant Learning', icon: '📜' },
+                { name: 'GlobalEnglish Level 7', issuer: 'Advanced Proficiency', icon: '🌐' },
+                { name: 'Azure Fundamentals', issuer: 'Microsoft Learning', icon: '☁️' }
+            ],
+            edu: [
+                { degree: 'B.Sc. Civil Engineering', school: 'UNIFIPMoc • 2010-2015' },
+                { degree: 'Information Technology', school: 'CEBRAC • 2007-2009' }
+            ],
+            lang: [
+                { name: 'Portuguese', level: 'Native', color: 'var(--success)' },
+                { name: 'English', level: 'Advanced (C1)', color: 'var(--accent-light)' },
+                { name: 'Spanish', level: 'Basic', color: 'var(--text-muted)' }
+            ],
+            awards: [
+                { name: 'End of Year Award', year: '2022', icon: '🏆' },
+                { name: 'Client Satisfaction', year: '2022', icon: '⭐' },
+                { name: '100% SLA Achievement', year: '2022', icon: '✅' }
+            ]
+        };
+
+        // Load from localStorage or use defaults
+        let cvData = JSON.parse(localStorage.getItem('cvData')) || JSON.parse(JSON.stringify(defaultData));
+
+        function saveData() {
+            localStorage.setItem('cvData', JSON.stringify(cvData));
+        }
+
+        // =====================
+        // RENDER FUNCTIONS
+        // =====================
+        function renderSkills() {
+            const container = document.getElementById('skillsContainer');
+            container.innerHTML = cvData.skills.map((s, i) => `
+                <span class="skill-tag ${s.type}" data-idx="${i}" draggable="true" onclick="deleteItem('skills', ${i})">${s.name}</span>
+            `).join('');
+            
+            // Add drag & drop listeners
+            if (editMode) {
+                setupSkillDragDrop();
+            }
+        }
+        
+        // =====================
+        // DRAG & DROP FOR SKILLS
+        // =====================
+        let draggedSkillIdx = null;
+        
+        function setupSkillDragDrop() {
+            const skills = document.querySelectorAll('.skill-tag');
+            
+            skills.forEach(skill => {
+                skill.addEventListener('dragstart', (e) => {
+                    if (!editMode) return;
+                    draggedSkillIdx = parseInt(skill.dataset.idx);
+                    skill.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+                
+                skill.addEventListener('dragend', () => {
+                    skill.classList.remove('dragging');
+                    document.querySelectorAll('.skill-tag').forEach(s => s.classList.remove('drag-over'));
+                    draggedSkillIdx = null;
+                });
+                
+                skill.addEventListener('dragover', (e) => {
+                    if (!editMode) return;
+                    e.preventDefault();
+                    skill.classList.add('drag-over');
+                });
+                
+                skill.addEventListener('dragleave', () => {
+                    skill.classList.remove('drag-over');
+                });
+                
+                skill.addEventListener('drop', (e) => {
+                    if (!editMode) return;
+                    e.preventDefault();
+                    const targetIdx = parseInt(skill.dataset.idx);
+                    
+                    if (draggedSkillIdx !== null && draggedSkillIdx !== targetIdx) {
+                        // Reorder array
+                        const draggedItem = cvData.skills.splice(draggedSkillIdx, 1)[0];
+                        cvData.skills.splice(targetIdx, 0, draggedItem);
+                        saveData();
+                        renderSkills();
+                    }
+                    
+                    skill.classList.remove('drag-over');
+                });
+            });
+        }
+
+        function renderCerts() {
+            const container = document.getElementById('certsContainer');
+            container.innerHTML = cvData.certs.map((c, i) => `
+                <div class="cert-item editable-item" data-idx="${i}" onclick="deleteItem('certs', ${i})">
+                    <span style="width:36px;height:36px;background:var(--dark-600);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">${c.icon}</span>
+                    <div>
+                        <div style="font-size:13px;font-weight:600;color:var(--text-primary);">${c.name}</div>
+                        <div style="font-size:11px;color:var(--text-muted);">${c.issuer}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderEdu() {
+            const container = document.getElementById('eduContainer');
+            container.innerHTML = cvData.edu.map((e, i) => `
+                <div class="editable-item" style="margin-bottom:12px;padding:8px;border-radius:8px;" data-idx="${i}" onclick="deleteItem('edu', ${i})">
+                    <div style="font-size:13px;font-weight:600;color:var(--text-primary);">${e.degree}</div>
+                    <div style="font-size:11px;color:var(--text-muted);">${e.school}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderLang() {
+            const container = document.getElementById('langContainer');
+            container.innerHTML = cvData.lang.map((l, i) => `
+                <div class="editable-item" style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;" data-idx="${i}" onclick="deleteItem('lang', ${i})">
+                    <span style="font-size:13px;">${l.name}</span>
+                    <span style="font-size:11px;color:${l.color};font-weight:600;">${l.level}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderAwards() {
+            const container = document.getElementById('awardsContainer');
+            container.innerHTML = cvData.awards.map((a, i) => `
+                <div class="editable-item" style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;font-size:12px;" data-idx="${i}" onclick="deleteItem('awards', ${i})">
+                    <span>${a.icon}</span>
+                    <span>${a.name}</span>
+                    <span style="margin-left:auto;font-size:10px;color:var(--text-muted);">${a.year}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderAll() {
+            renderSkills();
+            renderCerts();
+            renderEdu();
+            renderLang();
+            renderAwards();
+        }
+
+        // =====================
+        // MODAL SYSTEM
+        // =====================
+        let currentModalType = null;
+
+        const modalConfigs = {
+            skill: {
+                title: 'Add Skill',
+                fields: [
+                    { name: 'name', label: 'Skill Name', type: 'text', placeholder: 'e.g., Docker' },
+                    { name: 'type', label: 'Priority', type: 'select', options: [
+                        { value: 'primary', label: '🔵 Primary (Compliance)' },
+                        { value: 'secondary', label: '🟢 Secondary (Technical)' },
+                        { value: 'default', label: '⚫ Other' }
+                    ]}
+                ]
+            },
+            cert: {
+                title: 'Add Certification',
+                fields: [
+                    { name: 'name', label: 'Certification Name', type: 'text', placeholder: 'e.g., AWS Cloud Practitioner' },
+                    { name: 'issuer', label: 'Issuer & Year', type: 'text', placeholder: 'e.g., Amazon • 2024' },
+                    { name: 'icon', label: 'Icon', type: 'select', options: [
+                        { value: '🎓', label: '🎓 Certificate' },
+                        { value: '📜', label: '📜 Document' },
+                        { value: '☁️', label: '☁️ Cloud' },
+                        { value: '🔒', label: '🔒 Security' },
+                        { value: '🏅', label: '🏅 Badge' },
+                        { value: '💻', label: '💻 Tech' }
+                    ]}
+                ]
+            },
+            edu: {
+                title: 'Add Education',
+                fields: [
+                    { name: 'degree', label: 'Degree/Course', type: 'text', placeholder: 'e.g., MBA Business Analytics' },
+                    { name: 'school', label: 'Institution & Period', type: 'text', placeholder: 'e.g., Harvard • 2024-2025' }
+                ]
+            },
+            lang: {
+                title: 'Add Language',
+                fields: [
+                    { name: 'name', label: 'Language', type: 'text', placeholder: 'e.g., French' },
+                    { name: 'level', label: 'Level', type: 'select', options: [
+                        { value: 'Native', label: 'Native' },
+                        { value: 'Fluent (C2)', label: 'Fluent (C2)' },
+                        { value: 'Advanced (C1)', label: 'Advanced (C1)' },
+                        { value: 'Intermediate (B2)', label: 'Intermediate (B2)' },
+                        { value: 'Basic', label: 'Basic' }
+                    ]},
+                    { name: 'color', label: 'Color', type: 'select', options: [
+                        { value: 'var(--success)', label: '🟢 Green (Native)' },
+                        { value: 'var(--accent-light)', label: '🔵 Blue (Advanced)' },
+                        { value: 'var(--warning)', label: '🟡 Yellow (Intermediate)' },
+                        { value: 'var(--text-muted)', label: '⚫ Gray (Basic)' }
+                    ]}
+                ]
+            },
+            award: {
+                title: 'Add Award',
+                fields: [
+                    { name: 'name', label: 'Award Name', type: 'text', placeholder: 'e.g., Best Innovation' },
+                    { name: 'year', label: 'Year', type: 'text', placeholder: 'e.g., 2024' },
+                    { name: 'icon', label: 'Icon', type: 'select', options: [
+                        { value: '🏆', label: '🏆 Trophy' },
+                        { value: '⭐', label: '⭐ Star' },
+                        { value: '✅', label: '✅ Check' },
+                        { value: '🥇', label: '🥇 Medal' },
+                        { value: '🎖️', label: '🎖️ Badge' },
+                        { value: '💎', label: '💎 Diamond' }
+                    ]}
+                ]
+            }
+        };
+
+        function openModal(type) {
+            if (!editMode) return;
+            currentModalType = type;
+            const config = modalConfigs[type];
+            document.getElementById('modalTitle').textContent = config.title;
+            
+            const fieldsHTML = config.fields.map(f => {
+                if (f.type === 'select') {
+                    return `
+                        <div style="margin-bottom:12px;">
+                            <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:4px;">${f.label}</label>
+                            <select name="${f.name}" required style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--dark-600);background:var(--dark-800);color:var(--text-primary);font-size:14px;">
+                                ${f.options.map(o => `<option value="${o.value}">${o.label}</option>`).join('')}
+                            </select>
+                        </div>
+                    `;
+                }
+                return `
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:4px;">${f.label}</label>
+                        <input type="${f.type}" name="${f.name}" placeholder="${f.placeholder || ''}" required style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--dark-600);background:var(--dark-800);color:var(--text-primary);font-size:14px;">
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('formFields').innerHTML = fieldsHTML;
+            document.getElementById('addModal').style.display = 'block';
+            setTimeout(() => document.querySelector('#addForm input, #addForm select')?.focus(), 100);
+        }
+
+        function closeModal() {
+            document.getElementById('addModal').style.display = 'none';
+            currentModalType = null;
+        }
+
+        function submitForm(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = Object.fromEntries(new FormData(form));
+            
+            const typeMap = { skill: 'skills', cert: 'certs', edu: 'edu', lang: 'lang', award: 'awards' };
+            const arrKey = typeMap[currentModalType];
+            
+            cvData[arrKey].push(data);
+            saveData();
+            renderAll();
+            closeModal();
+        }
+
+        function deleteItem(arrKey, idx) {
+            if (!editMode) return;
+            if (confirm('Delete this item?')) {
+                cvData[arrKey].splice(idx, 1);
+                saveData();
+                renderAll();
+            }
+        }
+
+        // =====================
+        // THEME & LANG
+        // =====================
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            document.getElementById('themeBtn').textContent = next === 'light' ? '☀️' : '🌙';
+            localStorage.setItem('theme', next);
+        }
+        
+        let currentLang = localStorage.getItem('lang') || 'en';
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+            document.querySelectorAll('[data-pt][data-en]').forEach(el => { 
+                const content = el.getAttribute(`data-${lang}`);
+                if (content && content.includes('<')) {
+                    el.innerHTML = content;
+                } else if (content) {
+                    el.textContent = content;
+                }
+            });
+        }
+        
+        // =====================
+        // EDIT MODE
+        // =====================
+        let editMode = false;
+        const editableSelectors = 'h1, h2, .title, .exp-role, .exp-company, .exp-period, .exp-achievements li, .summary-card, .contact-row span, .contact-row a, .stat-value, .stat-label';
+        
+        function toggleEdit() {
+            editMode = !editMode;
+            const btn = document.getElementById('editBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            
+            if (editMode) {
+                document.body.classList.add('edit-mode');
+                btn.textContent = '✓';
+                btn.classList.add('edit-active');
+                resetBtn.style.display = 'flex';
+                document.querySelectorAll(editableSelectors).forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                });
+                // Enable drag & drop for skills
+                setupSkillDragDrop();
+            } else {
+                document.body.classList.remove('edit-mode');
+                btn.textContent = '✏️';
+                btn.classList.remove('edit-active');
+                resetBtn.style.display = 'none';
+                document.querySelectorAll('[contenteditable]').forEach(el => {
+                    el.removeAttribute('contenteditable');
+                });
+            }
+        }
+        
+        // =====================
+        // RESET DATA BUTTON
+        // =====================
+        function resetCVData() {
+            if (confirm('Reset all data to defaults? This cannot be undone.')) {
+                cvData = JSON.parse(JSON.stringify(defaultData));
+                saveData();
+                renderAll();
+            }
+        }
+
+        // =====================
+        // INIT
+        // =====================
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeBtn').textContent = savedTheme === 'light' ? '☀️' : '🌙';
+        }
+        setLang(currentLang);
+        renderAll();
+        
+        if (new URLSearchParams(window.location.search).get('edit') === 'true') {
+            toggleEdit();
+        }
+        
+        // Close modal on ESC
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+        document.getElementById('addModal').addEventListener('click', e => { if (e.target.id === 'addModal') closeModal(); });
+    </script>
+</body>
+</html>

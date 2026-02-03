@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raoni Barbalho | Novo Nordisk Analytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #030303;
+      --card: rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.1);
+      --text: #ffffff;
+      --text-muted: #94a3b8;
+      --accent: #4cc9f0;
+      --nn-blue: #0052CC;
+    }
+    /* Light Mode */
+    [data-theme="light"] {
+      --bg: #f0f4f8;
+      --card: rgba(255,255,255,0.9);
+      --border: rgba(0,0,0,0.1);
+      --text: #0f172a;
+      --text-muted: #475569;
+    }
+    [data-theme="light"] body { background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%); }
+    [data-theme="light"] .bg-gradient { background: radial-gradient(ellipse at 20% 20%, rgba(76,201,240,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(0,82,204,0.08) 0%, transparent 50%); }
+    [data-theme="light"] .card { box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    [data-theme="light"] .header h1 { background: linear-gradient(135deg, #0f172a, var(--accent)); -webkit-background-clip: text; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .bg-gradient {
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(76,201,240,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(0,82,204,0.15) 0%, transparent 50%);
+      z-index: -1;
+    }
+    .container {
+      max-width: 900px;
+      width: 100%;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(76,201,240,0.1));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: var(--accent);
+      box-shadow: 0 20px 40px rgba(76,201,240,0.2);
+    }
+    .card:hover::before { opacity: 1; }
+    .card-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+    .card h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 16px;
+    }
+    .badge-live {
+      background: rgba(16,185,129,0.2);
+      color: #10b981;
+    }
+    .badge-new {
+      background: rgba(251,191,36,0.2);
+      color: #fbbf24;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 48px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .nn-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .nn-logo svg {
+      width: 40px;
+      height: 40px;
+    }
+    /* Controls */
+    .controls { position: fixed; top: 20px; right: 20px; display: flex; gap: 8px; z-index: 100; }
+    .ctrl-btn { padding: 8px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; color: var(--text); cursor: pointer; font-size: 0.9rem; backdrop-filter: blur(10px); transition: all 0.2s; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+    .ctrl-btn:hover { transform: scale(1.05); border-color: var(--accent); }
+    .lang-toggle { display: flex; gap: 4px; padding: 4px; }
+    .lang-btn { padding: 6px 12px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
+    .lang-btn.active { background: var(--accent); color: #000; }
+    .login-btn { background: linear-gradient(135deg, var(--nn-blue), var(--accent)); border: none; font-weight: 500; }
+    .login-btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(0,82,204,0.4); }
+  </style>
+</head>
+<body>
+  <!-- Controls -->
+  <div class="controls">
+    <a href="login.html" class="ctrl-btn login-btn" data-pt="🔐 Entrar" data-en="🔐 Login">🔐 Login</a>
+    <button class="ctrl-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    <div class="ctrl-btn lang-toggle">
+      <button class="lang-btn active" onclick="setLang('pt')">🇧🇷</button>
+      <button class="lang-btn" onclick="setLang('en')">🇺🇸</button>
+    </div>
+  </div>
+
+  <div class="bg-gradient"></div>
+  
+  <div class="container">
+    <div class="header">
+      <div class="nn-logo">
+        <svg viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="45" stroke="#0052CC" stroke-width="6"/>
+          <circle cx="50" cy="50" r="25" fill="#0052CC"/>
+        </svg>
+        <span style="font-size:1.2rem;color:var(--text-muted);">Novo Nordisk</span>
+      </div>
+      <h1>Raoni Barbalho</h1>
+      <p data-pt="Infraestrutura de TI & Compliance | Analytics & Dashboards" data-en="IT Infrastructure & Compliance | Analytics & Dashboards">IT Infrastructure & Compliance | Analytics & Dashboards</p>
+    </div>
+
+    <div class="cards">
+      <a href="portfolio-enhanced.html" class="card">
+        <div class="card-icon">⭐</div>
+        <h2 data-pt="Portfolio Pro" data-en="Portfolio Pro">Portfolio Pro</h2>
+        <p data-pt="Portfolio profissional com 8 case studies reais, 5 depoimentos verificados, métricas de impacto." data-en="Professional portfolio with 8 real case studies, 5 verified testimonials, impact metrics.">Professional portfolio with 8 real case studies, 5 verified testimonials, impact metrics.</p>
+        <span class="badge badge-new">🔥 ENHANCED</span>
+      </a>
+
+      <a href="portfolio-3d-advanced.html" class="card">
+        <div class="card-icon">🚀</div>
+        <h2 data-pt="Portfolio 3D Advanced" data-en="Portfolio 3D Advanced">Portfolio 3D Advanced</h2>
+        <p data-pt="Portfolio interativo premium com 20K partículas, customizações completas, traduções PT/EN e 5 paletas de cores." data-en="Premium interactive portfolio with 20K particles, full customizations, PT/EN translations and 5 color palettes.">Premium interactive portfolio with 20K particles, full customizations, PT/EN translations and 5 color palettes.</p>
+        <span class="badge badge-new">⭐ ADVANCED</span>
+      </a>
+
+      <a href="cv-hub.html" class="card">
+        <div class="card-icon">📄</div>
+        <h2 data-pt="CV Hub" data-en="CV Hub">CV Hub</h2>
+        <p data-pt="3 versões de CV: ATS-Friendly, Visual Premium e Clássico. Edite e exporte para PDF." data-en="3 CV versions: ATS-Friendly, Visual Premium and Classic. Edit and export to PDF.">3 CV versions: ATS-Friendly, Visual Premium and Classic. Edit and export to PDF.</p>
+        <span class="badge badge-live">● LIVE</span>
+      </a>
+
+      <a href="career-analysis.html" class="card">
+        <div class="card-icon">🎯</div>
+        <h2 data-pt="Análise de Carreira" data-en="Career Analysis">Career Analysis</h2>
+        <p data-pt="Insights de carreira baseados em dados com pontos fortes, áreas de melhoria e roadmap." data-en="Data-driven career insights with strengths, areas for growth, and a personalized roadmap.">Data-driven career insights with strengths, areas for growth, and a personalized roadmap.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="interview-prep.html" class="card">
+        <div class="card-icon">📚</div>
+        <h2 data-pt="Preparação p/ Entrevistas" data-en="Interview Prep">Interview Prep</h2>
+        <p data-pt="12 perguntas comportamentais e técnicas com dicas de resposta, baseadas em vagas em Validation." data-en="12 behavioral and technical questions with answer tips, tailored to IT Validation roles.">12 behavioral and technical questions with answer tips, tailored to IT Validation roles.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="network-hub.html" class="card">
+        <div class="card-icon">🌐</div>
+        <h2 data-pt="Rede Profissional" data-en="Network Hub">Network Hub</h2>
+        <p data-pt="Conecte-se com profissionais em Validation, acesse recursos de GxP e participe de eventos." data-en="Connect with IT Validation professionals, access GxP resources, and join industry events.">Connect with IT Validation professionals, access GxP resources, and join industry events.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="dashboard.html" class="card">
+        <div class="card-icon">📊</div>
+        <h2 data-pt="Painel de Controle" data-en="Dashboard">Dashboard</h2>
+        <p data-pt="Analytics pessoal com KPIs, gráficos de progresso e atividades recentes. Seu hub de controle." data-en="Personal analytics with KPIs, progress charts, and activity tracking. Your command center.">Personal analytics with KPIs, progress charts, and activity tracking. Your command center.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="portfolio-premium.html" class="card">
+        <div class="card-icon">⭐</div>
+        <h2 data-pt="Portfolio Premium" data-en="Premium Portfolio">Premium Portfolio</h2>
+        <p data-pt="Versão avançada com 20K partículas 3D, efeitos GSAP, timeline e showcase de projetos." data-en="Advanced version with 20K 3D particles, GSAP effects, timeline, and project showcase.">Advanced version with 20K 3D particles, GSAP effects, timeline, and project showcase.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="tools-hub.html" class="card">
+        <div class="card-icon">🛠️</div>
+        <h2 data-pt="Central de Ferramentas" data-en="Tools Hub">Tools Hub</h2>
+        <p data-pt="Calculadora GxP, gerador de timeline CSV, e insights de salário para profissionais." data-en="GxP calculator, CSV timeline generator, and salary insights for professionals.">GxP calculator, CSV timeline generator, and salary insights for professionals.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="skill-assessment.html" class="card">
+        <div class="card-icon">📈</div>
+        <h2 data-pt="Avaliação de Skills" data-en="Skill Assessment">Skill Assessment</h2>
+        <p data-pt="Quiz com 20 questões em GxP, ITSM, técnicas e soft skills. Obtenha seu score de proficiência." data-en="20-question quiz on GxP, ITSM, technical and soft skills. Get your proficiency score.">20-question quiz on GxP, ITSM, technical and soft skills. Get your proficiency score.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="job-board.html" class="card">
+        <div class="card-icon">💼</div>
+        <h2 data-pt="Quadro de Vagas" data-en="Job Board">Job Board</h2>
+        <p data-pt="15+ posições em Validation & Compliance em empresas farmacêuticas líderes mundiais." data-en="15+ positions in Validation & Compliance at leading pharma companies worldwide.">15+ positions in Validation & Compliance at leading pharma companies worldwide.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="application-tracker.html" class="card">
+        <div class="card-icon">📋</div>
+        <h2 data-pt="Rastreador de Apps" data-en="App Tracker">App Tracker</h2>
+        <p data-pt="Kanban, Timeline e Lista para rastrear suas candidaturas, entrevistas e ofertas." data-en="Kanban, timeline, and list views to track your applications, interviews, and offers.">Kanban, timeline, and list views to track your applications, interviews, and offers.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="resume-builder.html" class="card">
+        <div class="card-icon">✏️</div>
+        <h2 data-pt="Construtor de CV" data-en="Resume Builder">Resume Builder</h2>
+        <p data-pt="Editor WYSIWYG com preview em tempo real. Exporte para JSON, PDF ou imprima." data-en="WYSIWYG editor with real-time preview. Export to JSON, PDF, or print.">WYSIWYG editor with real-time preview. Export to JSON, PDF, or print.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="salary-negotiation.html" class="card">
+        <div class="card-icon">💰</div>
+        <h2 data-pt="Negociação Salarial" data-en="Salary Negotiation">Salary Negotiation</h2>
+        <p data-pt="Calculadora interativa com benchmarking de mercado, análise de benefícios e estratégias." data-en="Interactive calculator with market benchmarking, benefits analysis, and strategies.">Interactive calculator with market benchmarking, benefits analysis, and strategies.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="itra-analytics.html" class="card">
+        <div class="card-icon">📊</div>
+        <h2 data-pt="ITRA Analytics" data-en="ITRA Analytics">ITRA Analytics</h2>
+        <p data-pt="Dashboard mini com KPIs, análise de fases, gargalos e tendências do processo ITRA." data-en="Mini dashboard with KPIs, phase analysis, bottlenecks, and ITRA process trends.">Mini dashboard with KPIs, phase analysis, bottlenecks, and ITRA process trends.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="interview-feedback.html" class="card">
+        <div class="card-icon">🎤</div>
+        <h2 data-pt="Feedback de Entrevista" data-en="Interview Feedback">Interview Feedback</h2>
+        <p data-pt="Registre performance de entrevistas com scoring detalhado e análise com IA." data-en="Record interview performance with detailed scoring and AI-powered analysis.">Record interview performance with detailed scoring and AI-powered analysis.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="pharma-101.html" class="card">
+        <div class="card-icon">🎓</div>
+        <h2 data-pt="Pharma 101" data-en="Pharma 101">Pharma 101</h2>
+        <p data-pt="Micro-learning com 6 módulos: GAMP 5, CSV, 21 CFR, Risk, Data Integrity, Change Control." data-en="Micro-learning with 6 modules: GAMP 5, CSV, 21 CFR, Risk, Data Integrity, Change Control.">Micro-learning with 6 modules: GAMP 5, CSV, 21 CFR, Risk, Data Integrity, Change Control.</p>
+        <span class="badge badge-new">✨ NEW</span>
+      </a>
+
+      <a href="ai-future-pharma.html" class="card">
+        <div class="card-icon">🤖</div>
+        <h2 data-pt="IA na Farmacêutica" data-en="AI Future in Pharma">AI Future in Pharma</h2>
+        <p data-pt="Apresentação executiva sobre o futuro da IA na indústria farmacêutica (NN vs Lilly, 2026-2030)." data-en="Executive presentation on the future of AI in pharma (NN vs Lilly, 2026-2030).">Executive presentation on the future of AI in pharma (NN vs Lilly, 2026-2030).</p>
+        <span class="badge badge-new">🔥 NEW</span>
+      </a>
+
+      <a href="cv-system-manager-III-clayton.html" class="card">
+        <div class="card-icon">📄</div>
+        <h2 data-pt="CV IT System Manager III" data-en="CV IT System Manager III">CV IT System Manager III</h2>
+        <p data-pt="Currículo otimizado para vaga Senior IT System Manager III (Novo Nordisk Clayton, NC)." data-en="Optimized resume for Senior IT System Manager III role (Novo Nordisk Clayton, NC).">Optimized resume for Senior IT System Manager III role (Novo Nordisk Clayton, NC).</p>
+        <span class="badge badge-new">🔥 NEW</span>
+      </a>
+
+      <!-- Enterprise Apps -->
+      <a href="gxp-dashboard.html" class="card">
+        <div class="card-icon">✅</div>
+        <h2 data-pt="GxP Compliance Dashboard" data-en="GxP Compliance Dashboard">GxP Compliance Dashboard</h2>
+        <p data-pt="Dashboard executivo de conformidade GxP: validações, auditorias, 21 CFR Part 11." data-en="Executive GxP compliance dashboard: validations, audits, 21 CFR Part 11.">Executive GxP compliance dashboard: validations, audits, 21 CFR Part 11.</p>
+        <span class="badge badge-new">🚀 NEW</span>
+      </a>
+
+      <a href="csv-tracker.html" class="card">
+        <div class="card-icon">📋</div>
+        <h2 data-pt="CSV Validation Tracker" data-en="CSV Validation Tracker">CSV Validation Tracker</h2>
+        <p data-pt="Rastreamento completo do ciclo de vida de validação CSV: Planning → IQ → OQ → PQ → Released." data-en="Complete CSV validation lifecycle tracking: Planning → IQ → OQ → PQ → Released.">Complete CSV validation lifecycle tracking: Planning → IQ → OQ → PQ → Released.</p>
+        <span class="badge badge-new">🚀 NEW</span>
+      </a>
+
+      <a href="capa-system.html" class="card">
+        <div class="card-icon">🔧</div>
+        <h2 data-pt="CAPA Management System" data-en="CAPA Management System">CAPA Management System</h2>
+        <p data-pt="Sistema Kanban para Ações Corretivas e Preventivas com análise de causa raiz." data-en="Kanban system for Corrective & Preventive Actions with root cause analysis.">Kanban system for Corrective & Preventive Actions with root cause analysis.</p>
+        <span class="badge badge-new">🚀 NEW</span>
+      </a>
+
+      <a href="audit-trail.html" class="card">
+        <div class="card-icon">🔍</div>
+        <h2 data-pt="Audit Trail Analyzer" data-en="Audit Trail Analyzer">Audit Trail Analyzer</h2>
+        <p data-pt="Análise de trilhas de auditoria com conformidade ALCOA+ e 21 CFR Part 11." data-en="Audit trail analysis with ALCOA+ compliance and 21 CFR Part 11.">Audit trail analysis with ALCOA+ compliance and 21 CFR Part 11.</p>
+        <span class="badge badge-new">🚀 NEW</span>
+      </a>
+
+      <!-- PRACTICAL TOOLS - NEW SECTION -->
+      <a href="gamp-translator.html" class="card">
+        <div class="card-icon">📚</div>
+        <h2 data-pt="GAMP Translator" data-en="GAMP Translator">GAMP Translator</h2>
+        <p data-pt="Explica GAMP 5 e conceitos pharma em linguagem simples. Para leigos entenderem validação." data-en="Explains GAMP 5 and pharma concepts in plain language. For non-IT staff to understand validation.">Explains GAMP 5 and pharma concepts in plain language. For non-IT staff to understand validation.</p>
+        <span class="badge badge-new">⚡ PRACTICAL</span>
+      </a>
+
+      <a href="checklist-manager.html" class="card">
+        <div class="card-icon">✓</div>
+        <h2 data-pt="Checklist Manager" data-en="Checklist Manager">Checklist Manager</h2>
+        <p data-pt="Checklists digitais com 21 CFR Part 11 compliance. Auditoria imutável, timestamps, rastreabilidade." data-en="Digital checklists with 21 CFR Part 11 compliance. Immutable audit trails, timestamps, traceability.">Digital checklists with 21 CFR Part 11 compliance. Immutable audit trails, timestamps, traceability.</p>
+        <span class="badge badge-new">⚡ PRACTICAL</span>
+      </a>
+
+      <a href="csv-protocol.html" class="card">
+        <div class="card-icon">🧪</div>
+        <h2 data-pt="CSV Protocol Builder" data-en="CSV Protocol Builder">CSV Protocol Builder</h2>
+        <p data-pt="Gerador automático de protocolos IQ/OQ/PQ. Templates GAMP 5 + ALCOA+ ready para implementação." data-en="Auto-generates IQ/OQ/PQ protocols. GAMP 5 templates + ALCOA+ ready for implementation.">Auto-generates IQ/OQ/PQ protocols. GAMP 5 templates + ALCOA+ ready for implementation.</p>
+        <span class="badge badge-new">⚡ PRACTICAL</span>
+      </a>
+
+      <a href="meeting-prep.html" class="card">
+        <div class="card-icon">📋</div>
+        <h2 data-pt="Meeting Prep Assistant" data-en="Meeting Prep Assistant">Meeting Prep Assistant</h2>
+        <p data-pt="Prepara você para reuniões com insights, contexto e tópicos-chave. Summary + action items." data-en="Prepares you for meetings with insights, context and key topics. Summary + action items.">Prepares you for meetings with insights, context and key topics. Summary + action items.</p>
+        <span class="badge badge-new">⚡ PRACTICAL</span>
+      </a>
+
+      <a href="presentations.html" class="card">
+        <div class="card-icon">🎬</div>
+        <h2 data-pt="Presentations" data-en="Presentations">Presentations</h2>
+        <p data-pt="8 slides profissionais: Sobre, Visão Sandbox, Resultados, Expertise, Cases, Visão NN, Certs, Contato." data-en="8 professional slides: About, Sandbox Vision, Results, Expertise, Cases, NN Vision, Certs, Contact.">8 professional slides: About, Sandbox Vision, Results, Expertise, Cases, NN Vision, Certs, Contact.</p>
+        <span class="badge badge-new">🎤 NEW</span>
+      </a>
+
+      <a href="sandbox-analysis.html" class="card">
+        <div class="card-icon">🏗️</div>
+        <h2 data-pt="Sandbox Analysis" data-en="Sandbox Analysis">Sandbox Analysis</h2>
+        <p data-pt="Dashboard analítico: AI Agents, Gamificação, ROI, Timeline, Implementation (6 abas com gráficos)." data-en="Analytical dashboard: AI Agents, Gamification, ROI, Timeline, Implementation (6 tabs with charts).">Analytical dashboard: AI Agents, Gamification, ROI, Timeline, Implementation (6 tabs with charts).</p>
+        <span class="badge badge-new">📊 ANALYSIS</span>
+      </a>
+    </div>
+
+    <div class="footer">
+      <p data-pt="Feito com 💙 usando tecnologias web modernas" data-en="Built with 💙 using modern web technologies">Built with 💙 using modern web technologies</p>
+      <p style="margin-top:8px;">
+        <a href="https://www.linkedin.com/in/raoni-barbalho-9064b0a4/" target="_blank">LinkedIn</a> •
+        <a href="https://github.com/raonibarbalhox" target="_blank">GitHub</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Theme Toggle
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      document.getElementById('themeBtn').textContent = next === 'light' ? '☀️' : '🌙';
+      localStorage.setItem('theme', next);
+    }
+    // Language Toggle
+    let currentLang = localStorage.getItem('lang') || 'en';
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+      document.querySelectorAll('[data-pt][data-en]').forEach(el => { el.textContent = el.getAttribute(`data-${lang}`); });
+    }
+    // Init
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.getElementById('themeBtn').textContent = savedTheme === 'light' ? '☀️' : '🌙';
+    }
+    setLang(currentLang);
+  </script>
+</body>
+</html>

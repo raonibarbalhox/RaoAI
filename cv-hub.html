@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Hub | Raoni Barbalho</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --card: rgba(255,255,255,0.03);
+            --card-hover: rgba(255,255,255,0.08);
+            --border: rgba(255,255,255,0.08);
+            --text: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --nn-blue: #00588c;
+        }
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --card: rgba(255,255,255,0.9);
+            --card-hover: rgba(255,255,255,1);
+            --border: rgba(0,0,0,0.1);
+            --text: #0f172a;
+            --text-muted: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        /* Background */
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% -20%, rgba(99,102,241,0.12), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(16,185,129,0.08), transparent);
+        }
+        
+        /* Header */
+        header {
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10,10,15,0.8);
+        }
+        [data-theme="light"] header { background: rgba(248,250,252,0.9); }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text);
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 8px;
+        }
+        .ctrl-btn {
+            padding: 10px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ctrl-btn:hover { background: var(--card-hover); border-color: var(--accent); }
+        
+        /* Language Toggle */
+        .lang-toggle { display: flex; gap: 4px; padding: 4px; }
+        .lang-btn { padding: 6px 10px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
+        .lang-btn.active { background: var(--accent); color: white; }
+        
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 48px;
+        }
+        
+        /* CV Cards Grid */
+        .cv-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+        }
+        
+        .cv-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .cv-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(99,102,241,0.15);
+        }
+        
+        .cv-preview {
+            height: 300px;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .cv-preview iframe {
+            width: 200%;
+            height: 200%;
+            transform: scale(0.5);
+            transform-origin: top left;
+            border: none;
+            pointer-events: none;
+        }
+        
+        .cv-info {
+            padding: 24px;
+        }
+        .cv-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .badge-ats { background: rgba(16,185,129,0.15); color: var(--success); }
+        .badge-premium { background: rgba(99,102,241,0.15); color: var(--accent-light); }
+        .badge-classic { background: rgba(245,158,11,0.15); color: var(--warning); }
+        
+        .cv-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .cv-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .cv-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .action-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+        }
+        .action-primary:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(99,102,241,0.4); }
+        .action-secondary {
+            background: var(--card-hover);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .action-secondary:hover { border-color: var(--accent); }
+        
+        /* Features List */
+        .cv-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .feature-tag {
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        [data-theme="light"] .feature-tag { background: rgba(0,0,0,0.05); }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        
+        @media (max-width: 768px) {
+            .cv-grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.8rem; }
+            header { padding: 16px; }
+            main { padding: 24px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <header>
+        <a href="index.html" class="logo">
+            <div class="logo-icon">📄</div>
+            <span class="logo-text">CV Hub</span>
+        </a>
+        <div class="controls">
+            <a href="index.html" class="ctrl-btn">← Hub</a>
+            <button class="ctrl-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+            <div class="ctrl-btn lang-toggle">
+                <button class="lang-btn" onclick="setLang('pt')">🇧🇷</button>
+                <button class="lang-btn active" onclick="setLang('en')">🇺🇸</button>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <h1 class="page-title" data-pt="Documentos de Carreira" data-en="Career Documents">Career Documents</h1>
+        <p class="page-subtitle" data-pt="CVs e Cover Letter otimizados para diferentes contextos. Todos editáveis e prontos para impressão." data-en="CVs and Cover Letter optimized for different contexts. All editable and print-ready.">CVs and Cover Letter optimized for different contexts. All editable and print-ready.</p>
+        
+        <div class="cv-grid">
+            <!-- CV ATS-Friendly -->
+            <div class="cv-card">
+                <div class="cv-preview">
+                    <iframe src="cv-novo-nordisk.html" loading="lazy"></iframe>
+                </div>
+                <div class="cv-info">
+                    <span class="cv-badge badge-ats">🎯 ATS-FRIENDLY</span>
+                    <h2 class="cv-title" data-pt="CV Novo Nordisk" data-en="CV Novo Nordisk">CV Novo Nordisk</h2>
+                    <p class="cv-desc" data-pt="Otimizado para sistemas ATS. Layout limpo, palavras-chave estratégicas e formato que passa pelos filtros." data-en="Optimized for ATS systems. Clean layout, strategic keywords, and format that passes filters.">Optimized for ATS systems. Clean layout, strategic keywords, and format that passes filters.</p>
+                    <div class="cv-features">
+                        <span class="feature-tag">✓ ATS</span>
+                        <span class="feature-tag">✓ Print</span>
+                        <span class="feature-tag">✓ Edit</span>
+                        <span class="feature-tag">✓ EN/PT</span>
+                    </div>
+                    <div class="cv-actions">
+                        <a href="cv-novo-nordisk.html" class="action-btn action-primary" data-pt="👁️ Ver" data-en="👁️ View">👁️ View</a>
+                        <a href="cv-novo-nordisk.html?edit=true" class="action-btn action-secondary" data-pt="✏️ Editar" data-en="✏️ Edit">✏️ Edit</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CV Visual Premium -->
+            <div class="cv-card">
+                <div class="cv-preview" style="background: #0f0f23;">
+                    <iframe src="cv-visual.html" loading="lazy"></iframe>
+                </div>
+                <div class="cv-info">
+                    <span class="cv-badge badge-premium">✨ PREMIUM</span>
+                    <h2 class="cv-title" data-pt="CV Visual Premium" data-en="Premium Visual CV">Premium Visual CV</h2>
+                    <p class="cv-desc" data-pt="Design glassmorphism moderno com gradientes. Ideal para impressionar em entrevistas." data-en="Modern glassmorphism design with gradients. Ideal for impressing at interviews.">Modern glassmorphism design with gradients. Ideal for impressing at interviews.</p>
+                    <div class="cv-features">
+                        <span class="feature-tag">✓ Glass</span>
+                        <span class="feature-tag">✓ Dark/Light</span>
+                        <span class="feature-tag">✓ Print</span>
+                        <span class="feature-tag">✓ EN/PT</span>
+                    </div>
+                    <div class="cv-actions">
+                        <a href="cv-visual.html" class="action-btn action-primary" data-pt="👁️ Ver" data-en="👁️ View">👁️ View</a>
+                        <a href="cv-visual.html?edit=true" class="action-btn action-secondary" data-pt="✏️ Editar" data-en="✏️ Edit">✏️ Edit</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CV Clássico -->
+            <div class="cv-card">
+                <div class="cv-preview">
+                    <iframe src="cv.html" loading="lazy"></iframe>
+                </div>
+                <div class="cv-info">
+                    <span class="cv-badge badge-classic">📋 CLASSIC</span>
+                    <h2 class="cv-title" data-pt="CV Clássico Completo" data-en="Classic Complete CV">Classic Complete CV</h2>
+                    <p class="cv-desc" data-pt="Versão completa com todas as seções detalhadas. Ideal para contextos mais formais." data-en="Complete version with all detailed sections. Ideal for formal contexts.">Complete version with all detailed sections. Ideal for formal contexts.</p>
+                    <div class="cv-features">
+                        <span class="feature-tag">✓ PT/EN</span>
+                        <span class="feature-tag">✓ Detailed</span>
+                        <span class="feature-tag">✓ Edit</span>
+                        <span class="feature-tag">✓ A4</span>
+                    </div>
+                    <div class="cv-actions">
+                        <a href="cv.html" class="action-btn action-primary" data-pt="👁️ Ver" data-en="👁️ View">👁️ View</a>
+                        <a href="cv.html?edit=true" class="action-btn action-secondary" data-pt="✏️ Editar" data-en="✏️ Edit">✏️ Edit</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cover Letter Visual -->
+            <div class="cv-card">
+                <div class="cv-preview" style="background: #0f0f23;">
+                    <iframe src="cover-letter-visual.html" loading="lazy"></iframe>
+                </div>
+                <div class="cv-info">
+                    <span class="cv-badge badge-premium">✉️ COVER LETTER</span>
+                    <h2 class="cv-title" data-pt="Cover Letter Editável" data-en="Editable Cover Letter">Editable Cover Letter</h2>
+                    <p class="cv-desc" data-pt="Carta de apresentação com parágrafos editáveis. Adicione, remova e personalize para cada vaga." data-en="Cover letter with editable paragraphs. Add, remove and customize for each job.">Cover letter with editable paragraphs. Add, remove and customize for each job.</p>
+                    <div class="cv-features">
+                        <span class="feature-tag">✓ Editable</span>
+                        <span class="feature-tag">✓ Dark/Light</span>
+                        <span class="feature-tag">✓ Print</span>
+                        <span class="feature-tag">✓ Auto-Save</span>
+                    </div>
+                    <div class="cv-actions">
+                        <a href="cover-letter-visual.html" class="action-btn action-primary" data-pt="👁️ Ver" data-en="👁️ View">👁️ View</a>
+                        <a href="cover-letter-visual.html" class="action-btn action-secondary" onclick="localStorage.setItem('openEdit','1')" data-pt="✏️ Editar" data-en="✏️ Edit">✏️ Edit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p data-pt="💡 Dica: Use o CV ATS para candidaturas online e o Visual para entrevistas." data-en="💡 Tip: Use ATS CV for online applications and Visual for interviews.">💡 Tip: Use ATS CV for online applications and Visual for interviews.</p>
+        <p style="margin-top: 12px;">
+            <a href="portfolio.html">Portfolio</a> •
+            <a href="https://linkedin.com/in/raoni-barbalho-9064b0a4" target="_blank">LinkedIn</a>
+        </p>
+    </footer>
+    
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            document.getElementById('themeBtn').textContent = next === 'light' ? '☀️' : '🌙';
+            localStorage.setItem('theme', next);
+        }
+        
+        // Language Toggle - Suporta innerHTML para spans com classes
+        let currentLang = localStorage.getItem('lang') || 'en';
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+            document.querySelectorAll('[data-pt][data-en]').forEach(el => { 
+                const content = el.getAttribute(`data-${lang}`);
+                if (content && content.includes('<')) {
+                    el.innerHTML = content;
+                } else if (content) {
+                    el.textContent = content;
+                }
+            });
+        }
+        
+        // Load saved settings
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeBtn').textContent = savedTheme === 'light' ? '☀️' : '🌙';
+        }
+        setLang(currentLang);
+    </script>
+</body>
+</html>

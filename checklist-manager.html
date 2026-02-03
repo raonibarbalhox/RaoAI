@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Manager | RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #030303; color: #ffffff; min-height: 100vh; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: rgba(10, 10, 10, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.1); z-index: 100; overflow-y: auto; }
+        .main-content { margin-left: 250px; padding: 2rem; }
+        .checklist-item { display: flex; gap: 1rem; padding: 1rem; border-radius: 0.75rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .checklist-item.completed { opacity: 0.6; }
+        .checklist-item.completed label { text-decoration: line-through; }
+        input[type="checkbox"] { cursor: pointer; width: 20px; height: 20px; accent-color: #0070f3; }
+        .audit-icon { font-size: 0.75rem; color: #64748b; margin-left: auto; }
+        .status-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        .status-active { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+        .status-completed { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .status-pending { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="p-6">
+            <h1 class="text-2xl font-black mb-8" style="background: linear-gradient(135deg, #fff, #0070f3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">RaoniX</h1>
+            <nav class="space-y-2 text-sm">
+                <a href="/index.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🏠 Hub</a>
+                <a href="/gamp-translator.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">📚 GAMP Translator</a>
+                <a href="#" class="block px-4 py-2 rounded-lg bg-white/10">✓ Checklist Manager</a>
+                <a href="/csv-protocol.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🧪 CSV Protocol</a>
+                <a href="/meeting-prep.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">📋 Meeting Prep</a>
+            </nav>
+            <hr class="my-4 border-white/10">
+            <button onclick="newChecklist()" class="w-full px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 font-semibold transition text-sm">
+                + Novo Checklist
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="mb-8">
+            <h1 class="text-4xl font-black mb-2">Checklist Manager</h1>
+            <p class="text-slate-400">Checklists com 21 CFR Part 11 • ALCOA+ compliant • Auditoria imutável</p>
+        </div>
+
+        <!-- View Toggle -->
+        <div class="flex gap-2 mb-6">
+            <button onclick="setView('active')" class="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">📋 Ativas</button>
+            <button onclick="setView('completed')" class="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">✅ Completadas</button>
+            <button onclick="setView('audit')" class="px-4 py-2 rounded-lg glass hover:bg-white/10 transition">🔍 Auditoria</button>
+        </div>
+
+        <!-- Lista de Checklists Ativas -->
+        <div id="activeView" class="space-y-4">
+            <!-- Checklist 1: IQ Installation -->
+            <div class="glass rounded-2xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold">SAP ERP - Installation Qualification (IQ)</h2>
+                        <p class="text-sm text-slate-400 mt-1">Sistema: SAP ERP | Responsável: John Silva | Status: Em Progresso</p>
+                    </div>
+                    <span class="status-badge status-active">6/12 Completo</span>
+                </div>
+
+                <div class="space-y-2 mb-4">
+                    <div class="checklist-item">
+                        <input type="checkbox" checked>
+                        <label>Hardware físico instalado conforme especificação</label>
+                        <span class="audit-icon">✓ 2026-01-15 10:30 | john.silva</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" checked>
+                        <label>Sistema Operacional (Windows Server 2019) instalado</label>
+                        <span class="audit-icon">✓ 2026-01-15 11:00 | john.silva</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" checked>
+                        <label>Patches de segurança aplicados</label>
+                        <span class="audit-icon">✓ 2026-01-15 12:15 | john.silva</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" checked>
+                        <label>Certificados SSL/TLS instalados</label>
+                        <span class="audit-icon">✓ 2026-01-15 13:00 | john.silva</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" checked>
+                        <label>SAP Application Server 7.55 instalado</label>
+                        <span class="audit-icon">✓ 2026-01-16 09:00 | john.silva</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" checked>
+                        <label>Database Oracle 21c configurado</label>
+                        <span class="audit-icon">✓ 2026-01-16 10:30 | john.silva</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Backup automático configurado (diário)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Firewall e IDS ativo</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Permissões RBAC configuradas</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Auditoria de sistema ativada (21 CFR Part 11)</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Teste de conectividade com LIMS</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Documentação completa e assinada</label>
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-500 pt-4 border-t border-white/10">
+                    ✓ ALCOA+ Compliant: Attributable (quem fez), Legible (timestamps), Contemporaneous (real-time), Original (immutable audit trail)
+                </div>
+            </div>
+
+            <!-- Checklist 2: OQ Performance -->
+            <div class="glass rounded-2xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold">LIMS - Operational Qualification (OQ)</h2>
+                        <p class="text-sm text-slate-400 mt-1">Sistema: Labware LIMS | Responsável: Maria Costa | Status: Em Progresso</p>
+                    </div>
+                    <span class="status-badge status-pending">3/8 Completo</span>
+                </div>
+
+                <div class="space-y-2 mb-4">
+                    <div class="checklist-item">
+                        <input type="checkbox" checked>
+                        <label>Sistema inicializa em < 2 minutos</label>
+                        <span class="audit-icon">✓ 2026-01-14 14:00 | maria.costa</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" checked>
+                        <label>Formulários de entrada carregam corretamente</label>
+                        <span class="audit-icon">✓ 2026-01-14 14:30 | maria.costa</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" checked>
+                        <label>Busca por amostra < 500ms para 100k registros</label>
+                        <span class="audit-icon">✓ 2026-01-14 15:00 | maria.costa</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Importação de dados CSV validada</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Cálculos de análise químicas precisos</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Relatórios gerados corretamente</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Backup e restore funcionam sem perda de dados</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox">
+                        <label>Log de auditoria registra todas as ações</label>
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-500 pt-4 border-t border-white/10">
+                    Fase: OQ testa funcionalidade técnica (não dados reais ainda) | PQ vem depois
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed View -->
+        <div id="completedView" class="hidden space-y-4">
+            <div class="glass rounded-2xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold">ERP Migration - Cutover Checklist</h2>
+                        <p class="text-sm text-slate-400 mt-1">Completado em: 2026-01-10 | Responsável: Tech Team</p>
+                    </div>
+                    <span class="status-badge status-completed">15/15 Completo</span>
+                </div>
+                <div class="text-sm text-slate-400">✅ Todos os itens validados e auditados. Documentação arquivada.</div>
+            </div>
+        </div>
+
+        <!-- Audit Trail View -->
+        <div id="auditView" class="hidden space-y-4">
+            <div class="glass rounded-2xl p-6">
+                <h2 class="text-xl font-bold mb-4">📜 Trilha de Auditoria Completa</h2>
+                <div class="space-y-3 font-mono text-sm">
+                    <div class="p-3 bg-white/5 rounded border-l-2 border-green-500">
+                        <div class="text-green-400">✓ 2026-01-16 10:30:45 | john.silva | ITEM_CHECKED</div>
+                        <div class="text-slate-500">Checklist: SAP IQ | Item: "Database Oracle 21c" | Status: COMPLETED</div>
+                    </div>
+                    <div class="p-3 bg-white/5 rounded border-l-2 border-blue-500">
+                        <div class="text-blue-400">→ 2026-01-16 10:20:00 | maria.costa | CHECKLIST_CREATED</div>
+                        <div class="text-slate-500">Checklist: LIMS OQ | Total Items: 8 | Classification: OQ</div>
+                    </div>
+                    <div class="p-3 bg-white/5 rounded border-l-2 border-orange-500">
+                        <div class="text-orange-400">✎ 2026-01-15 13:00:15 | admin | ITEM_DESCRIPTION_MODIFIED</div>
+                        <div class="text-slate-500">Previous: "Install patches" → New: "Patches de segurança aplicados"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setView(view) {
+            document.getElementById('activeView').classList.add('hidden');
+            document.getElementById('completedView').classList.add('hidden');
+            document.getElementById('auditView').classList.add('hidden');
+
+            if (view === 'active') document.getElementById('activeView').classList.remove('hidden');
+            if (view === 'completed') document.getElementById('completedView').classList.remove('hidden');
+            if (view === 'audit') document.getElementById('auditView').classList.remove('hidden');
+        }
+
+        function newChecklist() {
+            alert('Novo Checklist - Integração com Supabase em desenvolvimento');
+        }
+
+        // Salvar no localStorage quando checkbox é clicado
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                console.log('Auditoria registrada via 21 CFR Part 11:', {
+                    timestamp: new Date().toISOString(),
+                    user: 'current_user',
+                    action: cb.checked ? 'ITEM_CHECKED' : 'ITEM_UNCHECKED',
+                    checklist: 'SAP IQ',
+                    item: cb.nextElementSibling.textContent
+                });
+            });
+        });
+    </script>
+</body>
+</html>

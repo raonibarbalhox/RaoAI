@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Protocol Builder | RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #030303; color: #ffffff; min-height: 100vh; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: rgba(10, 10, 10, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.1); z-index: 100; }
+        .main-content { margin-left: 250px; padding: 2rem; }
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem; }
+        input, select, textarea { width: 100%; padding: 0.75rem; border-radius: 0.75rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; }
+        input::placeholder, textarea::placeholder { color: #64748b; }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: #0070f3; color: white; }
+        .btn-primary:hover { background: #0051cc; }
+        .btn-secondary { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+        .protocol-item { background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: 0.75rem; margin-bottom: 0.75rem; border-left: 3px solid #0070f3; }
+        .protocol-title { font-weight: 700; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="p-6">
+            <h1 class="text-2xl font-black mb-8" style="background: linear-gradient(135deg, #fff, #0070f3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">RaoniX</h1>
+            <nav class="space-y-2 text-sm">
+                <a href="/index.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🏠 Hub</a>
+                <a href="/gamp-translator.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">📚 GAMP Translator</a>
+                <a href="/checklist-manager.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">✓ Checklist Manager</a>
+                <a href="#" class="block px-4 py-2 rounded-lg bg-white/10">🧪 CSV Protocol</a>
+                <a href="/meeting-prep.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">📋 Meeting Prep</a>
+            </nav>
+            <hr class="my-4 border-white/10">
+            <div class="text-xs text-slate-400">
+                <div class="font-semibold mb-2">⚡ GERADOR RÁPIDO</div>
+                <button onclick="quickGen('cat3')" class="w-full text-left px-3 py-2 rounded hover:bg-white/5 transition mb-1 text-xs">CAT 3 (Fechado)</button>
+                <button onclick="quickGen('cat4')" class="w-full text-left px-3 py-2 rounded hover:bg-white/5 transition mb-1 text-xs">CAT 4 (Configurável)</button>
+                <button onclick="quickGen('cat5')" class="w-full text-left px-3 py-2 rounded hover:bg-white/5 transition text-xs">CAT 5 (Custom)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="mb-8">
+            <h1 class="text-4xl font-black mb-2">CSV Protocol Builder</h1>
+            <p class="text-slate-400">Gera protocolos IQ/OQ/PQ automaticamente • Baseado em GAMP 5 templates • ALCOA+ ready</p>
+        </div>
+
+        <!-- Wizard -->
+        <div class="max-w-2xl">
+            <!-- Step 1: System Info -->
+            <div id="step1" class="step active glass rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6">📋 Passo 1: Informações do Sistema</h2>
+                
+                <div class="form-group">
+                    <label>Nome do Sistema *</label>
+                    <input type="text" id="systemName" placeholder="Ex: SAP ERP, LIMS Labware, LabNuvem" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Fornecedor/Fabricante *</label>
+                    <input type="text" id="vendor" placeholder="Ex: SAP, Labware, Novo Nordisk" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Versão do Software *</label>
+                    <input type="text" id="version" placeholder="Ex: 7.55, 4.3.1, 2026.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Data de Implementação Planejada *</label>
+                    <input type="date" id="implDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Responsável pelo Projeto *</label>
+                    <input type="text" id="responsible" placeholder="Nome da pessoa" required>
+                </div>
+
+                <div class="flex gap-3 mt-8">
+                    <button class="btn btn-primary flex-1" onclick="nextStep(1)">Próximo: Classificação GAMP →</button>
+                </div>
+            </div>
+
+            <!-- Step 2: GAMP Category -->
+            <div id="step2" class="step glass rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6">🏷️ Passo 2: Classificação GAMP 5</h2>
+                <p class="text-slate-300 mb-6">Escolha a categoria que melhor descreve seu sistema. <a href="/gamp-translator.html" class="text-blue-400 hover:underline">Não sabe? Clique aqui para entender.</a></p>
+
+                <div class="space-y-3">
+                    <div class="cursor-pointer p-4 rounded-xl border-2 border-white/10 hover:border-blue-500 transition" onclick="selectCategory('cat3')">
+                        <div class="font-bold text-blue-400">CAT 3: Non-configurable Software</div>
+                        <div class="text-sm text-slate-400 mt-1">Software pronto do fornecedor (ex: Windows Server, Adobe Reader)</div>
+                        <div class="text-xs text-slate-500 mt-2">✓ Validação mais rápida | ✓ Fornecedor responsável por testes</div>
+                    </div>
+
+                    <div class="cursor-pointer p-4 rounded-xl border-2 border-white/10 hover:border-orange-500 transition" onclick="selectCategory('cat4')">
+                        <div class="font-bold text-orange-400">CAT 4: Configurable Software</div>
+                        <div class="text-sm text-slate-400 mt-1">Software customizável (ex: SAP com configurações, LIMS ajustado)</div>
+                        <div class="text-xs text-slate-500 mt-2">✓ Sua responsabilidade pelas configs | ✓ Mais testes de integração</div>
+                    </div>
+
+                    <div class="cursor-pointer p-4 rounded-xl border-2 border-white/10 hover:border-red-500 transition" onclick="selectCategory('cat5')">
+                        <div class="font-bold text-red-400">CAT 5: Custom/Bespoke Software</div>
+                        <div class="text-sm text-slate-400 mt-1">Software customizado (ex: script Python, sistema desenvolvido internamente)</div>
+                        <div class="text-xs text-slate-500 mt-2">✓ Máximo rigor | ✓ Code review, unit tests, integration tests</div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 mt-8">
+                    <button class="btn btn-secondary" onclick="prevStep(1)">← Voltar</button>
+                    <button class="btn btn-primary flex-1" id="nextBtn" onclick="nextStep(2)" disabled>Próximo: Fases CSV →</button>
+                </div>
+            </div>
+
+            <!-- Step 3: CSV Phases Selection -->
+            <div id="step3" class="step glass rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6">⚙️ Passo 3: Fases de Validação (CSV)</h2>
+                <p class="text-slate-300 mb-6">Selecione quais fases você precisa validar:</p>
+
+                <div class="space-y-2">
+                    <label class="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-3 rounded transition">
+                        <input type="checkbox" id="includeIQ" checked>
+                        <div>
+                            <div class="font-semibold">IQ - Installation Qualification</div>
+                            <div class="text-xs text-slate-400">Hardware/Software instalado conforme especificação?</div>
+                        </div>
+                    </label>
+                    
+                    <label class="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-3 rounded transition">
+                        <input type="checkbox" id="includeOQ" checked>
+                        <div>
+                            <div class="font-semibold">OQ - Operational Qualification</div>
+                            <div class="text-xs text-slate-400">Sistema funciona de acordo com especificações técnicas?</div>
+                        </div>
+                    </label>
+                    
+                    <label class="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-3 rounded transition">
+                        <input type="checkbox" id="includePQ" checked>
+                        <div>
+                            <div class="font-semibold">PQ - Performance Qualification</div>
+                            <div class="text-xs text-slate-400">Sistema produz dados confiáveis em condições reais?</div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="flex gap-3 mt-8">
+                    <button class="btn btn-secondary" onclick="prevStep(2)">← Voltar</button>
+                    <button class="btn btn-primary flex-1" onclick="nextStep(3)">Gerar Protocolo →</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Protocol Preview & Export -->
+            <div id="step4" class="step glass rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6">📄 Seu Protocolo CSV</h2>
+                <p class="text-slate-300 mb-4">Protocolo gerado automaticamente com base em templates GAMP 5:</p>
+
+                <div id="protocolContent" class="bg-white/5 p-6 rounded-xl max-h-96 overflow-y-auto space-y-3">
+                    <!-- Preenchido por JavaScript -->
+                </div>
+
+                <div class="mt-6 p-4 bg-green-500/10 rounded-xl border border-green-500/20">
+                    <div class="text-sm"><span class="text-green-400 font-bold">✓ ALCOA+ Compliant:</span> Todos os itens incluem data, responsável e auditoria.</div>
+                </div>
+
+                <div class="flex gap-3 mt-8">
+                    <button class="btn btn-secondary flex-1" onclick="prevStep(3)">← Voltar</button>
+                    <button class="btn btn-primary flex-1" onclick="exportProtocol()">⬇️ Exportar PDF</button>
+                    <button class="btn btn-primary flex-1" onclick="saveToSupabase()">💾 Salvar no Hub</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedCategory = null;
+
+        function nextStep(step) {
+            if (step === 1) {
+                if (!document.getElementById('systemName').value) { alert('Preencha o nome do sistema'); return; }
+                if (!document.getElementById('vendor').value) { alert('Preencha o fornecedor'); return; }
+                if (!document.getElementById('version').value) { alert('Preencha a versão'); return; }
+                currentStep = 2;
+            } else if (step === 2) {
+                if (!selectedCategory) { alert('Selecione uma categoria GAMP'); return; }
+                currentStep = 3;
+            } else if (step === 3) {
+                currentStep = 4;
+                generateProtocol();
+            }
+            showStep(currentStep);
+        }
+
+        function prevStep(step) {
+            currentStep = step;
+            showStep(currentStep);
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+        }
+
+        function selectCategory(cat) {
+            selectedCategory = cat;
+            document.querySelectorAll('[onclick*="selectCategory"]').forEach(el => {
+                el.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            });
+            event.target.closest('[onclick*="selectCategory"]').style.borderColor = '#0070f3';
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function quickGen(cat) {
+            document.getElementById('systemName').value = `Sistema Teste ${cat.toUpperCase()}`;
+            document.getElementById('vendor').value = 'Vendor Teste';
+            document.getElementById('version').value = '1.0';
+            document.getElementById('implDate').value = '2026-02-15';
+            document.getElementById('responsible').value = 'John Silva';
+            nextStep(1);
+            setTimeout(() => { selectCategory(cat); document.getElementById('nextBtn').click(); }, 100);
+        }
+
+        function generateProtocol() {
+            const protocol = [];
+            const systemName = document.getElementById('systemName').value;
+            const category = selectedCategory;
+            const vendor = document.getElementById('vendor').value;
+
+            // IQ Items
+            if (document.getElementById('includeIQ').checked) {
+                protocol.push({
+                    phase: 'IQ',
+                    title: 'Instalação Hardware',
+                    test: 'Verificar conformidade com especificações de hardware'
+                });
+                protocol.push({
+                    phase: 'IQ',
+                    title: 'Instalação SO',
+                    test: 'Verificar SO instalado com versão correta'
+                });
+                protocol.push({
+                    phase: 'IQ',
+                    title: 'Patches de Segurança',
+                    test: 'Validar todos os patches críticos e de segurança aplicados'
+                });
+            }
+
+            // OQ Items
+            if (document.getElementById('includeOQ').checked) {
+                protocol.push({
+                    phase: 'OQ',
+                    title: 'Performance do Sistema',
+                    test: 'Testar tempos de resposta dentro de especificação'
+                });
+                protocol.push({
+                    phase: 'OQ',
+                    title: 'Capacidade de Processamento',
+                    test: 'Validar que sistema funciona com volume de dados esperado'
+                });
+                protocol.push({
+                    phase: 'OQ',
+                    title: 'Tratamento de Erros',
+                    test: 'Verificar mensagens de erro e recuperação são apropriadas'
+                });
+            }
+
+            // PQ Items
+            if (document.getElementById('includePQ').checked) {
+                protocol.push({
+                    phase: 'PQ',
+                    title: 'Integridade de Dados',
+                    test: 'Validar dados ALCOA+ (rastreáveis, legíveis, íntegros)'
+                });
+                protocol.push({
+                    phase: 'PQ',
+                    title: 'Auditoria 21 CFR Part 11',
+                    test: 'Verificar logs de auditoria registram todas as ações'
+                });
+                protocol.push({
+                    phase: 'PQ',
+                    title: 'Assinaturas Eletrônicas',
+                    test: 'Validar assinaturas são vinculadas a usuário e timestamp'
+                });
+            }
+
+            const html = protocol.map(p => `
+                <div class="protocol-item">
+                    <div class="protocol-title">${p.phase}: ${p.title}</div>
+                    <div class="text-sm text-slate-400">✓ ${p.test}</div>
+                    <div class="text-xs text-slate-500 mt-2">Responsável: ___________ | Data: ___________ | Resultado: □ PASS  □ FAIL</div>
+                </div>
+            `).join('');
+
+            document.getElementById('protocolContent').innerHTML = `
+                <div class="protocol-item" style="border-left: 3px solid #0070f3;">
+                    <div class="protocol-title">📄 ${systemName} - CSV Protocol (${category.toUpperCase()})</div>
+                    <div class="text-sm text-slate-400">Fornecedor: ${vendor}</div>
+                    <div class="text-xs text-slate-500 mt-1">Gerado: ${new Date().toLocaleDateString('pt-BR')}</div>
+                </div>
+                ${html}
+            `;
+        }
+
+        function exportProtocol() {
+            alert('Exportar PDF - Integração com pdfKit em desenvolvimento');
+        }
+
+        function saveToSupabase() {
+            alert('Salvar no Hub - Integração com Supabase em desenvolvimento. Será salvo na sua conta!');
+        }
+    </script>
+</body>
+</html>

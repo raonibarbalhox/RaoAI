@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Raoni Barbalho | IT Compliance & Quality Specialist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #0070f3;
+            --accent-light: #3b82f6;
+            --success: #10b981;
+            --dark: #1a1a2e;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 11px;
+            line-height: 1.5;
+            color: var(--gray-800);
+            background: white;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 12mm;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--gray-900);
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+        
+        .header-left .subtitle {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        
+        .header-left .tagline {
+            font-size: 10px;
+            color: var(--gray-600);
+            max-width: 320px;
+        }
+        
+        .header-right {
+            text-align: right;
+            font-size: 10px;
+            color: var(--gray-600);
+        }
+        
+        .header-right div {
+            margin-bottom: 4px;
+        }
+        
+        .header-right a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        /* Top Metrics */
+        .top-metrics {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+        
+        .metric-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .metric-value {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--accent);
+        }
+        
+        .metric-value.success { color: var(--success); }
+        
+        .metric-label {
+            font-size: 9px;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Two Columns Layout */
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 160px;
+            gap: 24px;
+        }
+        
+        /* Section Titles */
+        h2 {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        h2::before {
+            content: "";
+            width: 4px;
+            height: 16px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        
+        /* Experience */
+        .experience-item {
+            margin-bottom: 16px;
+            padding-left: 12px;
+            border-left: 2px solid var(--gray-200);
+        }
+        
+        .experience-item:hover {
+            border-left-color: var(--accent);
+        }
+        
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+        
+        .job-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+        
+        .company {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .period {
+            font-size: 9px;
+            color: var(--gray-500);
+            text-align: right;
+        }
+        
+        .experience-description {
+            font-size: 10px;
+            color: var(--gray-600);
+            margin-top: 6px;
+        }
+        
+        .experience-description li {
+            margin-bottom: 3px;
+            padding-left: 4px;
+        }
+        
+        .highlight {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        /* Sidebar */
+        .sidebar section {
+            margin-bottom: 20px;
+        }
+        
+        .sidebar h2 {
+            font-size: 10px;
+        }
+        
+        /* Skills */
+        .skill-category {
+            margin-bottom: 10px;
+        }
+        
+        .skill-category-title {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--gray-700);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        
+        .skill-tag {
+            font-size: 9px;
+            padding: 2px 6px;
+            background: var(--gray-100);
+            border-radius: 4px;
+            color: var(--gray-700);
+        }
+        
+        /* Certifications */
+        .cert-item {
+            margin-bottom: 8px;
+            padding: 6px 8px;
+            background: var(--gray-50);
+            border-radius: 6px;
+        }
+        
+        .cert-name {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+        
+        .cert-issuer {
+            font-size: 8px;
+            color: var(--gray-500);
+        }
+        
+        /* Education */
+        .edu-item {
+            margin-bottom: 8px;
+        }
+        
+        .edu-degree {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+        
+        .edu-school {
+            font-size: 9px;
+            color: var(--gray-600);
+        }
+        
+        .edu-year {
+            font-size: 8px;
+            color: var(--gray-500);
+        }
+        
+        /* Languages */
+        .lang-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            margin-bottom: 4px;
+        }
+        
+        .lang-level {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        /* Key Achievements */
+        .achievements {
+            margin-top: 16px;
+            padding: 12px;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 8px;
+        }
+        
+        .achievements h2 {
+            margin-bottom: 8px;
+        }
+        
+        .achievements h2::before {
+            background: var(--success);
+        }
+        
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        .achievement-item {
+            font-size: 9px;
+            padding: 6px;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .achievement-item strong {
+            color: var(--success);
+        }
+        
+        /* Awards */
+        .awards-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .award-badge {
+            font-size: 8px;
+            padding: 3px 6px;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 4px;
+            color: var(--gray-700);
+            font-weight: 600;
+        }
+        
+        /* Print Styles - Otimizado para 90% scale ou Actual Size */
+        @media print {
+            html {
+                font-size: 90%; /* Equivalente ao scale 90% do browser */
+            }
+            body {
+                padding: 8mm;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                max-width: 100%;
+            }
+            
+            .top-metrics,
+            .achievements,
+            .cert-item {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            @page {
+                margin: 5mm;
+                size: A4;
+            }
+        }
+        
+        /* Screen-only button */
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
+            transition: all 0.2s;
+        }
+        
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 112, 243, 0.4);
+        }
+        
+        @media print {
+            .print-btn, .cv-controls { display: none; }
+        }
+        
+        /* CV Controls */
+        .cv-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+        .cv-ctrl-btn {
+            padding: 8px 16px;
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            color: var(--gray-700);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .cv-ctrl-btn:hover { background: var(--gray-200); }
+        .lang-btn { padding: 6px 10px; border: none; background: transparent; color: var(--gray-600); cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
+        .lang-btn.active { background: var(--accent); color: white; }
+    </style>
+</head>
+<body>
+    <!-- CV Controls -->
+    <div class="cv-controls">
+        <a href="cv-hub.html" class="cv-ctrl-btn">← CV Hub</a>
+        <a href="cv-visual.html" class="cv-ctrl-btn">✨ Visual</a>
+        <div class="cv-ctrl-btn" style="padding:4px;gap:4px;">
+            <button class="lang-btn active" onclick="setLang('pt')">🇧🇷</button>
+            <button class="lang-btn" onclick="setLang('en')">🇺🇸</button>
+        </div>
+    </div>
+    <button class="print-btn" onclick="window.print()">📄 Imprimir / Salvar PDF</button>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <h1>Raoni Barbalho</h1>
+            <div class="subtitle">IT Compliance & Quality Specialist</div>
+            <div class="tagline">
+                Especialista em validação GxP com <strong>7+ anos</strong> em ambientes farmacêuticos regulados (FDA/ANVISA).
+                Entrego documentação de validação <strong>consistentemente acima da média</strong> com foco em compliance e excelência operacional.
+            </div>
+        </div>
+        <div class="header-right">
+            <div>📧 raobarbalho@hotmail.com</div>
+            <div>📱 +55 (38) 99139-9293</div>
+            <div>📍 Montes Claros, MG - Brasil</div>
+            <div><a href="https://linkedin.com/in/raoni-barbalho-9064b0a4">LinkedIn ↗</a></div>
+        </div>
+    </header>
+    
+    <!-- Top Metrics Bar -->
+    <div class="top-metrics">
+        <div class="metric-item">
+            <div class="metric-value success">5 dias</div>
+            <div class="metric-label">Média ITRA (vs 17+)</div>
+        </div>
+        <div class="metric-item">
+            <div class="metric-value">7+</div>
+            <div class="metric-label">Anos de Experiência</div>
+        </div>
+        <div class="metric-item">
+            <div class="metric-value success">2022</div>
+            <div class="metric-label">3 Prêmios Cognizant</div>
+        </div>
+        <div class="metric-item">
+            <div class="metric-value">100%</div>
+            <div class="metric-label">Doc. Audit-Ready</div>
+        </div>
+        <div class="metric-item">
+            <div class="metric-value">C1</div>
+            <div class="metric-label">Inglês Avançado</div>
+        </div>
+    </div>
+    
+    <!-- Two Column Content -->
+    <div class="content">
+        <!-- Main Column -->
+        <main>
+            <section>
+                <h2>Experiência Profissional</h2>
+                
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="job-title">IT Compliance Analyst</div>
+                            <div class="company">Novo Nordisk • Montes Claros, MG</div>
+                        </div>
+                        <div class="period">Abr 2023 - Presente</div>
+                    </div>
+                    <ul class="experience-description">
+                        <li>Lead time de <span class="highlight">5 dias</span> vs média de 17+ dias (consistentemente acima da média)</li>
+                        <li>Validação GxP de sistemas críticos em ambiente de produção asséptica (FDA/ANVISA)</li>
+                        <li>Gestão de ITRAs no ServiceNow com <span class="highlight">alta satisfação</span> do time de infraestrutura</li>
+                        <li>Desenvolvimento de scripts Python/PowerShell para análise de dados e compliance</li>
+                        <li>Migração de Data Center com <span class="highlight">documentação completa</span> e transição suave</li>
+                    </ul>
+                </div>
+                
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="job-title">IT Tech Leader</div>
+                            <div class="company">Cognizant • Brasil (Remote)</div>
+                        </div>
+                        <div class="period">Set 2021 - Set 2023</div>
+                    </div>
+                    <ul class="experience-description">
+                        <li>Liderança técnica em projeto global de validação para cliente farmacêutico multinacional</li>
+                        <li>Condução de workshops de treinamento e mentoria para equipes locais e offshore</li>
+                        <li>Implementação de processos ITIL v4 resultando em melhoria contínua de SLA</li>
+                        <li>Reconhecido com <span class="highlight">3 prêmios em 2022</span>: End of Year, Client Satisfaction, 100% SLA</li>
+                    </ul>
+                </div>
+                
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="job-title">IT Analyst</div>
+                            <div class="company">MSD (Merck) • Montes Claros, MG</div>
+                        </div>
+                        <div class="period">Out 2020 - Set 2023</div>
+                    </div>
+                    <ul class="experience-description">
+                        <li>Suporte técnico N2 em ambiente regulado GxP com foco em documentação de compliance</li>
+                        <li>Gestão de mudanças e releases em sistemas críticos de manufatura</li>
+                        <li>Acumulou <span class="highlight">50+ reconhecimentos</span> por excelência no atendimento</li>
+                    </ul>
+                </div>
+                
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <div class="job-title">IT Infrastructure Analyst</div>
+                            <div class="company">CAIXA Econômica Federal • Montes Claros</div>
+                        </div>
+                        <div class="period">Mar 2017 - Set 2020</div>
+                    </div>
+                    <ul class="experience-description">
+                        <li>Administração de redes, virtualização e segurança em ambiente bancário de alta disponibilidade</li>
+                        <li>Gestão de ativos e suporte técnico para 200+ usuários em múltiplas agências</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <!-- Key Achievements -->
+            <section class="achievements">
+                <h2>Principais Conquistas</h2>
+                <div class="achievement-grid">
+                    <div class="achievement-item">
+                        <strong>Data Center Migration</strong> — Validação GxP completa com documentação audit-ready e transição bem sucedida
+                    </div>
+                    <div class="achievement-item">
+                        <strong>Security Script</strong> — Documentação e aprovação de script de segurança com apresentação para gerência sênior
+                    </div>
+                    <div class="achievement-item">
+                        <strong>Processo ITRA</strong> — Entrega consistente acima da média do time (5 dias vs 17+ dias)
+                    </div>
+                    <div class="achievement-item">
+                        <strong>Aseptic Validation</strong> — Documentação audit-ready para auditorias FDA/ANVISA
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <section>
+                <h2>Hard Skills</h2>
+                
+                <div class="skill-category">
+                    <div class="skill-category-title">Compliance & GxP</div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">21 CFR Part 11</span>
+                        <span class="skill-tag">GAMP 5</span>
+                        <span class="skill-tag">CSV/CSA</span>
+                        <span class="skill-tag">FDA</span>
+                        <span class="skill-tag">ANVISA</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <div class="skill-category-title">ITSM & Processos</div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">ServiceNow</span>
+                        <span class="skill-tag">ITIL v4</span>
+                        <span class="skill-tag">Change Mgmt</span>
+                        <span class="skill-tag">ITRA</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <div class="skill-category-title">Tecnologias</div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Azure</span>
+                        <span class="skill-tag">SQL</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">SAP</span>
+                        <span class="skill-tag">Nexthink</span>
+                    </div>
+                </div>
+            </section>
+            
+            <section>
+                <h2>Certificações</h2>
+                <div class="cert-item">
+                    <div class="cert-name">ITIL v4 Foundation</div>
+                    <div class="cert-issuer">PeopleCert • In Progress</div>
+                </div>
+                <div class="cert-item">
+                    <div class="cert-name">GlobalEnglish Level 7</div>
+                    <div class="cert-issuer">Learnship • Advanced</div>
+                </div>
+                <div class="cert-item">
+                    <div class="cert-name">21 CFR Part 11 Expert</div>
+                    <div class="cert-issuer">Cognizant Learning</div>
+                </div>
+            </section>
+            
+            <section>
+                <h2>Formação</h2>
+                <div class="edu-item">
+                    <div class="edu-degree">Engenharia Civil (Bacharelado)</div>
+                    <div class="edu-school">UNIFIPMoc</div>
+                    <div class="edu-year">2010 - 2015</div>
+                </div>
+                <div class="edu-item">
+                    <div class="edu-degree">Tecnologia da Informação</div>
+                    <div class="edu-school">CEBRAC</div>
+                    <div class="edu-year">2007 - 2009</div>
+                </div>
+            </section>
+            
+            <section>
+                <h2>Idiomas</h2>
+                <div class="lang-item">
+                    <span>Português</span>
+                    <span class="lang-level">Nativo</span>
+                </div>
+                <div class="lang-item">
+                    <span>Inglês</span>
+                    <span class="lang-level">Avançado (C1)</span>
+                </div>
+                <div class="lang-item">
+                    <span>Espanhol</span>
+                    <span class="lang-level">Básico</span>
+                </div>
+            </section>
+            
+            <section>
+                <h2>Prêmios 2022</h2>
+                <div class="awards-list">
+                    <span class="award-badge">🏆 End of Year Award</span>
+                    <span class="award-badge">⭐ Client Satisfaction</span>
+                    <span class="award-badge">✅ 100% SLA Award</span>
+                </div>
+            </section>
+        </aside>
+    </div>
+
+    <script>
+        // Language Toggle
+        let currentLang = localStorage.getItem('lang') || 'pt';
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+            document.querySelectorAll('[data-pt][data-en]').forEach(el => { el.textContent = el.getAttribute(`data-${lang}`); });
+        }
+        setLang(currentLang);
+    </script>
+</body>
+</html>

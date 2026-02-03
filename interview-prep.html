@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Prep | RaoniX Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030303;
+            --bg-secondary: #0f172a;
+            --text: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 32px;
+            background: rgba(3,3,3,0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--text); }
+        
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 32px 60px;
+        }
+        
+        /* Header */
+        .header {
+            margin-bottom: 48px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+        
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        
+        /* Grid Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 32px;
+        }
+        
+        /* Question Panel */
+        .question-panel {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 40px;
+        }
+        
+        .question-category {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(99,102,241,0.15);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--accent-light);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+        
+        .answer-box {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            min-height: 200px;
+            resize: vertical;
+        }
+        
+        .answer-box textarea {
+            width: 100%;
+            height: 200px;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            resize: vertical;
+            outline: none;
+        }
+        
+        .answer-box textarea::placeholder {
+            color: var(--text-muted);
+        }
+        
+        /* Tips Section */
+        .tips-section {
+            background: rgba(16,185,129,0.1);
+            border-left: 3px solid var(--success);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+            font-size: 0.9rem;
+        }
+        
+        .tips-section strong {
+            color: var(--success);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+        
+        .sidebar-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-light);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        
+        .question-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .question-item {
+            padding: 12px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+        
+        .question-item:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: var(--accent);
+        }
+        
+        .question-item.active {
+            background: rgba(99,102,241,0.2);
+            border-color: var(--accent);
+        }
+        
+        /* Progress */
+        .progress-section {
+            margin-top: 24px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99,102,241,0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        
+        /* Footer */
+        footer {
+            padding: 40px 32px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 16px;
+        }
+        
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--text);
+        }
+        
+        /* Mobile */
+        @media (max-width: 1024px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
+            .question-panel { padding: 24px; }
+            .header h1 { font-size: 1.8rem; }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .container { padding: 100px 16px 60px; }
+            .question-panel { padding: 16px; }
+            .header h1 { font-size: 1.5rem; }
+            .controls { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-brand">
+            📚 Interview Prep
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Platform Hub</a>
+            <a href="portfolio-3d.html">Portfolio</a>
+            <a href="cv-hub.html">CV</a>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <div class="header">
+            <h1>Interview Preparation</h1>
+            <p>Master common questions and build confident, compelling responses tailored to IT Validation roles.</p>
+        </div>
+        
+        <div class="content-grid">
+            <!-- Main Panel -->
+            <div class="question-panel">
+                <div class="question-category" id="currentCategory">Behavioral</div>
+                <div class="question-text" id="currentQuestion">Tell me about yourself.</div>
+                
+                <div class="answer-box">
+                    <textarea id="answerText" placeholder="Write your answer here... (Save automatically)"></textarea>
+                </div>
+                
+                <div class="tips-section">
+                    <strong>💡 Tip:</strong> Use the STAR method (Situation, Task, Action, Result) for behavioral questions. For technical questions, explain your reasoning step-by-step.
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="saveAnswer()">Save Answer</button>
+                    <button class="btn btn-secondary" onclick="nextQuestion()">Next Question →</button>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Progress Card -->
+                <div class="sidebar-card">
+                    <div class="sidebar-title">📊 Progress</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="answeredCount">0</span> / <span id="totalCount">12</span> answered
+                    </div>
+                </div>
+                
+                <!-- Questions List -->
+                <div class="sidebar-card">
+                    <div class="sidebar-title">📋 Questions</div>
+                    <div class="question-list" id="questionsList"></div>
+                </div>
+                
+                <!-- Stats Card -->
+                <div class="sidebar-card">
+                    <div class="sidebar-title">🎯 Stats</div>
+                    <div style="font-size: 0.9rem; line-height: 1.8;">
+                        <div>Time: <strong id="timeSpent">0m</strong></div>
+                        <div>Difficulty: <strong id="difficulty">Medium</strong></div>
+                        <div>Category: <strong id="categoryCount">Behavioral (5)</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div>Interview Preparation Tool | RaoniX Platform 2026</div>
+        <div class="footer-links">
+            <a href="portfolio-3d.html">My Portfolio</a>
+            <a href="cv-hub.html">My CV</a>
+            <a href="index.html">Back to Hub</a>
+        </div>
+    </footer>
+    
+    <script>
+        const questions = [
+            {
+                id: 1,
+                category: "Behavioral",
+                difficulty: "Medium",
+                text: "Tell me about yourself.",
+                tips: "Focus on your professional journey, key achievements in GxP/validation, and why you're interested in IT Compliance roles.",
+                answer: ""
+            },
+            {
+                id: 2,
+                category: "Behavioral",
+                difficulty: "Medium",
+                text: "Describe a challenging situation you resolved at work and how you handled it.",
+                tips: "Use STAR method. Example: ITRA optimization process improvement, handling stakeholder conflicts, etc.",
+                answer: ""
+            },
+            {
+                id: 3,
+                category: "Technical",
+                difficulty: "Hard",
+                text: "What is 21 CFR Part 11 and why is it important?",
+                tips: "Explain electronic records, electronic signatures, audit trails, data integrity requirements.",
+                answer: ""
+            },
+            {
+                id: 4,
+                category: "Technical",
+                difficulty: "Hard",
+                text: "Explain the Computer System Validation (CSV) process for GAMP 5.",
+                tips: "Cover: User Requirements (URS), Functional Specification (FS), Design Specification (DS), Installation Qualification (IQ), Operational Qualification (OQ), Performance Qualification (PQ).",
+                answer: ""
+            },
+            {
+                id: 5,
+                category: "Behavioral",
+                difficulty: "Medium",
+                text: "How do you prioritize when you have multiple validation projects?",
+                tips: "Mention: Risk assessment, business impact, compliance requirements, collaboration with stakeholders.",
+                answer: ""
+            },
+            {
+                id: 6,
+                category: "Technical",
+                difficulty: "Hard",
+                text: "What is the difference between CSV and Validation Testing?",
+                tips: "CSV is broader process (planning, design, execution, documentation). Testing is part of CSV (IQ, OQ, PQ).",
+                answer: ""
+            },
+            {
+                id: 7,
+                category: "Behavioral",
+                difficulty: "Easy",
+                text: "Why do you want to work for this company?",
+                tips: "Research company values, your fit with their GxP mission, career growth opportunities.",
+                answer: ""
+            },
+            {
+                id: 8,
+                category: "Technical",
+                difficulty: "Medium",
+                text: "How do you approach writing validation protocols?",
+                tips: "Risk-based approach, clear objectives, traceability to requirements, documented acceptance criteria.",
+                answer: ""
+            },
+            {
+                id: 9,
+                category: "Behavioral",
+                difficulty: "Medium",
+                text: "Tell me about a time you had to learn something new quickly.",
+                tips: "Show initiative, problem-solving, resourcefulness. Relate to tools, regulations, or technologies.",
+                answer: ""
+            },
+            {
+                id: 10,
+                category: "Technical",
+                difficulty: "Medium",
+                text: "What's your experience with ServiceNow or similar ITSM tools?",
+                tips: "Highlight workflow automation, ticket management, change control, SLA management, reporting.",
+                answer: ""
+            },
+            {
+                id: 11,
+                category: "Behavioral",
+                difficulty: "Hard",
+                text: "Describe a time you failed and what you learned from it.",
+                tips: "Choose a genuine example, explain what went wrong, actions taken, and lessons learned.",
+                answer: ""
+            },
+            {
+                id: 12,
+                category: "Technical",
+                difficulty: "Easy",
+                text: "What are your key strengths in IT Compliance?",
+                tips: "Mention: Attention to detail, regulatory knowledge, process improvement, documentation skills, communication.",
+                answer: ""
+            }
+        ];
+        
+        let currentIndex = 0;
+        let startTime = Date.now();
+        
+        function init() {
+            // Load from localStorage
+            const saved = localStorage.getItem('interviewAnswers');
+            if (saved) {
+                const answers = JSON.parse(saved);
+                answers.forEach((ans, idx) => {
+                    if (questions[idx]) questions[idx].answer = ans;
+                });
+            }
+            
+            renderQuestionsList();
+            loadQuestion(0);
+            updateProgress();
+        }
+        
+        function renderQuestionsList() {
+            const list = document.getElementById('questionsList');
+            list.innerHTML = questions.map((q, idx) => `
+                <div class="question-item ${idx === currentIndex ? 'active' : ''}" onclick="loadQuestion(${idx})">
+                    <div style="font-weight: 500; margin-bottom: 4px;">${q.id}. ${q.text.substring(0, 30)}...</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">${q.category} • ${q.difficulty}</div>
+                </div>
+            `).join('');
+        }
+        
+        function loadQuestion(idx) {
+            currentIndex = idx;
+            const q = questions[idx];
+            
+            document.getElementById('currentQuestion').textContent = q.text;
+            document.getElementById('currentCategory').textContent = q.category;
+            document.getElementById('answerText').value = q.answer || '';
+            document.getElementById('difficulty').textContent = q.difficulty;
+            document.getElementById('categoryCount').textContent = `${q.category} (${questions.filter(x => x.category === q.category).length})`;
+            
+            document.querySelectorAll('.question-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.question-item')[idx]?.classList.add('active');
+            
+            updateProgress();
+        }
+        
+        function saveAnswer() {
+            const answer = document.getElementById('answerText').value;
+            questions[currentIndex].answer = answer;
+            
+            const answers = questions.map(q => q.answer);
+            localStorage.setItem('interviewAnswers', JSON.stringify(answers));
+            
+            alert('Answer saved! ✓');
+            updateProgress();
+        }
+        
+        function nextQuestion() {
+            saveAnswer();
+            if (currentIndex < questions.length - 1) {
+                loadQuestion(currentIndex + 1);
+            } else {
+                alert('You\'ve reached the last question! 🎉');
+            }
+        }
+        
+        function updateProgress() {
+            const answered = questions.filter(q => q.answer.trim().length > 0).length;
+            const total = questions.length;
+            const percent = (answered / total) * 100;
+            
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('answeredCount').textContent = answered;
+            document.getElementById('totalCount').textContent = total;
+            
+            const elapsed = Math.floor((Date.now() - startTime) / 60000);
+            document.getElementById('timeSpent').textContent = elapsed + 'm';
+        }
+        
+        // Auto-save on input
+        document.getElementById('answerText').addEventListener('input', function() {
+            questions[currentIndex].answer = this.value;
+        });
+        
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

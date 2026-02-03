@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Assessment | RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030303;
+            --text: #f8fafc;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 32px;
+            background: rgba(3,3,3,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--text); }
+        
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 32px 60px;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        
+        /* Quiz Container */
+        .quiz-container {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 40px;
+        }
+        
+        /* Progress Bar */
+        .progress-section {
+            margin-bottom: 40px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: right;
+        }
+        
+        /* Question Display */
+        .question-section {
+            margin-bottom: 40px;
+        }
+        
+        .question-number {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(99,102,241,0.15);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--accent-light);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+        
+        /* Options */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.02);
+            border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .option:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: var(--accent);
+        }
+        
+        .option.selected {
+            background: rgba(99,102,241,0.2);
+            border-color: var(--accent);
+        }
+        
+        .option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .option-text {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+            justify-content: space-between;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #818cf8);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99,102,241,0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.08);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.12);
+        }
+        
+        /* Results */
+        .results-container {
+            text-align: center;
+            display: none;
+        }
+        
+        .results-container.show {
+            display: block;
+        }
+        
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--success));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 40px auto;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(99,102,241,0.3);
+        }
+        
+        .score-value {
+            font-size: 4rem;
+            font-weight: 900;
+            color: white;
+        }
+        
+        .score-label {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .results-text h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            margin-top: 32px;
+        }
+        
+        .results-text p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+        
+        .results-breakdown {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: left;
+            margin: 32px 0;
+        }
+        
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .breakdown-label {
+            font-weight: 600;
+        }
+        
+        .breakdown-value {
+            color: var(--success);
+            font-weight: 700;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 40px 32px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 60px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .container { padding: 100px 16px 60px; }
+            .header h1 { font-size: 1.8rem; }
+            .quiz-container { padding: 24px; }
+            .controls { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-brand">📊 Skill Assessment</div>
+        <div class="nav-links">
+            <a href="index.html">Hub</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="tools-hub.html">Tools</a>
+        </div>
+    </nav>
+    
+    <!-- Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>IT Validation & Compliance Assessment</h1>
+            <p>20-question quiz covering GxP, ITSM, and technical skills | ~10 minutes</p>
+        </div>
+        
+        <!-- Quiz Container -->
+        <div class="quiz-container">
+            <!-- Quiz Section -->
+            <div id="quizSection">
+                <!-- Progress -->
+                <div class="progress-section">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressText">0/20</span>
+                    </div>
+                </div>
+                
+                <!-- Question -->
+                <div class="question-section">
+                    <div class="question-number" id="questionNum">Question 1</div>
+                    <div class="question-text" id="questionText">Question text will appear here...</div>
+                    
+                    <div class="options" id="optionsContainer">
+                        <!-- Options will be inserted here -->
+                    </div>
+                </div>
+                
+                <!-- Controls -->
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn" style="visibility: hidden;">← Previous</button>
+                    <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn">Next →</button>
+                </div>
+            </div>
+            
+            <!-- Results Section -->
+            <div id="resultsSection" class="results-container">
+                <div class="results-text">
+                    <div class="score-circle">
+                        <div class="score-value" id="finalScore">--</div>
+                        <div class="score-label">Score</div>
+                    </div>
+                    
+                    <h2 id="resultTitle">Assessment Complete!</h2>
+                    <p id="resultMessage">Your assessment results</p>
+                    
+                    <div class="results-breakdown">
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">GxP Compliance</span>
+                            <span class="breakdown-value" id="scoreGxP">--</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">ITSM & Tools</span>
+                            <span class="breakdown-value" id="scoreITSM">--</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">Technical Skills</span>
+                            <span class="breakdown-value" id="scoreTech">--</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">Soft Skills</span>
+                            <span class="breakdown-value" id="scoreSoft">--</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="location.href='interview-prep.html'" style="margin-top: 32px;">📚 Continue to Interview Prep</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div>Skill Assessment Tool | RaoniX Platform 2026</div>
+    </footer>
+    
+    <script>
+        const questions = [
+            {
+                category: 'GxP',
+                text: 'What does GAMP stand for in pharmaceutical validation?',
+                options: [
+                    'Good Automated Manufacturing Practices',
+                    'General Audit Manufacturing Process',
+                    'Good Automated Manufacturing Process',
+                    'Global Assessment Manufacturing Protocol'
+                ],
+                correct: 0
+            },
+            {
+                category: 'GxP',
+                text: '21 CFR Part 11 applies to:',
+                options: [
+                    'Electronic records and signatures in FDA-regulated industries',
+                    'Manufacturing equipment specifications',
+                    'Personnel training requirements',
+                    'Supplier qualification procedures'
+                ],
+                correct: 0
+            },
+            {
+                category: 'GxP',
+                text: 'In Computer System Validation, what does IQ stand for?',
+                options: [
+                    'Initial Query',
+                    'Installation Qualification',
+                    'Integration Quality',
+                    'Integrated Qualification'
+                ],
+                correct: 1
+            },
+            {
+                category: 'GxP',
+                text: 'The correct order of CSV phases is:',
+                options: [
+                    'URS → FS → DS → IQ → OQ → PQ',
+                    'IQ → OQ → PQ → URS → FS → DS',
+                    'FS → URS → DS → PQ → OQ → IQ',
+                    'URS → DS → FS → IQ → OQ → PQ'
+                ],
+                correct: 0
+            },
+            {
+                category: 'GxP',
+                text: 'What is the primary purpose of a Design Specification (DS)?',
+                options: [
+                    'To define what the user needs',
+                    'To detail how the system will be built technically',
+                    'To test system functionality',
+                    'To document user training'
+                ],
+                correct: 1
+            },
+            {
+                category: 'ITSM',
+                text: 'In ServiceNow, what is a Change Advisory Board (CAB)?',
+                options: [
+                    'A tool for user training',
+                    'A group that reviews and approves changes',
+                    'A configuration database',
+                    'An automated workflow engine'
+                ],
+                correct: 1
+            },
+            {
+                category: 'ITSM',
+                text: 'Which ITIL process focuses on monitoring system availability?',
+                options: [
+                    'Incident Management',
+                    'Problem Management',
+                    'Availability Management',
+                    'Change Management'
+                ],
+                correct: 2
+            },
+            {
+                category: 'ITSM',
+                text: 'What is an SLA in IT Service Management?',
+                options: [
+                    'Software License Agreement',
+                    'Service Level Agreement',
+                    'System Load Assessment',
+                    'Service Logging Application'
+                ],
+                correct: 1
+            },
+            {
+                category: 'Tech',
+                text: 'Which of these is NOT a critical characteristic of 21 CFR Part 11 compliant systems?',
+                options: [
+                    'Audit trails recording all changes',
+                    'User identification and authentication',
+                    'Colorful user interface design',
+                    'Data integrity controls'
+                ],
+                correct: 2
+            },
+            {
+                category: 'Tech',
+                text: 'In a validation project, what does "traceability" mean?',
+                options: [
+                    'Following the audit trail in database logs',
+                    'Ability to track requirements through design, implementation, and testing',
+                    'Monitoring system performance metrics',
+                    'Documenting all meetings and conversations'
+                ],
+                correct: 1
+            },
+            {
+                category: 'Tech',
+                text: 'What is a CMMS tool used for?',
+                options: [
+                    'Configuration Management and Monitoring System',
+                    'Computerized Maintenance Management System',
+                    'Compliance Measurement and Management System',
+                    'Cloud-based Manufacturing Metrics System'
+                ],
+                correct: 1
+            },
+            {
+                category: 'Tech',
+                text: 'In Python/PowerShell automation, what is the purpose of error handling?',
+                options: [
+                    'To slow down script execution',
+                    'To prevent scripts from stopping when errors occur',
+                    'To add comments to code',
+                    'To improve visual appearance'
+                ],
+                correct: 1
+            },
+            {
+                category: 'Soft',
+                text: 'When managing a complex validation project, the most important skill is:',
+                options: [
+                    'Technical expertise alone',
+                    'Communication and stakeholder management',
+                    'Speed of execution',
+                    'Cost minimization'
+                ],
+                correct: 1
+            },
+            {
+                category: 'Soft',
+                text: 'How should you approach handling an audit finding?',
+                options: [
+                    'Hide it and fix it quietly',
+                    'Ignore it and hope it goes away',
+                    'Document the root cause, implement corrective actions, and verify effectiveness',
+                    'Blame other departments'
+                ],
+                correct: 2
+            },
+            {
+                category: 'Soft',
+                text: 'The best approach to continuous improvement in validation is:',
+                options: [
+                    'Never change established processes',
+                    'Change everything regularly',
+                    'Analyze data, identify bottlenecks, and implement evidence-based improvements',
+                    'Copy what competitors do'
+                ],
+                correct: 2
+            },
+            {
+                category: 'GxP',
+                text: 'What is a Risk Assessment Matrix used for in validation?',
+                options: [
+                    'To organize team meetings',
+                    'To prioritize validation activities based on risk and complexity',
+                    'To track project budget',
+                    'To schedule vacations'
+                ],
+                correct: 1
+            },
+            {
+                category: 'ITSM',
+                text: 'In incident management, what is the difference between Priority and Severity?',
+                options: [
+                    'They mean the same thing',
+                    'Severity is impact on business; Priority is urgency of resolution',
+                    'Priority determines cost; Severity is technical complexity',
+                    'They are interchangeable terms'
+                ],
+                correct: 1
+            },
+            {
+                category: 'Tech',
+                text: 'What is the primary purpose of test data in validation?',
+                options: [
+                    'To make testing faster',
+                    'To ensure the system works correctly with realistic business scenarios',
+                    'To reduce documentation burden',
+                    'To impress management'
+                ],
+                correct: 1
+            },
+            {
+                category: 'GxP',
+                text: 'What does "predicate rules" mean in FDA regulations?',
+                options: [
+                    'Rules about prediction models',
+                    'Requirements you must meet as a "predicate" to using a system',
+                    'Rules for predicting system failures',
+                    'Requirements from previous audits'
+                ],
+                correct: 1
+            },
+            {
+                category: 'Soft',
+                text: 'The most effective way to gain buy-in from stakeholders in a validation project is:',
+                options: [
+                    'Force them to comply',
+                    'Communicate transparently, show benefits, and involve them in planning',
+                    'Ignore their feedback',
+                    'Make decisions secretly'
+                ],
+                correct: 1
+            }
+        ];
+        
+        let currentQuestion = 0;
+        let scores = { GxP: 0, ITSM: 0, Tech: 0, Soft: 0 };
+        let answers = new Array(questions.length).fill(null);
+        
+        function init() {
+            displayQuestion();
+        }
+        
+        function displayQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('questionNum').textContent = `Question ${currentQuestion + 1}`;
+            document.getElementById('questionText').textContent = q.text;
+            
+            const optionsHtml = q.options.map((opt, idx) => `
+                <label class="option" onclick="selectOption(${idx})">
+                    <input type="radio" name="answer" value="${idx}" ${answers[currentQuestion] === idx ? 'checked' : ''} />
+                    <span class="option-text">${opt}</span>
+                </label>
+            `).join('');
+            
+            document.getElementById('optionsContainer').innerHTML = optionsHtml;
+            
+            // Update selected styling
+            document.querySelectorAll('.option').forEach((el, idx) => {
+                if (answers[currentQuestion] === idx) el.classList.add('selected');
+            });
+            
+            updateProgress();
+            updateButtons();
+        }
+        
+        function selectOption(idx) {
+            answers[currentQuestion] = idx;
+            document.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.option')[idx].classList.add('selected');
+        }
+        
+        function nextQuestion() {
+            if (answers[currentQuestion] === null) {
+                alert('Please select an answer');
+                return;
+            }
+            
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+        
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+        
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${currentQuestion + 1}/${questions.length}`;
+        }
+        
+        function updateButtons() {
+            document.getElementById('prevBtn').style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
+            document.getElementById('nextBtn').textContent = currentQuestion === questions.length - 1 ? 'Finish →' : 'Next →';
+        }
+        
+        function finishQuiz() {
+            // Calculate scores
+            let totalScore = 0;
+            const categoryScores = { GxP: 0, ITSM: 0, Tech: 0, Soft: 0 };
+            const categoryCounts = { GxP: 0, ITSM: 0, Tech: 0, Soft: 0 };
+            
+            answers.forEach((answer, idx) => {
+                const q = questions[idx];
+                const cat = q.category;
+                
+                categoryCounts[cat]++;
+                if (answer === q.correct) {
+                    totalScore++;
+                    categoryScores[cat]++;
+                }
+            });
+            
+            const percentage = Math.round((totalScore / questions.length) * 100);
+            
+            // Show results
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('resultsSection').classList.add('show');
+            
+            document.getElementById('finalScore').textContent = percentage + '%';
+            
+            if (percentage >= 80) {
+                document.getElementById('resultTitle').textContent = '🎉 Excellent! You\'re highly skilled';
+                document.getElementById('resultMessage').textContent = 'Your assessment shows strong knowledge in IT Validation & Compliance. You\'re ready for senior roles.';
+            } else if (percentage >= 60) {
+                document.getElementById('resultTitle').textContent = '👍 Good Performance';
+                document.getElementById('resultMessage').textContent = 'You have solid foundational knowledge. Consider strengthening areas marked below for advanced roles.';
+            } else {
+                document.getElementById('resultTitle').textContent = '📚 Keep Learning';
+                document.getElementById('resultMessage').textContent = 'Continue studying the topics below. Review the Interview Prep course for deeper learning.';
+            }
+            
+            document.getElementById('scoreGxP').textContent = Math.round((categoryScores.GxP / categoryCounts.GxP) * 100) + '%';
+            document.getElementById('scoreITSM').textContent = Math.round((categoryScores.ITSM / categoryCounts.ITSM) * 100) + '%';
+            document.getElementById('scoreTech').textContent = Math.round((categoryScores.Tech / categoryCounts.Tech) * 100) + '%';
+            document.getElementById('scoreSoft').textContent = Math.round((categoryScores.Soft / categoryCounts.Soft) * 100) + '%';
+        }
+        
+        init();
+    </script>
+</body>
+</html>

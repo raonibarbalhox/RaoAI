@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPA Management System | RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #030303; color: #ffffff; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: rgba(10, 10, 10, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.1); z-index: 100; }
+        .main-content { margin-left: 250px; padding: 2rem; }
+        .kanban-column { min-height: 500px; }
+        .capa-card { cursor: pointer; transition: all 0.3s ease; }
+        .capa-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+        .priority-high { border-left: 4px solid #ef4444; }
+        .priority-medium { border-left: 4px solid #f59e0b; }
+        .priority-low { border-left: 4px solid #10b981; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="p-6">
+            <h1 class="text-2xl font-black mb-8" style="background: linear-gradient(135deg, #fff, #0070f3); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">RaoniX</h1>
+            <nav class="space-y-2">
+                <a href="/index.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🏠 Hub</a>
+                <a href="/gxp-dashboard.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">✅ GxP Dashboard</a>
+                <a href="/csv-tracker.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">📋 CSV Tracker</a>
+                <a href="#" class="block px-4 py-2 rounded-lg bg-white/10">🔧 CAPA System</a>
+                <a href="/audit-trail.html" class="block px-4 py-2 rounded-lg hover:bg-white/5">🔍 Audit Trail</a>
+            </nav>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="text-4xl font-black mb-2">CAPA Management System</h1>
+                <p class="text-slate-400">Corrective & Preventive Actions • Root Cause Analysis</p>
+            </div>
+            <button class="px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 font-semibold">+ New CAPA</button>
+        </div>
+        
+        <!-- Kanban Board -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Column 1: Opened -->
+            <div>
+                <div class="glass rounded-xl p-4 mb-4">
+                    <h3 class="font-bold mb-1">🔴 Opened</h3>
+                    <p class="text-xs text-slate-400">Investigation pending</p>
+                </div>
+                <div class="kanban-column space-y-4">
+                    <div class="glass rounded-xl p-4 capa-card priority-high">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-red-400">CAPA-2026-012</span>
+                            <span class="text-xs text-slate-500">2 days ago</span>
+                        </div>
+                        <div class="font-semibold mb-2">LIMS Data Integrity Issue</div>
+                        <div class="text-xs text-slate-400 mb-3">Audit trail timestamps inconsistent</div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-xs font-bold">RB</div>
+                            <span class="text-xs text-slate-400">Raoni Barbosa</span>
+                        </div>
+                    </div>
+                    
+                    <div class="glass rounded-xl p-4 capa-card priority-medium">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-orange-400">CAPA-2026-011</span>
+                            <span class="text-xs text-slate-500">5 days ago</span>
+                        </div>
+                        <div class="font-semibold mb-2">SAP User Access Review Gap</div>
+                        <div class="text-xs text-slate-400 mb-3">3 users with excessive privileges</div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-xs font-bold">PS</div>
+                            <span class="text-xs text-slate-400">Pedro Santos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Column 2: Investigation -->
+            <div>
+                <div class="glass rounded-xl p-4 mb-4">
+                    <h3 class="font-bold mb-1">🔵 Investigation</h3>
+                    <p class="text-xs text-slate-400">Root cause analysis</p>
+                </div>
+                <div class="kanban-column space-y-4">
+                    <div class="glass rounded-xl p-4 capa-card priority-high">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-blue-400">CAPA-2026-009</span>
+                            <span class="text-xs text-slate-500">8 days ago</span>
+                        </div>
+                        <div class="font-semibold mb-2">MES Batch Release Deviation</div>
+                        <div class="text-xs text-slate-400 mb-3">5 Whys in progress</div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold">CL</div>
+                            <span class="text-xs text-slate-400">Carolina Lima</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Column 3: Implementation -->
+            <div>
+                <div class="glass rounded-xl p-4 mb-4">
+                    <h3 class="font-bold mb-1">🟡 Implementation</h3>
+                    <p class="text-xs text-slate-400">Actions being executed</p>
+                </div>
+                <div class="kanban-column space-y-4">
+                    <div class="glass rounded-xl p-4 capa-card priority-medium">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-yellow-400">CAPA-2026-007</span>
+                            <span class="text-xs text-slate-500">15 days ago</span>
+                        </div>
+                        <div class="font-semibold mb-2">SCADA Alarm Configuration</div>
+                        <div class="text-xs text-slate-400 mb-3">Automated testing script deployment</div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-yellow-500 flex items-center justify-center text-xs font-bold">AC</div>
+                            <span class="text-xs text-slate-400">Ana Costa</span>
+                        </div>
+                    </div>
+                    
+                    <div class="glass rounded-xl p-4 capa-card priority-low">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-green-400">CAPA-2026-006</span>
+                            <span class="text-xs text-slate-500">20 days ago</span>
+                        </div>
+                        <div class="font-semibold mb-2">Training Gap - 21 CFR Part 11</div>
+                        <div class="text-xs text-slate-400 mb-3">New training module deployed</div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-xs font-bold">RB</div>
+                            <span class="text-xs text-slate-400">Raoni Barbosa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Column 4: Verification -->
+            <div>
+                <div class="glass rounded-xl p-4 mb-4">
+                    <h3 class="font-bold mb-1">🟢 Verification</h3>
+                    <p class="text-xs text-slate-400">Effectiveness check</p>
+                </div>
+                <div class="kanban-column space-y-4">
+                    <div class="glass rounded-xl p-4 capa-card priority-low">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-green-400">CAPA-2026-003</span>
+                            <span class="text-xs text-slate-500">30 days ago</span>
+                        </div>
+                        <div class="font-semibold mb-2">Password Policy Enhancement</div>
+                        <div class="text-xs text-slate-400 mb-3">3-month effectiveness review due</div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-xs font-bold">PS</div>
+                            <span class="text-xs text-slate-400">Pedro Santos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

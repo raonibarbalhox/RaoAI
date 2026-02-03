@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raoni Barbalho Presentations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        body {
+            background: 
+                radial-gradient(ellipse at 20% 0%, rgba(0,112,243,0.15) 0%, transparent 50%),
+                #030303;
+            min-height: 100vh;
+        }
+        
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #030303, #0a0a0a);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 2xl;
+            padding: 60px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+            color: white;
+        }
+        
+        .slide.hidden { display: none; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #0070f3, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            background: rgba(0,112,243,0.2);
+            color: #3b9eff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto px-6 py-12">
+        <!-- SLIDE 1: TITLE SLIDE -->
+        <div id="slide-1" class="slide">
+            <div class="text-center max-w-3xl">
+                <h1 class="text-8xl font-black mb-6">
+                    <span class="gradient-text">Raoni Barbalho</span>
+                </h1>
+                <h2 class="text-4xl font-bold text-slate-300 mb-8">
+                    IT Validation & Compliance Specialist
+                </h2>
+                <p class="text-2xl text-slate-400 mb-12">
+                    Building the Future of GxP Pharma Automation
+                </p>
+                <div class="flex justify-center gap-4 mb-8 flex-wrap">
+                    <div class="badge">3,400 QNOW Points</div>
+                    <div class="badge">Zero FDA Findings</div>
+                    <div class="badge">3.5x Faster</div>
+                </div>
+                <p class="text-slate-500">Novo Nordisk Montes Claros • Ready for Relocation (Denmark/EU)</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: THE SANDBOX VISION -->
+        <div id="slide-2" class="slide hidden">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-6xl font-black mb-12"><span class="gradient-text">The Sandbox Revolution</span></h1>
+                
+                <div class="grid grid-cols-2 gap-8 mb-12">
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border border-white/10">
+                        <h2 class="text-2xl font-bold text-red-400 mb-4">❌ Today's Challenge</h2>
+                        <ul class="space-y-3 text-lg">
+                            <li>❌ Manual validation processes (30 days)</li>
+                            <li>❌ High error rates (15% human mistakes)</li>
+                            <li>❌ Production risk (no safe test environment)</li>
+                            <li>❌ Compliance gaps (inconsistent testing)</li>
+                            <li>❌ Slow incident response (3+ days)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border border-white/10">
+                        <h2 class="text-2xl font-bold text-green-400 mb-4">✅ Sandbox Solution</h2>
+                        <ul class="space-y-3 text-lg">
+                            <li>✅ Automated validation (3 days)</li>
+                            <li>✅ Zero error rate (deterministic)</li>
+                            <li>✅ Safe testing environment (isolated)</li>
+                            <li>✅ 100% compliance coverage (ALCOA+)</li>
+                            <li>✅ Fast response (4 hours)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <p class="text-2xl text-slate-300 bg-white/5 p-6 rounded-lg border-l-4 border-green-400">
+                    <strong>ROI:</strong> 90% time savings + 100% error elimination + team morale boost
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: PROOF OF CONCEPT -->
+        <div id="slide-3" class="slide hidden">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-6xl font-black mb-12"><span class="gradient-text">Proven Results in 2 Years</span></h1>
+                
+                <div class="grid grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border border-white/10 text-center">
+                        <p class="text-sm text-slate-400 mb-2">Lead Time</p>
+                        <p class="text-6xl font-black">3.5x</p>
+                        <p class="text-lg text-slate-300">Faster Delivery</p>
+                    </div>
+                    
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border border-white/10 text-center">
+                        <p class="text-sm text-slate-400 mb-2">Stakeholder Satisfaction</p>
+                        <p class="text-6xl font-black text-green-400">90.9%</p>
+                        <p class="text-lg text-slate-300">Infrastructure Survey</p>
+                    </div>
+                    
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border border-white/10 text-center">
+                        <p class="text-sm text-slate-400 mb-2">Manual Work Eliminated</p>
+                        <p class="text-6xl font-black text-yellow-400">90%</p>
+                        <p class="text-lg text-slate-300">Automation Impact</p>
+                    </div>
+                    
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border border-white/10 text-center">
+                        <p class="text-sm text-slate-400 mb-2">FDA/ANVISA Audit Findings</p>
+                        <p class="text-6xl font-black text-blue-400">0</p>
+                        <p class="text-lg text-slate-300">Zero Issues Reported</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white/10 p-6 rounded-lg border border-white/10">
+                    <p class="text-xl font-semibold mb-2">💡 Key Insight:</p>
+                    <p class="text-lg text-slate-300">Achieved these results implementing 8 major technical cases at Novo Nordisk without a formal sandbox environment. Imagine what we could do WITH one.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: TECHNICAL EXPERTISE -->
+        <div id="slide-4" class="slide hidden">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-6xl font-black mb-12"><span class="gradient-text">Your Arsenal</span></h1>
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border border-white/10">
+                        <h2 class="text-2xl font-bold mb-4">🔒 Validation & Compliance</h2>
+                        <ul class="space-y-2 text-lg">
+                            <li>✓ GAMP 5</li>
+                            <li>✓ CSV (IQ/OQ/PQ)</li>
+                            <li>✓ 21 CFR Part 11</li>
+                            <li>✓ ALCOA+ Data Integrity</li>
+                            <li>✓ Risk Assessment</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border border-white/10">
+                        <h2 class="text-2xl font-bold mb-4">⚙️ Automation & Infrastructure</h2>
+                        <ul class="space-y-2 text-lg">
+                            <li>✓ Python (Scripts & Automation)</li>
+                            <li>✓ PowerShell (Windows Hardening)</li>
+                            <li>✓ SCADA/PLCs</li>
+                            <li>✓ Data Centers</li>
+                            <li>✓ Veeam/SAN</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border border-white/10">
+                        <h2 class="text-2xl font-bold mb-4">🛠️ Tools & Platforms</h2>
+                        <ul class="space-y-2 text-lg">
+                            <li>✓ ServiceNow</li>
+                            <li>✓ QualityDocs</li>
+                            <li>✓ Aconex</li>
+                            <li>✓ Nexthink</li>
+                            <li>✓ TIBCO Spotfire</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border border-white/10">
+                        <h2 class="text-2xl font-bold mb-4">📊 Leadership & Methodology</h2>
+                        <ul class="space-y-2 text-lg">
+                            <li>✓ ITIL v4</li>
+                            <li>✓ Agile/SCRUM</li>
+                            <li>✓ Team Coordination</li>
+                            <li>✓ Stakeholder Mgmt</li>
+                            <li>✓ Change Management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: CASE STUDIES PREVIEW -->
+        <div id="slide-5" class="slide hidden">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-6xl font-black mb-12"><span class="gradient-text">8 Real Cases</span></h1>
+                <p class="text-2xl text-slate-400 mb-8">3,400 QNOW points (@200 each)</p>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
+                        <h3 class="text-lg font-bold mb-2">1. SCADA Modernization</h3>
+                        <p class="text-sm text-slate-300">66% faster lead time</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
+                        <h3 class="text-lg font-bold mb-2">2. PLC Governance</h3>
+                        <p class="text-sm text-slate-300">88% faster response</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
+                        <h3 class="text-lg font-bold mb-2">3. GxP Server Migration</h3>
+                        <p class="text-sm text-slate-300">Zero downtime</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
+                        <h3 class="text-lg font-bold mb-2">4. Veeam/SAN Upgrade</h3>
+                        <p class="text-sm text-slate-300">100% continuity</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
+                        <h3 class="text-lg font-bold mb-2">5. Network Validation</h3>
+                        <p class="text-sm text-slate-300">Right-first-time</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
+                        <h3 class="text-lg font-bold mb-2">6. Oracle Aconex</h3>
+                        <p class="text-sm text-slate-300">100% GAMP5</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
+                        <h3 class="text-lg font-bold mb-2">7. Data Centers</h3>
+                        <p class="text-sm text-slate-300">FAT/SAT first time</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
+                        <h3 class="text-lg font-bold mb-2">8. Windows Platform</h3>
+                        <p class="text-sm text-slate-300">90% automation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: VISION FOR NOVO NORDISK DINAMARCA -->
+        <div id="slide-6" class="slide hidden">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-6xl font-black mb-12"><span class="gradient-text">Vision for NN Dinamarca</span></h1>
+                
+                <div class="space-y-8">
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border-l-4 border-blue-400 border">
+                        <h2 class="text-2xl font-bold mb-4">📅 Year 1</h2>
+                        <ul class="space-y-2 text-lg">
+                            <li>✓ Lead validation of pharma IT projects</li>
+                            <li>✓ Design sandbox environment architecture</li>
+                            <li>✓ Train teams on GAMP 5 best practices</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border-l-4 border-green-400 border">
+                        <h2 class="text-2xl font-bold mb-4">📅 Year 2</h2>
+                        <ul class="space-y-2 text-lg">
+                            <li>✓ Deploy sandbox across Novo Nordisk Dinamarca</li>
+                            <li>✓ Automate validation workflows</li>
+                            <li>✓ Reduce lead time by 50% (5 days → 2.5 days)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white/5 backdrop-blur p-8 rounded-2xl border-l-4 border-yellow-400 border">
+                        <h2 class="text-2xl font-bold mb-4">📅 Year 3</h2>
+                        <ul class="space-y-2 text-lg">
+                            <li>✓ Global sandbox platform (reusable)</li>
+                            <li>✓ Pharma industry benchmark</li>
+                            <li>✓ Novo Nordisk leadership in GxP IT</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: CERTIFICATIONS & LANGUAGES -->
+        <div id="slide-7" class="slide hidden">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-6xl font-black mb-12"><span class="gradient-text">Qualifications</span></h1>
+                
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-6">🏆 Certifications</h2>
+                        <ul class="space-y-4 text-xl">
+                            <li class="flex items-center gap-3">
+                                <span class="w-3 h-3 bg-blue-400 rounded-full"></span>
+                                <span><strong>ITIL v4 Foundation</strong> (2024)</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="w-3 h-3 bg-blue-400 rounded-full"></span>
+                                <span><strong>GlobalEnglish Level 7</strong> (C1)</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="w-3 h-3 bg-blue-400 rounded-full"></span>
+                                <span><strong>Azure Fundamentals</strong></span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="w-3 h-3 bg-blue-400 rounded-full"></span>
+                                <span><strong>21 CFR Part 11</strong> Expert</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="w-3 h-3 bg-blue-400 rounded-full"></span>
+                                <span><strong>GAMP 5</strong> Practitioner</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h2 class="text-3xl font-bold mb-6">🗣️ Languages</h2>
+                        <ul class="space-y-4 text-xl">
+                            <li class="flex items-center gap-3">
+                                <span class="text-3xl">🇧🇷</span>
+                                <span><strong>Portuguese</strong> — Native</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="text-3xl">🇺🇸</span>
+                                <span><strong>English</strong> — Advanced (C1)</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="text-3xl">🇪🇸</span>
+                                <span><strong>Spanish</strong> — Basic</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="text-3xl">📞</span>
+                                <span><strong>Communication</strong> — Fluent & professional</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: CONTACT & CALL TO ACTION -->
+        <div id="slide-8" class="slide hidden">
+            <div class="text-center max-w-3xl">
+                <h1 class="text-7xl font-black mb-8">
+                    <span class="gradient-text">Let's Build the Future</span>
+                </h1>
+                <h2 class="text-3xl font-bold text-slate-300 mb-12">
+                    of GxP IT Automation
+                </h2>
+                
+                <div class="space-y-8 mb-12">
+                    <div>
+                        <p class="text-sm text-slate-500 mb-2">📧 Email</p>
+                        <a href="mailto:raobarbalho@hotmail.com" class="text-2xl font-bold text-blue-400 hover:text-blue-300">
+                            raobarbalho@hotmail.com
+                        </a>
+                    </div>
+                    
+                    <div>
+                        <p class="text-sm text-slate-500 mb-2">📱 Phone</p>
+                        <p class="text-2xl font-bold">+55 (38) 99139-9293</p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-sm text-slate-500 mb-2">🔗 LinkedIn</p>
+                        <a href="https://linkedin.com/in/raoni-barbalho-9064b0a4/" target="_blank" class="text-2xl font-bold text-blue-400 hover:text-blue-300">
+                            linkedin.com/in/raoni-barbalho
+                        </a>
+                    </div>
+                </div>
+                
+                <p class="text-xl text-slate-400">
+                    Available for immediate start | Relocating to Denmark/Europe in 2026
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION CONTROLS -->
+    <div class="fixed bottom-8 left-8 right-8 flex justify-between items-center z-50">
+        <button id="prev-btn" class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg font-semibold transition-all">
+            ← Previous
+        </button>
+        
+        <div class="flex gap-2">
+            <span id="slide-counter" class="bg-white/10 px-4 py-3 rounded-lg text-white font-semibold">1 / 8</span>
+        </div>
+        
+        <button id="next-btn" class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg font-semibold transition-all">
+            Next →
+        </button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 8;
+        
+        function showSlide(n) {
+            // Hide all slides
+            for (let i = 1; i <= totalSlides; i++) {
+                document.getElementById(`slide-${i}`).classList.add('hidden');
+            }
+            // Show current slide
+            document.getElementById(`slide-${n}`).classList.remove('hidden');
+            document.getElementById('slide-counter').textContent = `${n} / ${totalSlides}`;
+        }
+        
+        document.getElementById('next-btn').addEventListener('click', () => {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        });
+        
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            if (currentSlide > 1) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') document.getElementById('next-btn').click();
+            if (e.key === 'ArrowLeft') document.getElementById('prev-btn').click();
+        });
+        
+        showSlide(1);
+    </script>
+</body>
+</html>

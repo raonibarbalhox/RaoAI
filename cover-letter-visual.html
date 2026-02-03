@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cover Letter Editor | Raoni Barbalho</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030303;
+            --bg-card: rgba(255,255,255,0.03);
+            --bg-glass: rgba(255,255,255,0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --accent-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border: rgba(255,255,255,0.08);
+            --nn-blue: #00588c;
+        }
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --bg-card: rgba(255,255,255,0.9);
+            --bg-glass: rgba(255,255,255,0.7);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border: rgba(0,0,0,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+        
+        /* Background Effects */
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(99,102,241,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(16,185,129,0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Controls */
+        .controls {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .ctrl-btn {
+            padding: 10px 16px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-family: inherit;
+        }
+        .ctrl-btn:hover { background: var(--bg-card); transform: translateY(-1px); }
+        .ctrl-btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); border: none; }
+        .ctrl-btn.edit-active { background: var(--success); color: white; }
+        .lang-toggle { display: flex; gap: 2px; padding: 4px; }
+        .lang-btn { background: transparent; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+        .lang-btn.active { background: var(--accent); }
+        
+        /* Edit Mode Styles */
+        .edit-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            background: var(--warning);
+            color: #000;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            display: none;
+            z-index: 200;
+        }
+        body.edit-mode .edit-hint { display: block; }
+        body.edit-mode [contenteditable="true"] {
+            outline: 2px dashed var(--accent);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+        body.edit-mode [contenteditable="true"]:focus {
+            outline-color: var(--success);
+            background: rgba(99,102,241,0.05);
+        }
+        
+        /* Paragraph Block System */
+        .paragraph-block {
+            position: relative;
+            margin-bottom: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            background: transparent;
+            transition: all 0.2s;
+        }
+        body.edit-mode .paragraph-block {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+        }
+        body.edit-mode .paragraph-block:hover {
+            border-color: var(--accent);
+        }
+        .paragraph-block .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            font-size: 14px;
+            align-items: center;
+            justify-content: center;
+        }
+        body.edit-mode .paragraph-block:hover .delete-btn { display: flex; }
+        
+        .add-paragraph-btn {
+            display: none;
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            background: rgba(99,102,241,0.1);
+            border: 2px dashed var(--accent);
+            border-radius: 12px;
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .add-paragraph-btn:hover { background: rgba(99,102,241,0.2); }
+        body.edit-mode .add-paragraph-btn { display: block; }
+        
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 24px 40px;
+        }
+        
+        /* Letter Card */
+        .letter-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+        
+        /* Header */
+        .letter-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid var(--accent);
+        }
+        .letter-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .letter-header .contact {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        .letter-header .contact a {
+            color: var(--accent-light);
+            text-decoration: none;
+        }
+        
+        /* Date & Recipient */
+        .letter-date {
+            text-align: right;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .recipient {
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            font-size: 13px;
+        }
+        .recipient strong { color: var(--text-primary); display: block; font-size: 14px; margin-bottom: 4px; }
+        
+        /* Body */
+        .greeting {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        .letter-body p {
+            color: var(--text-secondary);
+            text-align: justify;
+            font-size: 14px;
+        }
+        .highlight {
+            color: var(--accent-light);
+            font-weight: 600;
+        }
+        [data-theme="light"] .highlight { color: var(--nn-blue); }
+        
+        /* Signature */
+        .signature {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+        .signature .closing { color: var(--text-secondary); margin-bottom: 24px; }
+        .signature .name { font-weight: 800; font-size: 18px; color: var(--accent-light); }
+        
+        /* Print */
+        @media print {
+            .controls, .edit-hint, .add-paragraph-btn, .delete-btn { display: none !important; }
+            body { background: white; }
+            .bg-gradient { display: none; }
+            .letter-card { 
+                box-shadow: none; 
+                border: none; 
+                background: white;
+                backdrop-filter: none;
+            }
+            .letter-header h1 { -webkit-text-fill-color: #111; }
+            .highlight { color: #00588c !important; }
+            p, .contact, .recipient { color: #333 !important; }
+            @page { margin: 15mm; size: A4; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 640px) {
+            .container { padding: 70px 16px 24px; }
+            .letter-card { padding: 24px; border-radius: 16px; }
+            .letter-header h1 { font-size: 22px; }
+            .controls { top: 8px; right: 8px; }
+            .ctrl-btn { padding: 8px 12px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    
+    <div class="controls">
+        <a href="cv-hub.html" class="ctrl-btn">← Hub</a>
+        <button class="ctrl-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+        <div class="ctrl-btn lang-toggle">
+            <button class="lang-btn" onclick="setLang('pt')">🇧🇷</button>
+            <button class="lang-btn active" onclick="setLang('en')">🇺🇸</button>
+        </div>
+        <button class="ctrl-btn" id="editBtn" onclick="toggleEdit()" title="Edit Mode">✏️</button>
+        <button class="ctrl-btn" id="resetBtn" onclick="resetData()" title="Reset" style="display:none;">🔄</button>
+        <button class="ctrl-btn primary" onclick="window.print()">🖨️</button>
+    </div>
+    
+    <div class="edit-hint">✏️ Edit Mode — Click text to edit, hover paragraphs to delete</div>
+    
+    <div class="container">
+        <div class="letter-card">
+            <!-- Header -->
+            <header class="letter-header">
+                <h1 contenteditable="false" id="authorName">Raoni Barbalho</h1>
+                <div class="contact" id="contactInfo">
+                    <span id="email">raobarbalho@hotmail.com</span> • 
+                    <span id="phone">+55 38 99139-9293</span> • 
+                    <a href="https://linkedin.com/in/raoni-barbalho-9064b0a4">LinkedIn</a> • 
+                    <a href="https://raonix.vercel.app">Portfolio</a>
+                </div>
+            </header>
+            
+            <!-- Date -->
+            <div class="letter-date" id="letterDate">January 30, 2026</div>
+            
+            <!-- Recipient -->
+            <div class="recipient" id="recipientBlock">
+                <strong id="recipientName">Hiring Manager</strong>
+                <span id="recipientTitle">Talent Acquisition</span><br>
+                <span id="recipientCompany">Company Name</span><br>
+                <span id="recipientLocation">Location</span>
+            </div>
+            
+            <!-- Greeting -->
+            <div class="greeting" id="greeting">Dear Hiring Manager,</div>
+            
+            <!-- Body - Dynamic Paragraphs -->
+            <div class="letter-body" id="letterBody"></div>
+            
+            <button class="add-paragraph-btn" onclick="addParagraph()">+ Add Paragraph</button>
+            
+            <!-- Signature -->
+            <div class="signature">
+                <p class="closing" id="closing">Sincerely,</p>
+                <p class="name" id="signatureName">Raoni Barbalho</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // =====================
+        // DEFAULT DATA
+        // =====================
+        const defaultData = {
+            authorName: 'Raoni Barbalho',
+            email: 'raobarbalho@hotmail.com',
+            phone: '+55 38 99139-9293',
+            letterDate: 'January 30, 2026',
+            recipientName: 'Hiring Manager',
+            recipientTitle: 'Talent Acquisition',
+            recipientCompany: 'Company Name',
+            recipientLocation: 'Location',
+            greeting: 'Dear Hiring Manager,',
+            closing: 'Sincerely,',
+            signatureName: 'Raoni Barbalho',
+            paragraphs: [
+                {
+                    id: 1,
+                    text: `I am writing to express my strong interest in the <span class="highlight">Senior IT Validation & Compliance Partner</span> position. As a professional with <span class="highlight">7+ years of experience</span> in regulated pharmaceutical environments, I bring practical expertise in <span class="highlight">GAMP 5, FDA 21 CFR Part 11, EU Annex 11</span>, and Computerized System Validation (CSV).`
+                },
+                {
+                    id: 2,
+                    text: `In my current role at <span class="highlight">Novo Nordisk</span>, I consistently deliver validation documentation <span class="highlight">ahead of team average</span> (typically completing ITRAs in 5 days vs. 17+ days) while maintaining <span class="highlight">audit-ready documentation</span> across FDA and ANVISA inspections. This focus on both efficiency and compliance aligns well with the need for robust yet practical validation practices.`
+                },
+                {
+                    id: 3,
+                    text: `What excites me most about this opportunity is the chance to shape <span class="highlight">IT validation frameworks for emerging technologies</span>, particularly AI-driven solutions. I have hands-on experience with <span class="highlight">Python and PowerShell scripting</span> for validation automation, having developed tools for data analysis and compliance checks that significantly streamline processes.`
+                },
+                {
+                    id: 4,
+                    text: `My experience as a bridge between <span class="highlight">Business SMEs, Developers, Testers, and Quality teams</span> has been fundamental to my success. At Cognizant (serving MSD/Merck), I led cross-functional validation projects and was recognized with <span class="highlight">three awards in 2022</span> for client satisfaction, SLA achievement, and overall excellence.`
+                },
+                {
+                    id: 5,
+                    text: `Thank you for considering my application. I would welcome the opportunity to discuss how my validation expertise, technical skills, and passion for continuous improvement can support your team's objectives. I am available for an interview at your convenience.`
+                }
+            ]
+        };
+
+        // Load from localStorage or use defaults
+        let letterData = JSON.parse(localStorage.getItem('coverLetterData')) || JSON.parse(JSON.stringify(defaultData));
+        let nextParagraphId = Math.max(...letterData.paragraphs.map(p => p.id), 0) + 1;
+
+        function saveData() {
+            localStorage.setItem('coverLetterData', JSON.stringify(letterData));
+        }
+
+        // =====================
+        // RENDER
+        // =====================
+        function renderParagraphs() {
+            const container = document.getElementById('letterBody');
+            container.innerHTML = letterData.paragraphs.map(p => `
+                <div class="paragraph-block" data-id="${p.id}">
+                    <button class="delete-btn" onclick="deleteParagraph(${p.id})">×</button>
+                    <p contenteditable="false" data-paragraph-id="${p.id}">${p.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderFields() {
+            document.getElementById('authorName').textContent = letterData.authorName;
+            document.getElementById('email').textContent = letterData.email;
+            document.getElementById('phone').textContent = letterData.phone;
+            document.getElementById('letterDate').textContent = letterData.letterDate;
+            document.getElementById('recipientName').textContent = letterData.recipientName;
+            document.getElementById('recipientTitle').textContent = letterData.recipientTitle;
+            document.getElementById('recipientCompany').textContent = letterData.recipientCompany;
+            document.getElementById('recipientLocation').textContent = letterData.recipientLocation;
+            document.getElementById('greeting').textContent = letterData.greeting;
+            document.getElementById('closing').textContent = letterData.closing;
+            document.getElementById('signatureName').textContent = letterData.signatureName;
+        }
+
+        function renderAll() {
+            renderFields();
+            renderParagraphs();
+            if (editMode) enableEditMode();
+        }
+
+        // =====================
+        // PARAGRAPH MANAGEMENT
+        // =====================
+        function addParagraph() {
+            const newParagraph = {
+                id: nextParagraphId++,
+                text: 'Click to edit this paragraph. Use <span class="highlight">highlights</span> for emphasis.'
+            };
+            letterData.paragraphs.push(newParagraph);
+            saveData();
+            renderParagraphs();
+            if (editMode) enableEditMode();
+        }
+
+        function deleteParagraph(id) {
+            if (!editMode) return;
+            if (confirm('Delete this paragraph?')) {
+                letterData.paragraphs = letterData.paragraphs.filter(p => p.id !== id);
+                saveData();
+                renderParagraphs();
+                if (editMode) enableEditMode();
+            }
+        }
+
+        // =====================
+        // EDIT MODE
+        // =====================
+        let editMode = false;
+        const editableFields = ['authorName', 'email', 'phone', 'letterDate', 'recipientName', 'recipientTitle', 'recipientCompany', 'recipientLocation', 'greeting', 'closing', 'signatureName'];
+
+        function enableEditMode() {
+            editableFields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.setAttribute('contenteditable', 'true');
+            });
+            document.querySelectorAll('[data-paragraph-id]').forEach(el => {
+                el.setAttribute('contenteditable', 'true');
+            });
+        }
+
+        function disableEditMode() {
+            document.querySelectorAll('[contenteditable]').forEach(el => {
+                el.removeAttribute('contenteditable');
+            });
+        }
+
+        function saveEdits() {
+            // Save simple fields
+            editableFields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) letterData[id] = el.textContent;
+            });
+            // Save paragraphs
+            document.querySelectorAll('[data-paragraph-id]').forEach(el => {
+                const id = parseInt(el.dataset.paragraphId);
+                const para = letterData.paragraphs.find(p => p.id === id);
+                if (para) para.text = el.innerHTML;
+            });
+            saveData();
+        }
+
+        function toggleEdit() {
+            editMode = !editMode;
+            const btn = document.getElementById('editBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            
+            if (editMode) {
+                document.body.classList.add('edit-mode');
+                btn.textContent = '✓';
+                btn.classList.add('edit-active');
+                resetBtn.style.display = 'flex';
+                enableEditMode();
+            } else {
+                saveEdits();
+                document.body.classList.remove('edit-mode');
+                btn.textContent = '✏️';
+                btn.classList.remove('edit-active');
+                resetBtn.style.display = 'none';
+                disableEditMode();
+            }
+        }
+
+        // =====================
+        // THEME & LANG
+        // =====================
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            document.getElementById('themeBtn').textContent = next === 'light' ? '☀️' : '🌙';
+            localStorage.setItem('coverLetterTheme', next);
+        }
+
+        let currentLang = localStorage.getItem('lang') || 'en';
+        function setLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`)?.classList.add('active');
+        }
+
+        function resetData() {
+            if (confirm('Reset all data to defaults? This cannot be undone.')) {
+                letterData = JSON.parse(JSON.stringify(defaultData));
+                nextParagraphId = Math.max(...letterData.paragraphs.map(p => p.id), 0) + 1;
+                saveData();
+                renderAll();
+            }
+        }
+
+        // =====================
+        // INIT
+        // =====================
+        const savedTheme = localStorage.getItem('coverLetterTheme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeBtn').textContent = savedTheme === 'light' ? '☀️' : '🌙';
+        }
+        setLang(currentLang);
+        renderAll();
+    </script>
+</body>
+</html>

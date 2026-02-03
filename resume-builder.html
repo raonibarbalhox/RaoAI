@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder — RaoniX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital@0;1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        :root {
+            --bg-primary: #030303;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --accent: #6366f1;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .container-builder {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            height: 100vh;
+        }
+
+        @media (max-width: 1024px) {
+            .container-builder {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .preview-section {
+                display: none;
+            }
+
+            .toggle-preview {
+                display: block;
+            }
+        }
+
+        .editor-section {
+            overflow-y-auto;
+            padding: 2rem;
+        }
+
+        .preview-section {
+            overflow-y-auto;
+            background: white;
+            color: #000;
+            padding: 2rem;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        [data-theme="light"] .form-input,
+        [data-theme="light"] .form-textarea,
+        [data-theme="light"] .form-select {
+            background: #f1f5f9;
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .form-input:focus,
+        [data-theme="light"] .form-textarea:focus,
+        [data-theme="light"] .form-select:focus {
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .resume-section {
+            margin-bottom: 1.5rem;
+            page-break-inside: avoid;
+        }
+
+        .resume-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #333;
+            padding-bottom: 1rem;
+        }
+
+        .resume-name {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .resume-meta {
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .resume-section-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 0.5rem;
+        }
+
+        .resume-item {
+            margin-bottom: 1rem;
+        }
+
+        .resume-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+
+        .resume-item-title {
+            font-weight: 600;
+        }
+
+        .resume-item-date {
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .resume-item-subtitle {
+            font-style: italic;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .resume-item-description {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-top: 0.25rem;
+            color: #333;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .section-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header {
+            background: rgba(99, 102, 241, 0.05);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .toggle-preview {
+            display: none;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+        }
+
+        @media print {
+            .header,
+            .editor-section,
+            .btn-primary,
+            .btn-secondary,
+            .btn-danger,
+            .form-group,
+            .toggle-preview {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .container-builder {
+                grid-template-columns: 1fr;
+                gap: 0;
+                height: auto;
+            }
+
+            .preview-section {
+                display: block;
+                background: white;
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="text-2xl font-bold">🏠</a>
+            <h1 class="text-xl font-bold">Resume Builder</h1>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-white/10">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                </svg>
+            </button>
+            <button onclick="exportToPDF()" class="btn-primary">📄 PDF</button>
+            <button onclick="window.print()" class="btn-secondary">🖨️ Print</button>
+            <button onclick="downloadJSON()" class="btn-primary">💾 Save</button>
+        </div>
+    </div>
+
+    <div class="container-builder">
+        <!-- Editor Section -->
+        <div class="editor-section">
+            <!-- Personal Info -->
+            <h2 class="text-lg font-bold mb-4">Personal Information</h2>
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="fullName" class="form-input" value="Raoni Barbalho" onchange="updatePreview()">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Professional Title</label>
+                <input type="text" id="jobTitle" class="form-input" value="IT Validation & Compliance Specialist" onchange="updatePreview()">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" id="email" class="form-input" value="raobarbalho@hotmail.com" onchange="updatePreview()">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Phone</label>
+                <input type="tel" id="phone" class="form-input" value="+55 38 99139-9293" onchange="updatePreview()">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Location</label>
+                <input type="text" id="location" class="form-input" value="Montes Claros, Brazil" onchange="updatePreview()">
+            </div>
+
+            <hr class="border-white/10 my-6">
+
+            <!-- Professional Summary -->
+            <h2 class="text-lg font-bold mb-4">Professional Summary</h2>
+            <div class="form-group">
+                <textarea id="summary" class="form-textarea" rows="4" onchange="updatePreview()">IT Validation & Compliance professional with 7+ years in pharma. Expertise in GAMP 5, 21 CFR Part 11, and GxP compliance. Proven track record reducing validation cycles and ensuring regulatory excellence.</textarea>
+            </div>
+
+            <hr class="border-white/10 my-6">
+
+            <!-- Experience -->
+            <div>
+                <h2 class="text-lg font-bold mb-4">Experience</h2>
+                <div id="experienceList"></div>
+                <button onclick="addExperience()" class="btn-secondary mt-4">+ Add Experience</button>
+            </div>
+
+            <hr class="border-white/10 my-6">
+
+            <!-- Skills -->
+            <div>
+                <h2 class="text-lg font-bold mb-4">Skills</h2>
+                <div class="form-group">
+                    <label class="form-label">Skills (comma-separated)</label>
+                    <textarea id="skills" class="form-textarea" rows="4" onchange="updatePreview()">GAMP 5, 21 CFR Part 11, CSV, Data Integrity, ServiceNow, GxP Compliance, ITSM, Risk Management, Requirements Analysis, IT Governance</textarea>
+                </div>
+            </div>
+
+            <hr class="border-white/10 my-6">
+
+            <!-- Education -->
+            <div>
+                <h2 class="text-lg font-bold mb-4">Education</h2>
+                <div id="educationList"></div>
+                <button onclick="addEducation()" class="btn-secondary mt-4">+ Add Education</button>
+            </div>
+
+            <hr class="border-white/10 my-6">
+
+            <!-- Certifications -->
+            <div>
+                <h2 class="text-lg font-bold mb-4">Certifications</h2>
+                <div id="certificationsList"></div>
+                <button onclick="addCertification()" class="btn-secondary mt-4">+ Add Certification</button>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section">
+            <div id="resumePreview" style="font-family: 'Crimson Text', serif;">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <button onclick="toggleMobilePreview()" class="btn-primary toggle-preview">👁️ Preview</button>
+
+    <script>
+        // Data structure
+        let resumeData = {
+            fullName: 'Raoni Barbalho',
+            jobTitle: 'IT Validation & Compliance Specialist',
+            email: 'raobarbalho@hotmail.com',
+            phone: '+55 38 99139-9293',
+            location: 'Montes Claros, Brazil',
+            summary: 'IT Validation & Compliance professional with 7+ years in pharma. Expertise in GAMP 5, 21 CFR Part 11, and GxP compliance. Proven track record reducing validation cycles and ensuring regulatory excellence.',
+            skills: 'GAMP 5, 21 CFR Part 11, CSV, Data Integrity, ServiceNow, GxP Compliance, ITSM, Risk Management, Requirements Analysis, IT Governance',
+            experience: [
+                {
+                    id: 1,
+                    position: 'IT Validation & Compliance Analyst',
+                    company: 'Novo Nordisk',
+                    location: 'Montes Claros, Brazil',
+                    startDate: 'Apr 2023',
+                    endDate: 'Present',
+                    description: 'Lead IT validation initiatives ensuring compliance with GxP and regulatory requirements. Reduced validation cycle by 73%.'
+                }
+            ],
+            education: [
+                {
+                    id: 1,
+                    degree: 'Bachelor in Civil Engineering',
+                    institution: 'UNIFIPMoc',
+                    year: '2015',
+                    details: 'Specialization: Engineering Law'
+                }
+            ],
+            certifications: [
+                {
+                    id: 1,
+                    name: 'GAMP 5 Professional',
+                    issuer: 'ISPE',
+                    year: '2023'
+                }
+            ]
+        };
+
+        // Load from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('resumeBuilder');
+            if (saved) {
+                resumeData = JSON.parse(saved);
+                applyDataToUI();
+            }
+        }
+
+        // Save to localStorage
+        function saveData() {
+            localStorage.setItem('resumeBuilder', JSON.stringify(resumeData));
+        }
+
+        // Apply data to UI
+        function applyDataToUI() {
+            document.getElementById('fullName').value = resumeData.fullName;
+            document.getElementById('jobTitle').value = resumeData.jobTitle;
+            document.getElementById('email').value = resumeData.email;
+            document.getElementById('phone').value = resumeData.phone;
+            document.getElementById('location').value = resumeData.location;
+            document.getElementById('summary').value = resumeData.summary;
+            document.getElementById('skills').value = resumeData.skills;
+
+            renderExperience();
+            renderEducation();
+            renderCertifications();
+            updatePreview();
+        }
+
+        // Add experience
+        function addExperience() {
+            const id = Date.now();
+            resumeData.experience.push({
+                id,
+                position: 'Job Title',
+                company: 'Company Name',
+                location: 'City',
+                startDate: 'Jan 2024',
+                endDate: 'Present',
+                description: 'Brief description of responsibilities and achievements.'
+            });
+            renderExperience();
+        }
+
+        function renderExperience() {
+            const list = document.getElementById('experienceList');
+            list.innerHTML = resumeData.experience.map((exp, idx) => `
+                <div class="form-group bg-white/5 p-4 rounded-lg">
+                    <input type="text" value="${exp.position}" placeholder="Position" class="form-input mb-3" onchange="resumeData.experience[${idx}].position = this.value; updatePreview()">
+                    <input type="text" value="${exp.company}" placeholder="Company" class="form-input mb-3" onchange="resumeData.experience[${idx}].company = this.value; updatePreview()">
+                    <input type="text" value="${exp.location}" placeholder="Location" class="form-input mb-3" onchange="resumeData.experience[${idx}].location = this.value; updatePreview()">
+                    <div class="flex gap-3 mb-3">
+                        <input type="text" value="${exp.startDate}" placeholder="Start Date" class="form-input flex-1" onchange="resumeData.experience[${idx}].startDate = this.value; updatePreview()">
+                        <input type="text" value="${exp.endDate}" placeholder="End Date" class="form-input flex-1" onchange="resumeData.experience[${idx}].endDate = this.value; updatePreview()">
+                    </div>
+                    <textarea placeholder="Description" class="form-textarea" rows="3" onchange="resumeData.experience[${idx}].description = this.value; updatePreview()">${exp.description}</textarea>
+                    <button onclick="resumeData.experience.splice(${idx}, 1); renderExperience(); updatePreview();" class="btn-danger mt-3">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        // Add education
+        function addEducation() {
+            const id = Date.now();
+            resumeData.education.push({
+                id,
+                degree: 'Degree Name',
+                institution: 'University Name',
+                year: '2024',
+                details: 'Additional details'
+            });
+            renderEducation();
+        }
+
+        function renderEducation() {
+            const list = document.getElementById('educationList');
+            list.innerHTML = resumeData.education.map((edu, idx) => `
+                <div class="form-group bg-white/5 p-4 rounded-lg">
+                    <input type="text" value="${edu.degree}" placeholder="Degree" class="form-input mb-3" onchange="resumeData.education[${idx}].degree = this.value; updatePreview()">
+                    <input type="text" value="${edu.institution}" placeholder="Institution" class="form-input mb-3" onchange="resumeData.education[${idx}].institution = this.value; updatePreview()">
+                    <input type="text" value="${edu.year}" placeholder="Year" class="form-input mb-3" onchange="resumeData.education[${idx}].year = this.value; updatePreview()">
+                    <textarea placeholder="Details" class="form-textarea" rows="2" onchange="resumeData.education[${idx}].details = this.value; updatePreview()">${edu.details}</textarea>
+                    <button onclick="resumeData.education.splice(${idx}, 1); renderEducation(); updatePreview();" class="btn-danger mt-3">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        // Add certification
+        function addCertification() {
+            const id = Date.now();
+            resumeData.certifications.push({
+                id,
+                name: 'Certification Name',
+                issuer: 'Issuer',
+                year: '2024'
+            });
+            renderCertifications();
+        }
+
+        function renderCertifications() {
+            const list = document.getElementById('certificationsList');
+            list.innerHTML = resumeData.certifications.map((cert, idx) => `
+                <div class="form-group bg-white/5 p-4 rounded-lg">
+                    <input type="text" value="${cert.name}" placeholder="Certification Name" class="form-input mb-3" onchange="resumeData.certifications[${idx}].name = this.value; updatePreview()">
+                    <input type="text" value="${cert.issuer}" placeholder="Issuer" class="form-input mb-3" onchange="resumeData.certifications[${idx}].issuer = this.value; updatePreview()">
+                    <input type="text" value="${cert.year}" placeholder="Year" class="form-input mb-3" onchange="resumeData.certifications[${idx}].year = this.value; updatePreview()">
+                    <button onclick="resumeData.certifications.splice(${idx}, 1); renderCertifications(); updatePreview();" class="btn-danger mt-3">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        // Update preview
+        function updatePreview() {
+            resumeData.fullName = document.getElementById('fullName').value;
+            resumeData.jobTitle = document.getElementById('jobTitle').value;
+            resumeData.email = document.getElementById('email').value;
+            resumeData.phone = document.getElementById('phone').value;
+            resumeData.location = document.getElementById('location').value;
+            resumeData.summary = document.getElementById('summary').value;
+            resumeData.skills = document.getElementById('skills').value;
+
+            const preview = `
+                <div class="resume-header">
+                    <div class="resume-name">${resumeData.fullName}</div>
+                    <div class="resume-meta">${resumeData.jobTitle}</div>
+                    <div class="resume-meta">${resumeData.email} | ${resumeData.phone} | ${resumeData.location}</div>
+                </div>
+
+                <div class="resume-section">
+                    <div class="resume-section-title">Professional Summary</div>
+                    <div style="font-size: 0.95rem; line-height: 1.6;">${resumeData.summary}</div>
+                </div>
+
+                <div class="resume-section">
+                    <div class="resume-section-title">Experience</div>
+                    ${resumeData.experience.map(exp => `
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <div class="resume-item-title">${exp.position}</div>
+                                <div class="resume-item-date">${exp.startDate} — ${exp.endDate}</div>
+                            </div>
+                            <div class="resume-item-subtitle">${exp.company} | ${exp.location}</div>
+                            <div class="resume-item-description">${exp.description}</div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="resume-section">
+                    <div class="resume-section-title">Skills</div>
+                    <div style="font-size: 0.95rem; line-height: 1.8;">
+                        ${resumeData.skills.split(',').map(s => `<span class="skill-tag" style="background: #f0f0f0; color: #333; padding: 0.35rem 0.8rem;">${s.trim()}</span>`).join('')}
+                    </div>
+                </div>
+
+                <div class="resume-section">
+                    <div class="resume-section-title">Education</div>
+                    ${resumeData.education.map(edu => `
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <div class="resume-item-title">${edu.degree}</div>
+                                <div class="resume-item-date">${edu.year}</div>
+                            </div>
+                            <div class="resume-item-subtitle">${edu.institution}</div>
+                            ${edu.details ? `<div class="resume-item-description">${edu.details}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="resume-section">
+                    <div class="resume-section-title">Certifications</div>
+                    ${resumeData.certifications.map(cert => `
+                        <div class="resume-item">
+                            <div class="resume-item-title">${cert.name}</div>
+                            <div class="resume-item-subtitle">${cert.issuer} | ${cert.year}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            document.getElementById('resumePreview').innerHTML = preview;
+            saveData();
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
+
+        function downloadJSON() {
+            const json = JSON.stringify(resumeData, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `resume-${resumeData.fullName.replace(/ /g, '-')}.json`;
+            a.click();
+        }
+
+        function toggleMobilePreview() {
+            const preview = document.querySelector('.preview-section');
+            preview.style.display = preview.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            applyTheme();
+        });
+
+        function applyTheme() {
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+        }
+
+        function exportToPDF() {
+            const element = document.getElementById('resumePreview');
+            const opt = {
+                margin: 10,
+                filename: `resume-${resumeData.fullName.replace(/ /g, '-')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+</html>

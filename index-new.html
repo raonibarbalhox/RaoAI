@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raoni Barbalho | IT System Management & Validation Specialist</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Raoni Barbalho - IT System Management & Validation Specialist at Novo Nordisk. Expert in GxP, CSV, GAMP 5, and pharmaceutical compliance.">
+    <meta name="keywords" content="Raoni Barbalho, IT Validation, Computer System Validation, GxP, GAMP 5, Pharmaceutical IT, Novo Nordisk, Quality Assurance">
+    <meta name="author" content="Raoni Barbalho">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Raoni Barbalho | IT System Management & Validation">
+    <meta property="og:description" content="IT Specialist focused on pharmaceutical validation, compliance, and digital transformation.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://raonix.vercel.app">
+    <meta property="og:image" content="https://raonix.vercel.app/assets/img/avatar.jpg">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Raoni Barbalho | IT System Management">
+    <meta name="twitter:description" content="IT Specialist in pharmaceutical validation and compliance.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'accent': { 500: '#0070f3', 600: '#0051cc' },
+                        'success': { 500: '#10b981', 600: '#059669' },
+                        'warning': { 500: '#f59e0b', 600: '#d97706' },
+                        'danger': { 500: '#ef4444', 600: '#dc2626' }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        
+        /* Theme Variables */
+        :root {
+            --bg-primary: #030303;
+            --bg-secondary: #0a0a0a;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border-glass: rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --border-glass: rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Background Gradient */
+        .bg-gradient {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: linear-gradient(135deg, #0070f3 0%, #8b5cf6 50%, #10b981 100%);
+            opacity: 0.03;
+        }
+        
+        [data-theme="light"] .bg-gradient {
+            opacity: 0.08;
+        }
+        
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: var(--bg-primary);
+            opacity: 0.97;
+        }
+        
+        /* Glass Morphism */
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s ease;
+        }
+        
+        .glass:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 112, 243, 0.15);
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #0070f3, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        [data-theme="light"] .gradient-text {
+            background: linear-gradient(135deg, #0052cc, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; opacity: 0; }
+        .delay-200 { animation-delay: 0.2s; opacity: 0; }
+        .delay-300 { animation-delay: 0.3s; opacity: 0; }
+        .delay-400 { animation-delay: 0.4s; opacity: 0; }
+        
+        /* Light theme text fixes */
+        [data-theme="light"] h1,
+        [data-theme="light"] h2,
+        [data-theme="light"] h3,
+        [data-theme="light"] p,
+        [data-theme="light"] span,
+        [data-theme="light"] a {
+            color: var(--text-primary);
+        }
+        
+        [data-theme="light"] .text-slate-400 {
+            color: var(--text-secondary) !important;
+        }
+        
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #0070f3, #0051cc);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 112, 243, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            padding: 0.75rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Background -->
+    <div class="bg-gradient"></div>
+    <div class="bg-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-accent-500 to-success-500 flex items-center justify-center font-bold text-white">
+                    RB
+                </div>
+                <span class="font-bold text-lg">RaoniX</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#about" class="text-sm hover:text-accent-500 transition-colors hidden md:block">About</a>
+                <a href="#experience" class="text-sm hover:text-accent-500 transition-colors hidden md:block">Experience</a>
+                <a href="#skills" class="text-sm hover:text-accent-500 transition-colors hidden md:block">Skills</a>
+                <a href="#portfolio" class="text-sm hover:text-accent-500 transition-colors hidden md:block">Portfolio</a>
+                <a href="#contact" class="text-sm hover:text-accent-500 transition-colors hidden md:block">Contact</a>
+                <button onclick="toggleTheme()" class="p-2 hover:bg-white/10 rounded-lg transition-all" title="Toggle theme">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="min-h-screen flex items-center justify-center px-6 pt-20">
+        <div class="max-w-5xl mx-auto text-center">
+            <!-- Avatar -->
+            <div class="fade-in-up mb-8">
+                <div class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-accent-500 to-success-500 p-1">
+                    <div class="w-full h-full rounded-full bg-gray-800 flex items-center justify-center text-4xl font-bold text-white">
+                        RB
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Name & Title -->
+            <h1 class="fade-in-up delay-100 text-5xl md:text-7xl font-bold mb-4">
+                Raoni <span class="gradient-text">Barbalho</span>
+            </h1>
+            
+            <h2 class="fade-in-up delay-200 text-xl md:text-2xl text-slate-400 mb-6">
+                IT System Management & Validation Specialist
+            </h2>
+            
+            <!-- Bio -->
+            <p class="fade-in-up delay-300 text-base md:text-lg text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed">
+                Expert in <span class="text-accent-500 font-semibold">GxP Compliance</span>, 
+                <span class="text-success-500 font-semibold">Computer System Validation</span>, and 
+                <span class="text-warning-500 font-semibold">Digital Transformation</span> 
+                in the pharmaceutical industry. Currently at Novo Nordisk, driving innovation in Quality & IT.
+            </p>
+            
+            <!-- CTAs -->
+            <div class="fade-in-up delay-400 flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="dashboard.html" class="btn-primary flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    Access Dashboard
+                </a>
+                <a href="#portfolio" class="btn-secondary flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    View Portfolio
+                </a>
+                <a href="cv.html" target="_blank" class="btn-secondary flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Download CV
+                </a>
+            </div>
+            
+            <!-- Stats -->
+            <div class="fade-in-up delay-400 mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+                <div class="glass rounded-2xl p-6">
+                    <div class="text-3xl font-bold gradient-text mb-2">8+</div>
+                    <div class="text-sm text-slate-400">Years Experience</div>
+                </div>
+                <div class="glass rounded-2xl p-6">
+                    <div class="text-3xl font-bold gradient-text mb-2">50+</div>
+                    <div class="text-sm text-slate-400">Systems Validated</div>
+                </div>
+                <div class="glass rounded-2xl p-6">
+                    <div class="text-3xl font-bold gradient-text mb-2">100%</div>
+                    <div class="text-sm text-slate-400">Audit Success</div>
+                </div>
+                <div class="glass rounded-2xl p-6">
+                    <div class="text-3xl font-bold gradient-text mb-2">15+</div>
+                    <div class="text-sm text-slate-400">Tools Developed</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="min-h-screen flex items-center justify-center px-6 py-20">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center">
+                About <span class="gradient-text">Me</span>
+            </h2>
+            
+            <div class="glass rounded-3xl p-8 md:p-12">
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">Who I Am</h3>
+                        <p class="text-slate-400 leading-relaxed mb-6">
+                            I'm a passionate IT professional specializing in pharmaceutical validation and compliance. 
+                            With over 8 years of experience at Novo Nordisk, I've led validation efforts for critical 
+                            GxP systems, ensuring data integrity and regulatory compliance across global operations.
+                        </p>
+                        <p class="text-slate-400 leading-relaxed">
+                            My expertise spans <strong class="text-accent-500">Computer System Validation (CSV)</strong>, 
+                            <strong class="text-success-500">GAMP 5 methodologies</strong>, 
+                            <strong class="text-warning-500">21 CFR Part 11</strong>, and 
+                            <strong class="text-purple-500">FDA Computer Software Assurance</strong>.
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">What I Do</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3">
+                                <svg class="w-6 h-6 text-success-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <div>
+                                    <div class="font-semibold">System Validation</div>
+                                    <div class="text-sm text-slate-400">Leading CSV projects for manufacturing, quality, and laboratory systems</div>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-6 h-6 text-accent-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <div>
+                                    <div class="font-semibold">Regulatory Compliance</div>
+                                    <div class="text-sm text-slate-400">Ensuring adherence to FDA, EMA, and ANVISA requirements</div>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-6 h-6 text-warning-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <div>
+                                    <div class="font-semibold">Digital Transformation</div>
+                                    <div class="text-sm text-slate-400">Building tools and dashboards to streamline Quality processes</div>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-6 h-6 text-purple-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <div>
+                                    <div class="font-semibold">Team Leadership</div>
+                                    <div class="text-sm text-slate-400">Mentoring teams and driving continuous improvement initiatives</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="min-h-screen flex items-center justify-center px-6 py-20">
+        <div class="max-w-6xl mx-auto w-full">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center">
+                Professional <span class="gradient-text">Experience</span>
+            </h2>
+            
+            <!-- Timeline -->
+            <div class="relative">
+                <!-- Vertical Line -->
+                <div class="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent-500 via-success-500 to-warning-500 hidden md:block"></div>
+                
+                <!-- Experience Items -->
+                <div class="space-y-12">
+                    
+                    <!-- Novo Nordisk - Current -->
+                    <div class="relative grid md:grid-cols-2 gap-8 items-center">
+                        <div class="md:text-right">
+                            <div class="glass rounded-2xl p-6 md:p-8">
+                                <div class="flex items-center gap-2 mb-2 md:justify-end">
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-success-500/20 text-success-500">Current</span>
+                                    <span class="text-sm text-slate-400">2018 - Present</span>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-2">IT System Management Specialist</h3>
+                                <div class="text-accent-500 font-semibold mb-4">Novo Nordisk - Clayton, NC</div>
+                                <ul class="text-slate-400 space-y-2 text-left">
+                                    <li class="flex items-start gap-2">
+                                        <svg class="w-5 h-5 text-success-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        </svg>
+                                        Led CSV for 50+ GxP systems (SAP, MES, LIMS, Veeva)
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <svg class="w-5 h-5 text-success-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        100% audit success rate (FDA, EMA inspections)
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <svg class="w-5 h-5 text-success-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                                        </svg>
+                                        Developed 15+ automation tools (reduced validation time by 40%)
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <svg class="w-5 h-5 text-success-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                        Trained 30+ team members on GAMP 5 and FDA CSA
+                                    </li>
+                                </ul>
+                                <div class="flex flex-wrap gap-2 mt-4">
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-accent-500/20 text-accent-500">GAMP 5</span>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-accent-500/20 text-accent-500">CSV</span>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-accent-500/20 text-accent-500">21 CFR Part 11</span>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-accent-500/20 text-accent-500">SAP</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex justify-center">
+                            <div class="w-4 h-4 rounded-full bg-success-500 ring-4 ring-success-500/20"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Previous Role -->
+                    <div class="relative grid md:grid-cols-2 gap-8 items-center">
+                        <div class="hidden md:flex justify-center">
+                            <div class="w-4 h-4 rounded-full bg-accent-500 ring-4 ring-accent-500/20"></div>
+                        </div>
+                        <div>
+                            <div class="glass rounded-2xl p-6 md:p-8">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-sm text-slate-400">2015 - 2018</span>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-2">Validation Engineer</h3>
+                                <div class="text-accent-500 font-semibold mb-4">Pharmaceutical Company - Brazil</div>
+                                <ul class="text-slate-400 space-y-2">
+                                    <li class="flex items-start gap-2">
+                                        <svg class="w-5 h-5 text-accent-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                        </svg>
+                                        Executed IQ/OQ/PQ for equipment and utilities
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <svg class="w-5 h-5 text-accent-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        Created SOPs and validation master plans
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <svg class="w-5 h-5 text-accent-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                        </svg>
+                                        Supported ANVISA inspections with zero findings
+                                    </li>
+                                </ul>
+                                <div class="flex flex-wrap gap-2 mt-4">
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-warning-500/20 text-warning-500">ANVISA</span>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-warning-500/20 text-warning-500">IQ/OQ/PQ</span>
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-warning-500/20 text-warning-500">GMP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="min-h-screen flex items-center justify-center px-6 py-20">
+        <div class="max-w-6xl mx-auto w-full">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center">
+                Skills & <span class="gradient-text">Expertise</span>
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Technical Skills Card -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-500 to-accent-600 flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Technical</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>SAP (ECC, S/4HANA)</span>
+                                <span class="text-accent-500 text-xs">Expert</span>
+                            </div>
+                            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-500 to-success-500" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>MES / LIMS</span>
+                                <span class="text-accent-500 text-xs">Advanced</span>
+                            </div>
+                            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-500 to-success-500" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>SQL / Python / PowerShell</span>
+                                <span class="text-accent-500 text-xs">Advanced</span>
+                            </div>
+                            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-500 to-success-500" style="width: 88%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Veeva Vault</span>
+                                <span class="text-accent-500 text-xs">Intermediate</span>
+                            </div>
+                            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-accent-500 to-success-500" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Compliance Card -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-success-500 to-success-600 flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Compliance</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-success-500"></div>
+                            <span>GAMP 5</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-success-500"></div>
+                            <span>21 CFR Part 11</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-success-500"></div>
+                            <span>FDA CSA</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-success-500"></div>
+                            <span>EU Annex 11</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-success-500"></div>
+                            <span>ALCOA+</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-success-500"></div>
+                            <span>ANVISA</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Leadership Card -->
+                <div class="glass rounded-2xl p-8">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-warning-500 to-warning-600 flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Leadership</h3>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <div class="font-semibold text-warning-500">Project Management</div>
+                            <div class="text-xs text-slate-400">20+ CSV projects</div>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-warning-500">Team Mentoring</div>
+                            <div class="text-xs text-slate-400">30+ engineers trained</div>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-warning-500">Stakeholder Management</div>
+                            <div class="text-xs text-slate-400">QA, IT, Manufacturing</div>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-warning-500">Problem Solving</div>
+                            <div class="text-xs text-slate-400">Audit findings resolved</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certifications -->
+            <div class="mt-12">
+                <h3 class="text-2xl font-bold mb-6 text-center">Certifications & Education</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="glass rounded-2xl p-6 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-bold">Bachelor's in Chemical Engineering</div>
+                            <div class="text-sm text-slate-400">Federal University - Brazil</div>
+                        </div>
+                    </div>
+                    <div class="glass rounded-2xl p-6 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-500 to-accent-600 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-bold">GAMP 5 Certified Professional</div>
+                            <div class="text-sm text-slate-400">ISPE - 2019</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="min-h-screen flex items-center justify-center px-6 py-20">
+        <div class="max-w-6xl mx-auto w-full">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center">
+                Featured <span class="gradient-text">Projects</span>
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="glass rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="h-48 bg-gradient-to-br from-accent-500/20 to-success-500/20 flex items-center justify-center border-b border-white/10">
+                        <svg class="w-20 h-20 text-accent-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m7 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">CSV Platform</h3>
+                        <p class="text-slate-400 text-sm mb-4">Automated system validation framework for GxP systems. Reduced validation time by 40%.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs px-2 py-1 rounded bg-accent-500/20 text-accent-500">GAMP 5</span>
+                            <span class="text-xs px-2 py-1 rounded bg-accent-500/20 text-accent-500">Automation</span>
+                        </div>
+                        <a href="#contact" class="text-accent-500 text-sm font-semibold hover:text-accent-600">Learn more →</a>
+                    </div>
+                </div>
+                
+                <!-- Project 2 -->
+                <div class="glass rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="h-48 bg-gradient-to-br from-success-500/20 to-warning-500/20 flex items-center justify-center border-b border-white/10">
+                        <svg class="w-20 h-20 text-success-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Analytics Dashboard</h3>
+                        <p class="text-slate-400 text-sm mb-4">Real-time monitoring for pharmaceutical operations. Integrated KPI tracking and trend analysis.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs px-2 py-1 rounded bg-success-500/20 text-success-500">Analytics</span>
+                            <span class="text-xs px-2 py-1 rounded bg-success-500/20 text-success-500">Dashboard</span>
+                        </div>
+                        <a href="#contact" class="text-accent-500 text-sm font-semibold hover:text-accent-600">Learn more →</a>
+                    </div>
+                </div>
+                
+                <!-- Project 3 -->
+                <div class="glass rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="h-48 bg-gradient-to-br from-warning-500/20 to-accent-500/20 flex items-center justify-center border-b border-white/10">
+                        <svg class="w-20 h-20 text-warning-500/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Quality Tools Suite</h3>
+                        <p class="text-slate-400 text-sm mb-4">15+ automation tools for GMP compliance, audit prep, and risk management. Built for Quality teams.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs px-2 py-1 rounded bg-warning-500/20 text-warning-500">Tools</span>
+                            <span class="text-xs px-2 py-1 rounded bg-warning-500/20 text-warning-500">Tooling</span>
+                        </div>
+                        <a href="#contact" class="text-accent-500 text-sm font-semibold hover:text-accent-600">Learn more →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="min-h-screen flex items-center justify-center px-6 py-20">
+        <div class="max-w-2xl mx-auto w-full">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 text-center">
+                Get in <span class="gradient-text">Touch</span>
+            </h2>
+            <p class="text-center text-slate-400 mb-12">Let's connect! Always interested in new projects and opportunities.</p>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Contact Info -->
+                <div class="space-y-6">
+                    <div class="glass rounded-2xl p-6 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-accent-500/20 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold">Email</div>
+                            <a href="mailto:raoni@example.com" class="text-accent-500 hover:text-accent-600 text-sm">raoni@example.com</a>
+                        </div>
+                    </div>
+                    
+                    <div class="glass rounded-2xl p-6 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-success-500/20 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-success-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4.243 4.243a4 4 0 105.656 5.656l4.243-4.243"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold">LinkedIn</div>
+                            <a href="https://linkedin.com/in/raonibarbalho" target="_blank" class="text-accent-500 hover:text-accent-600 text-sm">linkedin.com/in/raonibarbalho</a>
+                        </div>
+                    </div>
+                    
+                    <div class="glass rounded-2xl p-6 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-warning-500/20 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-warning-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold">GitHub</div>
+                            <a href="https://github.com/raonibarbalhox" target="_blank" class="text-accent-500 hover:text-accent-600 text-sm">github.com/raonibarbalhox</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Message Form -->
+                <div class="glass rounded-2xl p-8">
+                    <h3 class="text-xl font-bold mb-4">Quick Message</h3>
+                    <form class="space-y-4" onsubmit="handleFormSubmit(event)">
+                        <input type="text" placeholder="Your Name" class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 placeholder-slate-500 focus:outline-none focus:border-accent-500 transition-colors text-white" required>
+                        <input type="email" placeholder="Your Email" class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 placeholder-slate-500 focus:outline-none focus:border-accent-500 transition-colors text-white" required>
+                        <textarea placeholder="Message" rows="4" class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 placeholder-slate-500 focus:outline-none focus:border-accent-500 transition-colors resize-none text-white" required></textarea>
+                        <button type="submit" class="btn-primary w-full">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-8 px-6">
+        <div class="max-w-6xl mx-auto text-center">
+            <p class="text-slate-400 text-sm">© 2026 Raoni Barbalho. All rights reserved. | <a href="dashboard.html" class="text-accent-500 hover:text-accent-600">Access Dashboard</a></p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            alert('Message sent! I will get back to you soon.');
+            e.target.reset();
+        }
+
+        // Apply saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
